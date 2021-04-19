@@ -14,25 +14,24 @@ export const unpkgPathPlugin = () => {
           return { path: args.path, namespace: 'a' };
         }
 
-        // Check if the imports are done from the main file
-        if (args.importer === 'index.js') {
+        // Handle imports from external package's repo
+        if (args.path.includes('./') || args.path.includes('../')) {
+          const path = new URL(
+            args.path,
+            'https://unpkg.com' +
+              args.resolveDir +
+              '/' /* We need the trailing slash. See URL API. */
+          ).href;
+
           return {
             namespace: 'a',
-            path: `https://unpkg.com/${args.path}`,
+            path,
           };
         }
 
-        // Handle imports from external files
-        const path = new URL(
-          args.path,
-          'https://unpkg.com' +
-            args.resolveDir +
-            '/' /* We need the trailing slash. See URL API. */
-        ).href;
-
         return {
           namespace: 'a',
-          path,
+          path: `https://unpkg.com/${args.path}`,
         };
       });
 
@@ -45,8 +44,12 @@ export const unpkgPathPlugin = () => {
           return {
             loader: 'jsx',
             contents: `
-              import message from 'nested-test-pkg';
-              console.log(message);
+              import message from 'react';
+              import ReactDOM from 'react-dom';
+              import lodash from 'lodash';
+              import axios from 'axios';
+
+              console.log(message, ReactDOM, lodash, axios);
             `,
           };
         }
