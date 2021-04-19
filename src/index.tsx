@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import * as esbuild from 'esbuild-wasm';
+import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 
 const App = () => {
   const ref = useRef<any>();
@@ -28,17 +29,20 @@ const App = () => {
   const onClick = async () => {
     if (!ref.current) return;
 
-    const res = await ref.current.transform(rawCode, {
-      loader: 'jsx',
-      target: 'es2015',
-    });
     /**
      * returned object has
      * - code: String
      * - map: String
      * - warnings: []
      */
-    setCode(res.code);
+    const res = await ref.current.build({
+      entryPoints: ['index.js'],
+      bundle: true,
+      write: false,
+      plugins: [unpkgPathPlugin()],
+    });
+
+    setCode(res.outputFiles[0].text);
   };
 
   return (
