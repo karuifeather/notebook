@@ -23,7 +23,13 @@ export const unpkgPathPlugin = () => {
         }
 
         // Handle imports from external files
-        const path = new URL(args.path, `${args.importer}/`).href;
+        const path = new URL(
+          args.path,
+          'https://unpkg.com' +
+            args.resolveDir +
+            '/' /* We need the trailing slash. See URL API. */
+        ).href;
+
         return {
           namespace: 'a',
           path,
@@ -46,10 +52,14 @@ export const unpkgPathPlugin = () => {
         }
 
         // Get the contents of external file and return it
-        const { data } = await axios.get(args.path);
+        const { data, request } = await axios.get(args.path);
+
+        const resolveDir = new URL('./', request.responseURL).pathname;
+
         return {
           loader: 'jsx',
           contents: data,
+          resolveDir,
         };
       });
     },
