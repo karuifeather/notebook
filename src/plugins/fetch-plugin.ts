@@ -33,12 +33,26 @@ export const fetchPlugin = (startCode: string) => {
 
         // Get the contents of external file and return it
         const { data, request } = await axios.get(args.path);
-
         const resolveDir = new URL('./', request.responseURL).pathname;
+
+        const filetype = args.path.match(/.css$/) ? 'css' : 'jsx';
+
+        let contents;
+        if (filetype === 'css') {
+          const escapedCSS = data
+            .replace(/\n/g, '')
+            .replace(/"/g, '\\"')
+            .replace(/'/g, "\\'");
+
+          contents = `
+            const style = document.createElement('style');
+            style.innerText = '${escapedCSS}';
+            document.head.appendChild(style)`;
+        } else contents = data;
 
         const result: esbuild.OnLoadResult = {
           loader: 'jsx',
-          contents: data,
+          contents,
           resolveDir,
         };
 
