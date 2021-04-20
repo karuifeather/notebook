@@ -10,30 +10,31 @@ export const unpkgPathPlugin = (startCode: string) => {
   return {
     name: 'unpkg-path-plugin',
     setup(build: esbuild.PluginBuild) {
-      // Set up onResolve event handler on build
-      build.onResolve({ filter: /.*/ }, async (args: any) => {
-        console.log('onResolve', args);
+      // Handle root entry file of 'index.js'
+      build.onResolve({ filter: /(^index\.js$)/ }, () => {
+        return {
+          path: 'index.js',
+          namespace: 'a',
+        };
+      });
 
-        // Check for the main file
-        if (args.path === 'index.js') {
-          return { path: args.path, namespace: 'a' };
-        }
+      // Handle relative paths in a module
+      build.onResolve({ filter: /^\.+\// }, (args: any) => {
+        const path = new URL(
+          args.path,
+          'https://unpkg.com' +
+            args.resolveDir +
+            '/' /* We need the trailing slash. See URL API. */
+        ).href;
 
-        // Handle imports from external package's repo
-        if (args.path.includes('./') || args.path.includes('../')) {
-          const path = new URL(
-            args.path,
-            'https://unpkg.com' +
-              args.resolveDir +
-              '/' /* We need the trailing slash. See URL API. */
-          ).href;
+        return {
+          namespace: 'a',
+          path,
+        };
+      });
 
-          return {
-            namespace: 'a',
-            path,
-          };
-        }
-
+      // Handle main file of a module
+      build.onResolve({ filter: /.*/ }, (args: any) => {
         return {
           namespace: 'a',
           path: `https://unpkg.com/${args.path}`,
