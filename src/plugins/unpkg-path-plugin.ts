@@ -6,7 +6,7 @@ const filecache = localForage.createInstance({
   name: 'filecache',
 });
 
-export const unpkgPathPlugin = () => {
+export const unpkgPathPlugin = (startCode: string) => {
   return {
     name: 'unpkg-path-plugin',
     setup(build: esbuild.PluginBuild) {
@@ -48,14 +48,7 @@ export const unpkgPathPlugin = () => {
         if (args.path === 'index.js') {
           return {
             loader: 'jsx',
-            contents: `
-              import message from 'react';
-              import ReactDOM from 'react-dom';
-              import lodash from 'lodash';
-              import axios from 'axios';
-
-              console.log(message, ReactDOM, lodash, axios);
-            `,
+            contents: startCode,
           };
         }
 
