@@ -19,8 +19,7 @@ export const fetchPlugin = (startCode: string) => {
         };
       });
 
-      // Handle css files
-      build.onLoad({ filter: /.css$/ }, async (args: any) => {
+      build.onLoad({ filter: /.*/ }, async (args: any) => {
         // Check to see if we have already fecthed this file
         // and if it is in the cache
         const cachedResult = await filecache.getItem<esbuild.OnLoadResult>(
@@ -31,7 +30,10 @@ export const fetchPlugin = (startCode: string) => {
         if (cachedResult) {
           return cachedResult;
         }
+      });
 
+      // Handle css files
+      build.onLoad({ filter: /.css$/ }, async (args: any) => {
         // Get the contents of external file and return it
         const { data, request } = await axios.get(args.path);
         const resolveDir = new URL('./', request.responseURL).pathname;
@@ -57,19 +59,8 @@ export const fetchPlugin = (startCode: string) => {
         return result;
       });
 
-      // Handle everything?
+      // Handle everything else?
       build.onLoad({ filter: /.*/ }, async (args: any) => {
-        // Check to see if we have already fecthed this file
-        // and if it is in the cache
-        const cachedResult = await filecache.getItem<esbuild.OnLoadResult>(
-          args.path
-        );
-
-        // If it is, return it immediately
-        if (cachedResult) {
-          return cachedResult;
-        }
-
         // Get the contents of external file and return it
         const { data, request } = await axios.get(args.path);
         const resolveDir = new URL('./', request.responseURL).pathname;
