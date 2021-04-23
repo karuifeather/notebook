@@ -6,8 +6,8 @@ import { fetchPlugin } from './plugins/fetch-plugin';
 
 const App = () => {
   const ref = useRef<any>();
+  const iframe = useRef<any>();
   const [rawCode, setRawCode] = useState('');
-  const [code, setCode] = useState('');
 
   const startService = async () => {
     /**
@@ -30,6 +30,8 @@ const App = () => {
   const onClick = async () => {
     if (!ref.current) return;
 
+    iframe.current.srcdoc = html;
+
     /**
      * returned object has
      * - code: String
@@ -47,8 +49,34 @@ const App = () => {
       },
     });
 
-    setCode(res.outputFiles[0].text);
+    iframe.current.contentWindow.postMessage(res.outputFiles[0].text, '*');
   };
+
+  const html = `
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+    <body>
+      <div id="root"></div>
+      <script>
+        window.addEventListener('message', (e) => {
+          try {
+            eval(e.data)
+          } catch (error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="color: orangered;"> <h4>Runtime Error</h4>' + error + '</div>';
+            throw error;
+          }
+          eval(e.data);
+        }, false);
+      </script>
+    </body>
+  </html>
+  `;
 
   return (
     <>
@@ -63,7 +91,12 @@ const App = () => {
           <button>Submit</button>
         </div>
       </div>
-      <pre>{code}</pre>
+      <iframe
+        title='this is where miracle happens'
+        ref={iframe}
+        srcDoc={html}
+        sandbox='allow-scripts'
+      />
     </>
   );
 };
