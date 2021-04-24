@@ -1,3 +1,4 @@
+import './code-editor.css';
 import { useRef } from 'react';
 import Editor, { OnChange, OnMount } from '@monaco-editor/react';
 import prettier from 'prettier';
@@ -24,29 +25,39 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
   const onFormatClick = () => {
     const unformattedCode = editorRef.current.getValue();
 
-    const formattedCode = prettier.format(unformattedCode, {
-      parser: 'babel',
-      plugins: [parser],
-      singleQuote: true,
-      jsxSingleQuote: true,
-      tabWidth: 4,
-      semi: true,
-    });
+    try {
+      const formattedCode = prettier
+        .format(unformattedCode, {
+          parser: 'babel',
+          plugins: [parser],
+          singleQuote: true,
+          jsxSingleQuote: true,
+          tabWidth: 4,
+          semi: true,
+        })
+        .replace(/\n$/, '');
 
-    editorRef.current.setValue(formattedCode);
+      editorRef.current.setValue(formattedCode);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
-    <>
-      <button onClick={onFormatClick}>Format</button>
+    <div className='editor-wrapper'>
+      <button
+        className='button button-format is-primary is-small'
+        onClick={onFormatClick}
+      >
+        Format
+      </button>
       <Editor
         onMount={handleOnMount}
         onChange={handleOnChange}
-        height='90vh'
+        height='45vh'
         defaultLanguage='javascript'
         defaultValue={defaultValue}
         theme='vs-dark'
-        value={'ji'}
         options={{
           lineNumbers: 'relative',
           cursorBlinking: 'smooth',
@@ -62,7 +73,7 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
           lineNumbersMinChars: 3,
         }}
       />
-    </>
+    </div>
   );
 };
 
