@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import * as esbuild from 'esbuild-wasm';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 import { fetchPlugin } from './plugins/fetch-plugin';
+import CodeEditor from './components/code-editor';
 
 const App = () => {
   const ref = useRef<any>();
@@ -82,6 +83,10 @@ const App = () => {
     <>
       <div>
         <div className=''>
+          <CodeEditor
+            defaultValue='//check this out'
+            onChange={(value) => setRawCode(value)}
+          />
           <textarea
             value={rawCode}
             onChange={(e) => setRawCode(e.target.value)}
