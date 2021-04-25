@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import CodeEditor from './code-editor';
 import Preview from './preview';
@@ -9,10 +9,16 @@ const CodeCell: React.FC = () => {
   const [rawCode, setRawCode] = useState('');
   const [builtCode, setBuiltCode] = useState('');
 
-  const onClick = async () => {
-    const res = await bundle(rawCode);
-    setBuiltCode(res);
-  };
+  useEffect(() => {
+    let timer = setTimeout(async () => {
+      const res = await bundle(rawCode);
+      setBuiltCode(res);
+    }, 1500);
+
+    return () => {
+      timer && clearTimeout(timer);
+    };
+  }, [rawCode]);
 
   return (
     <Resizable direction='y'>
