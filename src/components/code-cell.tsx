@@ -13,7 +13,7 @@ const CodeCell: React.FC = () => {
     let timer = setTimeout(async () => {
       const res = await bundle(rawCode);
       setBuiltCode(res);
-    }, 1500);
+    }, 1300);
 
     return () => {
       timer && clearTimeout(timer);
@@ -35,7 +35,6 @@ const CodeCell: React.FC = () => {
             onChange={(value) => setRawCode(value)}
           />
         </Resizable>
-        {/* <button onClick={onClick}>Submit</button> */}
         <Preview code={builtCode} />
       </div>
     </Resizable>
