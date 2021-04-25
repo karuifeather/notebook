@@ -54,7 +54,8 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
       <Editor
         onMount={handleOnMount}
         onChange={handleOnChange}
-        height='45vh'
+        height='100%'
+        width='100%'
         defaultLanguage='javascript'
         defaultValue={defaultValue}
         theme='vs-dark'
