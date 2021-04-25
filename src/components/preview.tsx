@@ -17,13 +17,12 @@ const html = `
       <script>
         window.addEventListener('message', (e) => {
           try {
-            eval(e.data)
+            eval(e.data);
           } catch (error) {
             const root = document.getElementById('root');
             root.innerHTML = '<div style="color: orangered;"> <h4>Runtime Error</h4>' + error + '</div>';
             throw error;
           }
-          eval(e.data);
         }, false);
       </script>
     </body>
@@ -34,10 +33,9 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
   const iframe = useRef<any>();
 
   useEffect(() => {
-    console.log(code);
     iframe.current.srcdoc = html;
     iframe.current.contentWindow.postMessage(code, '*');
-  }, []);
+  }, [code]);
 
   return (
     <iframe

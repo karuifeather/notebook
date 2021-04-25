@@ -1,5 +1,5 @@
 import 'bulmaswatch/darkly/bulmaswatch.min.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 import CodeEditor from './components/code-editor';
