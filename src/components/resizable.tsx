@@ -9,11 +9,21 @@ interface ResizableProps {
 const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
   const [innerHeight, setInnerHeight] = useState(window.innerHeight);
+  const [width, setWidth] = useState(window.innerWidth * 0.75);
 
   useEffect(() => {
+    let timer: any;
     const handler = () => {
-      setInnerHeight(window.innerHeight);
-      setInnerWidth(window.innerWidth);
+      if (timer) {
+        clearTimeout(timer);
+      }
+
+      timer = setTimeout(() => {
+        setInnerHeight(window.innerHeight);
+        setInnerWidth(window.innerWidth);
+
+        if (window.innerWidth < width) setWidth(window.innerWidth * 0.75);
+      }, 100);
     };
 
     window.addEventListener('resize', handler);
@@ -27,11 +37,14 @@ const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
   if (direction === 'x') {
     resizableProps = {
       className: 'resize-x',
-      width: innerWidth * 0.75,
+      width,
       height: Infinity,
       resizeHandles: ['e'],
       maxConstraints: [innerWidth * 0.75, Infinity],
       minConstraints: [innerWidth * 0.25, Infinity],
+      onResizeStop(event, data) {
+        setWidth(data.size.width);
+      },
     };
   } else {
     resizableProps = {
