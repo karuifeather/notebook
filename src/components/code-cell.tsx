@@ -8,11 +8,13 @@ import Resizable from './resizable';
 const CodeCell: React.FC = () => {
   const [rawCode, setRawCode] = useState('');
   const [builtCode, setBuiltCode] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     let timer = setTimeout(async () => {
       const res = await bundle(rawCode);
-      setBuiltCode(res);
+      setBuiltCode(res.code);
+      setError(res.error);
     }, 1300);
 
     return () => {
@@ -35,7 +37,7 @@ const CodeCell: React.FC = () => {
             onChange={(value) => setRawCode(value)}
           />
         </Resizable>
-        <Preview code={builtCode} />
+        <Preview code={builtCode} error={error} />
       </div>
     </Resizable>
   );
