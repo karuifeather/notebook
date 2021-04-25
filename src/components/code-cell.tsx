@@ -15,7 +15,7 @@ const CodeCell: React.FC = () => {
   };
 
   return (
-    <Resizable direction='y' height={400}>
+    <Resizable direction='y'>
       <div
         style={{
           display: 'flex',
@@ -23,11 +23,12 @@ const CodeCell: React.FC = () => {
           width: '100%',
         }}
       >
-        <CodeEditor
-          defaultValue='//check this out'
-          onChange={(value) => setRawCode(value)}
-        />
-
+        <Resizable direction='x'>
+          <CodeEditor
+            defaultValue='//check this out'
+            onChange={(value) => setRawCode(value)}
+          />
+        </Resizable>
         {/* <button onClick={onClick}>Submit</button> */}
         <Preview code={builtCode} />
       </div>
