@@ -2,11 +2,13 @@
   position: relative;
   height: 100%;
   flex-grow: 1;
+  background-color: #dbdee0;
 }
 
 .preview-wrapper iframe {
   height: 100%;
   width: 100%;
+  background-color: #dbdee0;
 }
 
 .preview-error {
