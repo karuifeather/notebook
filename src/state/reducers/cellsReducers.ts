@@ -32,7 +32,7 @@ const reducer = (
 
       case ActionType.DELETE_CELL:
         delete draft.data[action.payload];
-        draft.order.filter((id) => id !== action.payload);
+        draft.order = draft.order.filter((id) => id !== action.payload);
         return draft;
 
       case ActionType.INSERT_CELL_BEFORE:
@@ -58,7 +58,8 @@ const reducer = (
         const index = draft.order.findIndex((id) => action.payload.id === id);
         const targetIndex = direction === 'up' ? index - 1 : index + 1;
 
-        if (targetIndex < 0 || targetIndex > draft.order.length) return draft;
+        if (targetIndex < 0 || targetIndex > draft.order.length - 1)
+          return draft;
 
         draft.order[index] = draft.order[targetIndex];
         draft.order[targetIndex] = action.payload.id;
