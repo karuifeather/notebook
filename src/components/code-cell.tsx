@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react';
 
+import { useActions } from '../hooks/use-actions';
 import CodeEditor from './code-editor';
 import Preview from './preview';
 import bundle from '../bundler';
 import Resizable from './resizable';
+import { Cell } from '../state';
 
-const CodeCell: React.FC = () => {
-  const [rawCode, setRawCode] = useState('');
+interface CodeCellProps {
+  cell: Cell;
+}
+
+const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const [builtCode, setBuiltCode] = useState('');
   const [error, setError] = useState('');
+  const { updateCell } = useActions();
 
   useEffect(() => {
     let timer = setTimeout(async () => {
-      const res = await bundle(rawCode);
+      const res = await bundle(cell.content);
       setBuiltCode(res.code);
       setError(res.error);
     }, 1300);
@@ -20,7 +26,7 @@ const CodeCell: React.FC = () => {
     return () => {
       timer && clearTimeout(timer);
     };
-  }, [rawCode]);
+  }, [cell.content]);
 
   return (
     <Resizable direction='y'>
@@ -33,8 +39,8 @@ const CodeCell: React.FC = () => {
       >
         <Resizable direction='x'>
           <CodeEditor
-            defaultValue='//check this out'
-            onChange={(value) => setRawCode(value)}
+            defaultValue={cell.content || '//type your code here'}
+            onChange={(value) => updateCell(cell.id, value)}
           />
         </Resizable>
         <Preview code={builtCode} error={error} />
