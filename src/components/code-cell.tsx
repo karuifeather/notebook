@@ -33,7 +33,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
       <div
         style={{
           display: 'flex',
-          height: '100%',
+          height: 'calc(100% - 10px)',
           width: '100%',
         }}
       >
