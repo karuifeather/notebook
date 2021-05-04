@@ -5,7 +5,7 @@ import { Action } from '../actions';
 interface BundlesState {
   [key: string]: {
     code: string;
-    err: string;
+    error: string;
   };
 }
 
@@ -18,6 +18,8 @@ const reducer = (
   return produce(state, (draft: Draft<BundlesState>) => {
     switch (action.type) {
       case ActionType.BUNDLE_CREATED:
+        draft[action.payload.cellId] = action.payload.bundle;
+
         return draft;
       default:
         return draft;

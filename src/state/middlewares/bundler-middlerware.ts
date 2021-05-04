@@ -1,13 +1,34 @@
 import { Middleware } from './middleware';
 import { ActionType } from '../action-types';
+import bundle from '../../bundler';
 
 let timer: NodeJS.Timeout;
-export const bundlerMiddleware: Middleware = (store) => (next) => (action) => {
+export const bundlerMiddleware: Middleware = ({ getState, dispatch }) => (
+  next
+) => (action) => {
   next(action);
 
-  clearTimeout(timer);
+  if (action.type !== ActionType.UPDATE_CELL) return;
 
-  timer = setTimeout(() => {
-    console.log('Hello after .75s of last action pass');
-  }, 750);
+  const {
+    cells: { data: cellData },
+  } = getState();
+  const cell = cellData[action.payload.id];
+
+  if (cell.type === 'text') return;
+
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    console.log('bundle_start');
+    const result = await bundle(action.payload.content);
+    console.log('bundle_created');
+
+    dispatch({
+      type: ActionType.BUNDLE_CREATED,
+      payload: {
+        cellId: cell.id,
+        bundle: result,
+      },
+    });
+  }, 1300);
 };

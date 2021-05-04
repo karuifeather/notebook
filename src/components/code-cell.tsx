@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { useActions } from '../hooks/use-actions';
+import { useTypedSelector } from '../hooks/use-typed-selector';
 import CodeEditor from './code-editor';
 import Preview from './preview';
-import bundle from '../bundler';
 import Resizable from './resizable';
 import { Cell } from '../state';
 
@@ -12,21 +12,8 @@ interface CodeCellProps {
 }
 
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
-  const [builtCode, setBuiltCode] = useState('');
-  const [error, setError] = useState('');
   const { updateCell } = useActions();
-
-  useEffect(() => {
-    let timer = setTimeout(async () => {
-      const res = await bundle(cell.content);
-      setBuiltCode(res.code);
-      setError(res.error);
-    }, 1300);
-
-    return () => {
-      timer && clearTimeout(timer);
-    };
-  }, [cell.content]);
+  const bundle = useTypedSelector(({ bundles }) => bundles[cell.id]) || {};
 
   return (
     <Resizable direction='y'>
@@ -43,7 +30,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
             onChange={(value) => updateCell(cell.id, value)}
           />
         </Resizable>
-        <Preview code={builtCode} error={error} />
+        <Preview code={bundle.code} error={bundle.error} />
       </div>
     </Resizable>
   );
