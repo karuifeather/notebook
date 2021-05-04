@@ -19,9 +19,12 @@ export const bundlerMiddleware: Middleware = ({ getState, dispatch }) => (
 
   clearTimeout(timer);
   timer = setTimeout(async () => {
-    console.log('bundle_start');
+    dispatch({
+      type: ActionType.BUNDLE_CREATING,
+      payload: { cellId: cell.id },
+    });
+
     const result = await bundle(action.payload.content);
-    console.log('bundle_created');
 
     dispatch({
       type: ActionType.BUNDLE_CREATED,

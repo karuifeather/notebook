@@ -1,5 +1,6 @@
 import React from 'react';
 
+import './code-cell.css';
 import { useActions } from '../hooks/use-actions';
 import { useTypedSelector } from '../hooks/use-typed-selector';
 import CodeEditor from './code-editor';
@@ -13,24 +14,28 @@ interface CodeCellProps {
 
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const { updateCell } = useActions();
-  const bundle = useTypedSelector(({ bundles }) => bundles[cell.id]) || {};
+  const bundle = useTypedSelector(({ bundles }) => bundles[cell.id]);
 
   return (
     <Resizable direction='y'>
-      <div
-        style={{
-          display: 'flex',
-          height: 'calc(100% - 10px)',
-          width: '100%',
-        }}
-      >
+      <div className='main-wrapper'>
         <Resizable direction='x'>
           <CodeEditor
             defaultValue={cell.content || '//type your code here'}
             onChange={(value) => updateCell(cell.id, value)}
           />
         </Resizable>
-        <Preview code={bundle.code} error={bundle.error} />
+        <div className='progress-wrapper'>
+          {!bundle || bundle.loading ? (
+            <div className='progress-cover'>
+              <progress className='progress is-small is-primary' max='100'>
+                Loading
+              </progress>
+            </div>
+          ) : (
+            <Preview code={bundle.code} error={bundle.error} />
+          )}
+        </div>
       </div>
     </Resizable>
   );
