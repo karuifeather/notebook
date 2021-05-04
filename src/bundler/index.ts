@@ -24,10 +24,21 @@ const build = async (rawCode: string): Promise<BuildReturnObject> => {
       bundle: true,
       write: false,
       plugins: [unpkgPathPlugin(), fetchPlugin(rawCode)],
+      /**
+       * following ones are for external packages
+       * that need access to Node environment variables
+       */
       define: {
         'process.env.NODE_ENV': '"production"',
         global: 'window',
       },
+      /**
+       * following ones are to avoid naming conflict
+       * when doing cumulative code thing
+       * see redux middlewares for more info
+       */
+      jsxFactory: '_React.createElement',
+      jsxFragment: '_React.Fragment',
     });
 
     return { code: res.outputFiles[0].text, error: '' };
