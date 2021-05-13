@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import './code-cell.css';
 import { useActions } from '../hooks/use-actions';
@@ -13,8 +13,12 @@ interface CodeCellProps {
 }
 
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
-  const { updateCell } = useActions();
+  const { updateCell, bundleIt } = useActions();
   const bundle = useTypedSelector(({ bundles }) => bundles[cell.id]);
+
+  useEffect(() => {
+    bundleIt(cell.id, cell.content);
+  }, []);
 
   return (
     <Resizable direction='y'>

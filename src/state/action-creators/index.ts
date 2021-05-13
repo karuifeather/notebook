@@ -5,6 +5,7 @@ import {
   DeleteCellAction,
   InsertCellAfterAction,
   Direction,
+  BundleItAction,
 } from '../actions';
 import { CellTypes } from '../cell';
 
@@ -44,6 +45,16 @@ export const insertCellAfter = (
     payload: {
       id,
       type: cellType,
+    },
+  };
+};
+
+export const bundleIt = (id: string, content: string): BundleItAction => {
+  return {
+    type: ActionType.BUNDLE_IT,
+    payload: {
+      cellId: id,
+      rawCode: content,
     },
   };
 };
