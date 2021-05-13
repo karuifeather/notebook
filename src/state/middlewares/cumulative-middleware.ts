@@ -21,15 +21,20 @@ const makeItCumulative: MakeItCumulative = (
           import _ReactDOM from 'react-dom';
           const root = document.getElementById('root');
           var print = (value) => {
+            const $$printOutput = document.createElement('div');
+            $$printOutput.style.margin = '1rem';
+
             if (typeof value === 'object') {
               if (value.$$typeof && value.props) {
                 _ReactDOM.render(value, root);
               } else {
-                root.innerHTML = JSON.stringify(value);
+                $$printOutput.innerHTML = JSON.stringify(value);
+                root.insertAdjacentElement('beforeend', $$printOutput);
               }
                           
             } else {
-              root.innerHTML = value;     
+              $$printOutput.innerHTML = JSON.stringify(value);
+              root.insertAdjacentElement('beforeend', $$printOutput);
             }           
           };
         `;
