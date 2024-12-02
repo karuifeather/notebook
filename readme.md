@@ -8,17 +8,13 @@ This project is a modern, browser-based web application designed for managing no
 
 - **Framework**: Built using **React** with **TypeScript** for type safety and **Material-UI** for a consistent, user-friendly interface.
 - **Hosting**:
-  - Hosted as a static website on **AWS S3**, ensuring efficient deployment and access from anywhere.
-  - Distributed globally via **AWS CloudFront** to provide fast load times.
-  - **Route 53** is used to manage DNS for the custom domain `notebook.karuifeather.com`, routing traffic to CloudFront.
+  - Hosted as a static website on **Vercel**, ensuring efficient deployment and access from anywhere.
+  - **Route 53** is used to manage DNS for the custom domain `notebook.karuifeather.com`, routing traffic to Vercel.
 - **Functionality**:
   - **Local Storage**: All user data (such as notebooks and notes) are stored directly in the browser using the **Web Storage API**. Data is persistent across sessions, ensuring that users can continue where they left off without requiring server-side storage.
-  - **Real-time Editing**: The app supports real-time updates and collaboration features using **WebSockets** or local updates, ensuring smooth interaction between users in a session.
-  - **Search and Tagging**: Notebooks and notes can be tagged for easy searching and organization within the browser, allowing users to quickly find their content.
 - **Build and Deployment**:
   - Built using **Webpack** and **Babel** for optimal performance.
-  - Deployed to **AWS S3** for static file hosting, ensuring reliable and fast access.
-  - **GitHub Actions** automates the deployment process whenever changes are pushed to the `main` branch.
+  - **Vercel** manages the deployment making the whole process simpler.
 
 ### Deployment Process:
 
