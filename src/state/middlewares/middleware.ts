@@ -7,9 +7,9 @@ interface MiddlewareAPI<S, A> {
 }
 
 interface _Middleware<S, A> {
-  (api: MiddlewareAPI<S, A>): (
-    next: (action: A) => void
-  ) => (action: A) => void;
+  (
+    api: MiddlewareAPI<S, A>
+  ): (next: (action: A) => void) => (action: A) => void;
 }
 
 export type Middleware = _Middleware<RootState, Action>;

@@ -10,29 +10,29 @@ const ActionBar: React.FC<ActionBarProps> = ({ id }) => {
   const { moveCell, deleteCell } = useActions();
 
   return (
-    <div className='action-bar'>
+    <div className="action-bar">
       <button
-        className='button is-primary is-small'
+        className="button is-primary is-small"
         onClick={() => moveCell(id, 'up')}
       >
-        <span className='icon'>
-          <i className='fas fa-arrow-up' />
+        <span className="icon">
+          <i className="fas fa-arrow-up" />
         </span>
       </button>
       <button
-        className='button is-primary is-small'
+        className="button is-primary is-small"
         onClick={() => moveCell(id, 'down')}
       >
-        <span className='icon'>
-          <i className='fas fa-arrow-down' />
+        <span className="icon">
+          <i className="fas fa-arrow-down" />
         </span>
       </button>
       <button
-        className='button is-danger is-small'
+        className="button is-danger is-small"
         onClick={() => deleteCell(id)}
       >
-        <span className='icon'>
-          <i className='fas fa-times' />
+        <span className="icon">
+          <i className="fas fa-times" />
         </span>
       </button>
     </div>

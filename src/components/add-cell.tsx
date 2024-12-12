@@ -13,27 +13,27 @@ const AddCell: React.FC<AddCellProps> = ({ prevCellId, forceVisible }) => {
 
   return (
     <div className={`add-cell ${forceVisible && 'visible'}`}>
-      <div className='add-buttons'>
+      <div className="add-buttons">
         <button
-          className='button is-primary is-rounded is-small'
+          className="button is-primary is-rounded is-small"
           onClick={() => insertCellAfter(prevCellId, 'code')}
         >
-          <span className='icon is-small'>
-            <i className='fas fa-plus' />
+          <span className="icon is-small">
+            <i className="fas fa-plus" />
           </span>
           <span>Code</span>
         </button>
         <button
-          className='button is-primary is-rounded is-small'
+          className="button is-primary is-rounded is-small"
           onClick={() => insertCellAfter(prevCellId, 'text')}
         >
-          <span className='icon is-small'>
-            <i className='fas fa-plus' />
+          <span className="icon is-small">
+            <i className="fas fa-plus" />
           </span>
           <span>Text</span>
         </button>
       </div>
-      <div className='divider' />
+      <div className="divider" />
     </div>
   );
 };

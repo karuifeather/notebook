@@ -55,15 +55,15 @@ const Preview: React.FC<PreviewProps> = ({ code, error }) => {
   }, [code]);
 
   return (
-    <div className='preview-wrapper'>
+    <div className="preview-wrapper">
       <iframe
-        title='this is where miracle happens'
+        title="this is where miracle happens"
         ref={iframe}
         srcDoc={html}
-        sandbox='allow-scripts'
+        sandbox="allow-scripts"
       />
       {error && (
-        <div className='preview-error'>
+        <div className="preview-error">
           <h4>Build Error</h4>
           {error}
         </div>

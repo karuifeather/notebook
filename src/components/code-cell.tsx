@@ -21,18 +21,18 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   }, []);
 
   return (
-    <Resizable direction='y'>
-      <div className='main-wrapper'>
-        <Resizable direction='x'>
+    <Resizable direction="y">
+      <div className="main-wrapper">
+        <Resizable direction="x">
           <CodeEditor
             defaultValue={cell.content || '//type your code here'}
             onChange={(value) => updateCell(cell.id, value)}
           />
         </Resizable>
-        <div className='progress-wrapper'>
+        <div className="progress-wrapper">
           {!bundle || bundle.loading ? (
-            <div className='progress-cover'>
-              <progress className='progress is-small is-primary' max='100'>
+            <div className="progress-cover">
+              <progress className="progress is-small is-primary" max="100">
                 Loading
               </progress>
             </div>

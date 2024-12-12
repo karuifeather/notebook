@@ -59,29 +59,30 @@ const makeItCumulative: MakeItCumulative = (
 };
 
 let timer: NodeJS.Timeout;
-export const cumulativeMiddleware: Middleware = ({ getState, dispatch }) => (
-  next
-) => (action) => {
-  next(action);
+export const cumulativeMiddleware: Middleware =
+  ({ getState, dispatch }) =>
+  (next) =>
+  (action) => {
+    next(action);
 
-  if (action.type !== ActionType.UPDATE_CELL) return;
+    if (action.type !== ActionType.UPDATE_CELL) return;
 
-  const { cells } = getState();
-  const cell = cells.data[action.payload.id];
+    const { cells } = getState();
+    const cell = cells.data[action.payload.id];
 
-  if (cell.type !== 'code') return;
+    if (cell.type !== 'code') return;
 
-  clearTimeout(timer);
-  timer = setTimeout(async () => {
-    const cumulativeCode = makeItCumulative(action, cells);
-    console.log(cumulativeCode);
+    clearTimeout(timer);
+    timer = setTimeout(async () => {
+      const cumulativeCode = makeItCumulative(action, cells);
+      console.log(cumulativeCode);
 
-    dispatch({
-      type: ActionType.BUNDLE_IT,
-      payload: {
-        cellId: cell.id,
-        rawCode: cumulativeCode,
-      },
-    });
-  }, 1200);
-};
+      dispatch({
+        type: ActionType.BUNDLE_IT,
+        payload: {
+          cellId: cell.id,
+          rawCode: cumulativeCode,
+        },
+      });
+    }, 1200);
+  };

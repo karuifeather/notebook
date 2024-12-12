@@ -44,9 +44,9 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
   };
 
   return (
-    <div className='editor-wrapper'>
+    <div className="editor-wrapper">
       <button
-        className='button button-format is-primary is-small'
+        className="button button-format is-primary is-small"
         onClick={onFormatClick}
       >
         Format
@@ -54,11 +54,11 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
       <Editor
         onMount={handleOnMount}
         onChange={handleOnChange}
-        height='100%'
-        width='100%'
-        defaultLanguage='javascript'
+        height="100%"
+        width="100%"
+        defaultLanguage="javascript"
         defaultValue={defaultValue}
-        theme='vs-dark'
+        theme="vs-dark"
         options={{
           lineNumbers: 'relative',
           cursorBlinking: 'smooth',
