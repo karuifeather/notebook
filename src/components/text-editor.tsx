@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import MDEditor from '@uiw/react-md-editor';
+import React, { useEffect, useRef, useState } from 'react';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { Markdown } from 'tiptap-markdown';
 
 import './text-editor.css';
 import { Cell } from '../state/index.ts';
@@ -14,12 +16,23 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
   const [editing, setEditing] = useState(false);
   const { updateCell } = useActions();
 
+  // Initialize TipTap editor with Markdown extension
+  const editor = useEditor({
+    extensions: [StarterKit, Markdown],
+    content: cell.content || '# Click to edit',
+    onUpdate: ({ editor }) => {
+      const markdownContent = editor.storage.markdown.getMarkdown();
+      updateCell(cell.id, markdownContent);
+    },
+    editable: editing,
+  });
+
   useEffect(() => {
     const listener = (event: MouseEvent) => {
       if (
         ref.current &&
-        event.target &&
-        ref.current.contains(event.target as Node)
+        event.target instanceof Node &&
+        ref.current.contains(event.target)
       ) {
         return;
       }
@@ -33,22 +46,29 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
     };
   }, []);
 
-  if (editing) {
-    return (
-      <div ref={ref} className="text-editor">
-        <MDEditor
-          value={cell.content || '**Click to edit**'}
-          onChange={(value) => value && updateCell(cell.id, value)}
-        />
-      </div>
-    );
+  useEffect(() => {
+    if (editor) {
+      editor.commands.setContent(cell.content || '# Click to edit');
+    }
+  }, [cell.content, editor]);
+
+  if (!editor) {
+    return <div>Loading...</div>;
   }
 
   return (
-    <div onClick={() => setEditing(true)} className="text-editor card">
-      <div className="card-content">
-        <MDEditor.Markdown source={cell.content || '**Click to edit**'} />
-      </div>
+    <div ref={ref} className="text-editor">
+      {editing ? (
+        <EditorContent editor={editor} />
+      ) : (
+        <div
+          className="card-content"
+          onClick={() => setEditing(true)}
+          dangerouslySetInnerHTML={{
+            __html: editor.storage.markdown.getHTML(),
+          }}
+        />
+      )}
     </div>
   );
 };

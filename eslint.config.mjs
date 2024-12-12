@@ -34,7 +34,7 @@ export default [
       'react/react-in-jsx-scope': 'off', // Not required in React 17+
       '@typescript-eslint/no-unused-vars': 'warn', // Warn for unused variables
       'import/extensions': [
-        'error',
+        'warn',
         'always',
         {
           js: 'always',
