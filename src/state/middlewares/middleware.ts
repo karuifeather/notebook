@@ -1,5 +1,5 @@
-import { RootState } from '../reducers';
-import { Action } from '../actions';
+import { RootState } from '../reducers/index.ts';
+import { Action } from '../actions/index.ts';
 
 interface MiddlewareAPI<S, A> {
   getState(): S;

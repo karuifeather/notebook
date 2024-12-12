@@ -17,6 +17,7 @@
     "jsx": "react-jsx", // React 17+ JSX transform
     "types": ["node"],
     "baseUrl": "./", // Optional: Enables absolute imports relative to the root
+    "allowImportingTsExtensions": true,
     "paths": {
       "@/*": ["src/*"] // Optional: Custom import alias for `src/`
     }

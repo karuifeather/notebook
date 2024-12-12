@@ -3,6 +3,7 @@ import pluginReact from 'eslint-plugin-react';
 import pluginPrettier from 'eslint-plugin-prettier';
 import pluginTypescript from '@typescript-eslint/eslint-plugin';
 import parserTypescript from '@typescript-eslint/parser';
+import importPlugin from 'eslint-plugin-import';
 
 export default [
   {
@@ -26,11 +27,22 @@ export default [
       react: pluginReact,
       prettier: pluginPrettier,
       '@typescript-eslint': pluginTypescript,
+      import: importPlugin,
     },
     rules: {
       'prettier/prettier': 'error', // Use Prettier as an ESLint rule
       'react/react-in-jsx-scope': 'off', // Not required in React 17+
       '@typescript-eslint/no-unused-vars': 'warn', // Warn for unused variables
+      'import/extensions': [
+        'error',
+        'always',
+        {
+          js: 'always',
+          jsx: 'always',
+          ts: 'always',
+          tsx: 'always',
+        },
+      ],
     },
     settings: {
       react: {

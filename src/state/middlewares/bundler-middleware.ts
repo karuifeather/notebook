@@ -1,6 +1,6 @@
-import { Middleware } from './middleware';
-import { ActionType } from '../action-types';
-import bundle from '../../bundler';
+import { Middleware } from './middleware.ts';
+import { ActionType } from '../action-types/index.ts';
+import bundle from '../../bundler/index.ts';
 
 export const bundlerMiddleware: Middleware =
   ({ getState, dispatch }) =>

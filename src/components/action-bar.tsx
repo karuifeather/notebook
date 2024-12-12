@@ -1,6 +1,6 @@
 import './action-bar.css';
 
-import { useActions } from '../hooks/use-actions';
+import { useActions } from '../hooks/use-actions.ts';
 
 interface ActionBarProps {
   id: string;

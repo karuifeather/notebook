@@ -1,7 +1,7 @@
-import { Middleware } from './middleware';
-import { ActionType } from '../action-types';
-import { UpdateCellAction } from '../actions';
-import { CellsState } from '../reducers/cellsReducers';
+import { Middleware } from './middleware.ts';
+import { ActionType } from '../action-types/index.ts';
+import { UpdateCellAction } from '../actions/index.ts';
+import { CellsState } from '../reducers/cellsReducers.ts';
 
 interface _MakeItCumulative<A, C> {
   (action: A, cells: C): string;

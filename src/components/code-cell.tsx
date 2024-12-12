@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 
 import './code-cell.css';
-import { useActions } from '../hooks/use-actions';
-import { useTypedSelector } from '../hooks/use-typed-selector';
-import CodeEditor from './code-editor';
-import Preview from './preview';
-import { Cell } from '../state';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
+
+import { useActions } from '../hooks/use-actions.ts';
+import { useTypedSelector } from '../hooks/use-typed-selector.ts';
+import CodeEditor from './code-editor.tsx';
+import Preview from './preview.tsx';
+import { Cell } from '../state/index.ts';
 
 interface CodeCellProps {
   cell: Cell;

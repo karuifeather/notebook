@@ -1,5 +1,5 @@
-import { ActionType } from '../action-types';
-import { CellTypes } from '../cell';
+import { ActionType } from '../action-types/index.ts';
+import { CellTypes } from '../cell.ts';
 
 export type Direction = 'up' | 'down';
 

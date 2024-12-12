@@ -1,7 +1,8 @@
 import produce, { Draft } from 'immer';
-import { ActionType } from '../action-types';
-import { Action } from '../actions';
-import { Cell } from '../cell';
+
+import { ActionType } from '../action-types/index.ts';
+import { Action } from '../actions/index.ts';
+import { Cell } from '../cell.ts';
 
 export interface CellsState {
   loading: boolean;
