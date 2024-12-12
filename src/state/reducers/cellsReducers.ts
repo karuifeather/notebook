@@ -1,5 +1,4 @@
-import produce, { Draft } from 'immer';
-
+import { produce, Draft } from 'immer';
 import { ActionType } from '../action-types/index.ts';
 import { Action } from '../actions/index.ts';
 import { Cell } from '../cell.ts';
@@ -26,17 +25,24 @@ const reducer = (
 ): CellsState => {
   return produce(state, (draft: Draft<CellsState>) => {
     switch (action.type) {
-      case ActionType.UPDATE_CELL:
+      case ActionType.UPDATE_CELL: {
         const { id, content } = action.payload;
-        draft.data[id].content = content;
-        return draft;
+        if (draft.data[id]) {
+          draft.data[id].content = content;
+        }
+        return;
+      }
 
-      case ActionType.DELETE_CELL:
-        delete draft.data[action.payload];
-        draft.order = draft.order.filter((id) => id !== action.payload);
-        return draft;
+      case ActionType.DELETE_CELL: {
+        const id = action.payload;
+        if (draft.data[id]) {
+          delete draft.data[id];
+          draft.order = draft.order.filter((orderId) => orderId !== id);
+        }
+        return;
+      }
 
-      case ActionType.INSERT_CELL_AFTER:
+      case ActionType.INSERT_CELL_AFTER: {
         const cell: Cell = {
           content: '',
           type: action.payload.type,
@@ -46,32 +52,40 @@ const reducer = (
         draft.data[cell.id] = cell;
 
         const foundIndex = draft.order.findIndex(
-          (id) => id === action.payload.id
+          (orderId) => orderId === action.payload.id
         );
 
-        if (foundIndex < 0) draft.order.unshift(cell.id);
-        else draft.order.splice(foundIndex + 1, 0, cell.id);
-        return draft;
+        if (foundIndex < 0) {
+          draft.order.unshift(cell.id);
+        } else {
+          draft.order.splice(foundIndex + 1, 0, cell.id);
+        }
+        return;
+      }
 
-      case ActionType.MOVE_CELL:
-        const { direction } = action.payload;
-
-        const index = draft.order.findIndex((id) => action.payload.id === id);
+      case ActionType.MOVE_CELL: {
+        const { id, direction } = action.payload;
+        const index = draft.order.findIndex((orderId) => orderId === id);
         const targetIndex = direction === 'up' ? index - 1 : index + 1;
 
-        if (targetIndex < 0 || targetIndex > draft.order.length - 1)
-          return draft;
+        if (index < 0 || targetIndex < 0 || targetIndex >= draft.order.length) {
+          return;
+        }
 
-        draft.order[index] = draft.order[targetIndex];
-        draft.order[targetIndex] = action.payload.id;
-        return draft;
+        // Swap positions
+        [draft.order[index], draft.order[targetIndex]] = [
+          draft.order[targetIndex],
+          draft.order[index],
+        ];
+        return;
+      }
 
       default:
-        return draft;
+        return;
     }
   });
 };
 
-const randomId = () => Math.random().toString(36).substr(2, 5);
+const randomId = (): string => Math.random().toString(36).substring(2, 7);
 
 export default reducer;

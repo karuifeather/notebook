@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
+    "@reduxjs/toolkit": "^2.5.0",
     "@tiptap/react": "^2.10.3",
     "@tiptap/starter-kit": "^2.10.3",
     "axios": "^1.7.9",
@@ -29,6 +30,7 @@
     "react-resizable-panels": "^2.1.7",
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
+    "reselect": "^5.1.1",
     "tiptap-markdown": "^0.8.10",
     "web-vitals": "^4.2.4"
   },
@@ -49,7 +51,6 @@
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.2",
     "globals": "^15.13.0",

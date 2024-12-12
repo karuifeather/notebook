@@ -1,4 +1,4 @@
-import produce, { Draft } from 'immer';
+import { produce, Draft } from 'immer';
 
 import { ActionType } from '../action-types/index.ts';
 import { Action } from '../actions/index.ts';

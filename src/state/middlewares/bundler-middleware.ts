@@ -3,7 +3,7 @@ import { ActionType } from '../action-types/index.ts';
 import bundle from '../../bundler/index.ts';
 
 export const bundlerMiddleware: Middleware =
-  ({ getState, dispatch }) =>
+  ({ dispatch }) =>
   (next) =>
   (action) => {
     next(action);

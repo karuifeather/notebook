@@ -21,7 +21,8 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
     extensions: [StarterKit, Markdown],
     content: cell.content || '# Click to edit',
     onUpdate: ({ editor }) => {
-      const markdownContent = editor.storage.markdown.getMarkdown();
+      // Transform editor content to Markdown on every update
+      const markdownContent = editor.storage.markdown?.getMarkdown?.() ?? '';
       updateCell(cell.id, markdownContent);
     },
     editable: editing,
@@ -65,7 +66,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
           className="card-content"
           onClick={() => setEditing(true)}
           dangerouslySetInnerHTML={{
-            __html: editor.storage.markdown.getHTML(),
+            __html: editor.getHTML(), // Use getHTML() to render the content
           }}
         />
       )}

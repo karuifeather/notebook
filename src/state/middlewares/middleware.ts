@@ -1,15 +1,9 @@
+import { Dispatch } from '@reduxjs/toolkit';
 import { RootState } from '../reducers/index.ts';
 import { Action } from '../actions/index.ts';
 
-interface MiddlewareAPI<S, A> {
-  getState(): S;
-  dispatch(action: A): void;
-}
-
-interface _Middleware<S, A> {
-  (
-    api: MiddlewareAPI<S, A>
-  ): (next: (action: A) => void) => (action: A) => void;
-}
-
-export type Middleware = _Middleware<RootState, Action>;
+// Define a middleware type that's compatible with Redux middleware
+export type Middleware = (api: {
+  getState: () => RootState;
+  dispatch: Dispatch<Action>;
+}) => (next: (action: Action) => void) => (action: Action) => void;
