@@ -14,7 +14,14 @@ const html = `
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <style>
-        body {  background-color: #dbdee0;}
+        body {
+          background-color: #dbdee0;
+          margin: 0;
+          font-family: Arial, sans-serif;
+        }
+        #root {
+          padding: 1rem;
+        }
       </style>
     </head>
     <body>
@@ -22,18 +29,18 @@ const html = `
       <script>
         const handleError = (error) => {
           const root = document.getElementById('root');
-          root.innerHTML = '<div style="color: red;"> <h4>Runtime Error</h4>' + error + '</div>';
-          throw error;
-        }
+          root.innerHTML = '<div style="color: red;"><h4>Runtime Error</h4>' + error + '</div>';
+          console.error(error);
+        };
 
         window.addEventListener('error', (errorEvent) => {
           errorEvent.preventDefault();
           handleError(errorEvent.error);
-        })
+        });
 
-        window.addEventListener('message', (e) => {
+        window.addEventListener('message', (event) => {
           try {
-            eval(e.data);
+            eval(event.data);
           } catch (error) {
             handleError(error);
           }
@@ -41,31 +48,39 @@ const html = `
       </script>
     </body>
   </html>
-  `;
+`;
 
 const Preview: React.FC<PreviewProps> = ({ code, error }) => {
-  const iframe = useRef<any>();
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
-    iframe.current.srcdoc = html;
+    if (iframeRef.current) {
+      iframeRef.current.srcdoc = html;
 
-    setTimeout(() => {
-      iframe.current.contentWindow.postMessage(code, '*');
-    }, 50);
+      // Wait for the iframe to load before sending the code
+      setTimeout(() => {
+        iframeRef.current?.contentWindow?.postMessage(code, '*');
+      }, 50);
+    }
   }, [code]);
 
   return (
     <div className="preview-wrapper">
       <iframe
-        title="this is where miracle happens"
-        ref={iframe}
+        title="Preview Output"
+        ref={iframeRef}
         srcDoc={html}
         sandbox="allow-scripts"
+        style={{
+          border: '1px solid #ccc',
+          width: '100%',
+          height: '100%',
+        }}
       />
       {error && (
         <div className="preview-error">
           <h4>Build Error</h4>
-          {error}
+          <pre style={{ color: 'red', whiteSpace: 'pre-wrap' }}>{error}</pre>
         </div>
       )}
     </div>

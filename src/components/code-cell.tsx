@@ -5,8 +5,8 @@ import { useActions } from '../hooks/use-actions';
 import { useTypedSelector } from '../hooks/use-typed-selector';
 import CodeEditor from './code-editor';
 import Preview from './preview';
-import Resizable from './resizable';
 import { Cell } from '../state';
+import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 
 interface CodeCellProps {
   cell: Cell;
@@ -18,17 +18,26 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
 
   useEffect(() => {
     bundleIt(cell.id, cell.content);
-  }, []);
+  }, [bundleIt, cell.id, cell.content]);
 
   return (
-    <Resizable direction="y">
-      <div className="main-wrapper">
-        <Resizable direction="x">
-          <CodeEditor
-            defaultValue={cell.content || '//type your code here'}
-            onChange={(value) => updateCell(cell.id, value)}
-          />
-        </Resizable>
+    <PanelGroup direction="vertical">
+      {/* First panel for the editor */}
+      <Panel>
+        <PanelGroup direction="horizontal">
+          {/* Code editor with horizontal resizing */}
+          <Panel>
+            <CodeEditor
+              defaultValue={cell.content || '//type your code here'}
+              onChange={(value) => updateCell(cell.id, value)}
+            />
+          </Panel>
+          <PanelResizeHandle />
+        </PanelGroup>
+      </Panel>
+      <PanelResizeHandle />
+      {/* Second panel for the preview */}
+      <Panel>
         <div className="progress-wrapper">
           {!bundle || bundle.loading ? (
             <div className="progress-cover">
@@ -40,8 +49,8 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
             <Preview code={bundle.code} error={bundle.error} />
           )}
         </div>
-      </div>
-    </Resizable>
+      </Panel>
+    </PanelGroup>
   );
 };
 

@@ -1,20 +1,25 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true, // Avoid checking type definitions of external modules
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": true, // Enable strict type checking
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "Node16",
+    "moduleResolution": "node16", // Modern module resolution for Prettier plugins, etc.
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx", // React 17+ JSX transform
+    "types": ["node"],
+    "baseUrl": "./", // Optional: Enables absolute imports relative to the root
+    "paths": {
+      "@/*": ["src/*"] // Optional: Custom import alias for `src/`
+    }
   },
   "include": ["src"]
 }
