@@ -10,10 +10,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import Typography from '@tiptap/extension-typography';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
-import Paragraph from '@tiptap/extension-paragraph';
 import TextStyle from '@tiptap/extension-text-style';
-import Document from '@tiptap/extension-document';
-import Text from '@tiptap/extension-text';
 
 import './text-editor.css';
 
@@ -39,9 +36,6 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
       Highlight,
       Typography,
       Underline,
-      Document,
-      Paragraph,
-      Text,
       TextStyle,
       Color,
     ],
