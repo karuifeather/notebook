@@ -1,23 +1,9 @@
 import ReactDOM from 'react-dom/client';
-import { Provider } from 'react-redux';
+import { App } from './app.tsx';
 
-import { store } from '@/state/index.ts';
-import CellList from '@/components/cell-list/cell-list.tsx';
-
-import './style.scss';
-
-const App = () => {
-  return (
-    <Provider store={store}>
-      <div>
-        <CellList />
-      </div>
-    </Provider>
-  );
-};
-
-// Use React 18's `createRoot` API
 const rootElement = document.getElementById('root');
+
 if (!rootElement) throw new Error('Root element not found');
 const root = ReactDOM.createRoot(rootElement);
+
 root.render(<App />);
