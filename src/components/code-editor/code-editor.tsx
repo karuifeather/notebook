@@ -1,8 +1,9 @@
 import { useRef } from 'react';
 import * as monaco from 'monaco-editor';
-import { Editor, OnChange, OnMount, useMonaco } from '@monaco-editor/react';
-import prettier from 'prettier';
-import parserBabel from 'prettier/parser-babel';
+import { Editor, OnMount } from '@monaco-editor/react';
+import * as prettier from 'prettier/standalone.mjs';
+import parserBabel from 'prettier/plugins/babel.mjs';
+import * as prettierPluginEstree from 'prettier/plugins/estree.mjs';
 
 import './code-editor.css';
 
@@ -12,55 +13,35 @@ interface MonacoEditorProps {
 }
 
 const MonacoEditor = ({ defaultValue, onChange }: MonacoEditorProps) => {
-  // Use a strongly typed ref for Monaco editor
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null); // Explicitly allow null
 
-  // Access Monaco instance for additional customizations if needed
-  const monacoInstance = useMonaco();
-
-  // Handle editor mounting
-  const handleOnMount: OnMount = (editor, monaco) => {
-    editorRef.current = editor;
-
-    // Optional: Customize Monaco editor here
-    if (monacoInstance) {
-      monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-        noSemanticValidation: true,
-        noSyntaxValidation: false,
-      });
-    }
+  const handleOnMount: OnMount = (editor) => {
+    editorRef.current = editor; // Assign the editor instance to the ref
   };
 
-  // Handle editor changes
-  const handleOnChange: OnChange = (value) => {
-    if (value) {
-      onChange(value);
-    } else {
-      onChange('');
-    }
-  };
-
-  // Format code using Prettier
   const onFormatClick = async () => {
     if (editorRef.current) {
       const unformattedCode = editorRef.current.getValue() || '';
 
       try {
-        const formattedCode = (
-          await prettier.format(unformattedCode, {
-            parser: 'babel',
-            plugins: [parserBabel],
-            singleQuote: true,
-            jsxSingleQuote: true,
-            tabWidth: 4,
-            semi: true,
-          })
-        ).replace(/\n$/, '');
+        // Format code with Prettier
+        const formattedCode = await prettier.format(unformattedCode, {
+          parser: 'babel',
+          // @ts-ignore
+          plugins: [parserBabel, prettierPluginEstree],
+          singleQuote: true,
+          jsxSingleQuote: true,
+          tabWidth: 4,
+          semi: true,
+        });
 
+        // Update editor content with formatted code
         editorRef.current.setValue(formattedCode);
       } catch (error) {
         console.error('Error formatting code:', error);
       }
+    } else {
+      console.warn('Editor is not initialized.');
     }
   };
 
@@ -74,7 +55,7 @@ const MonacoEditor = ({ defaultValue, onChange }: MonacoEditorProps) => {
       </button>
       <Editor
         onMount={handleOnMount}
-        onChange={handleOnChange}
+        onChange={(value) => onChange(value || '')}
         height="100%"
         width="100%"
         defaultLanguage="javascript"
@@ -83,16 +64,10 @@ const MonacoEditor = ({ defaultValue, onChange }: MonacoEditorProps) => {
         options={{
           lineNumbers: 'on',
           cursorBlinking: 'smooth',
-          cursorStyle: 'block',
           scrollBeyondLastLine: false,
           wordWrap: 'on',
-          wrappingIndent: 'same',
           fontSize: 16,
           minimap: { enabled: false },
-          folding: true,
-          lineNumbersMinChars: 3,
-          renderWhitespace: 'boundary',
-          renderControlCharacters: true,
         }}
       />
     </div>
