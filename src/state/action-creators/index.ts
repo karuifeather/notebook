@@ -1,4 +1,4 @@
-import { ActionType } from '../action-types';
+import { ActionType } from '../action-types/index.ts';
 import {
   UpdateCellAction,
   MoveCellAction,
@@ -6,8 +6,8 @@ import {
   InsertCellAfterAction,
   Direction,
   BundleItAction,
-} from '../actions';
-import { CellTypes } from '../cell';
+} from '../actions/index.ts';
+import { CellTypes } from '../cell.ts';
 
 export const updateCell = (id: string, content: string): UpdateCellAction => {
   return {

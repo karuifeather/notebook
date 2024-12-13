@@ -1,6 +1,7 @@
-import produce, { Draft } from 'immer';
-import { ActionType } from '../action-types';
-import { Action } from '../actions';
+import { produce, Draft } from 'immer';
+
+import { ActionType } from '../action-types/index.ts';
+import { Action } from '../actions/index.ts';
 
 interface BundlesState {
   [key: string]:

@@ -1,0 +1,33 @@
+.preview-wrapper {
+  position: relative;
+  height: 100%;
+  flex-grow: 1;
+  background-color: #dbdee0;
+}
+
+.preview-wrapper iframe {
+  height: 100%;
+  width: 100%;
+  background-color: #dbdee0;
+}
+
+.preview-error {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  padding: 1.4rem;
+  color: red;
+  font-size: 1.2rem;
+}
+
+.react-draggable-transparent-selection .preview-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  opacity: 0;
+}

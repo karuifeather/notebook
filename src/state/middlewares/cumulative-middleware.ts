@@ -1,7 +1,7 @@
-import { Middleware } from './middleware';
-import { ActionType } from '../action-types';
-import { UpdateCellAction } from '../actions';
-import { CellsState } from '../reducers/cellsReducers';
+import { Middleware } from './middleware.ts';
+import { ActionType } from '../action-types/index.ts';
+import { UpdateCellAction } from '../actions/index.ts';
+import { CellsState } from '../reducers/cellsReducers.ts';
 
 interface _MakeItCumulative<A, C> {
   (action: A, cells: C): string;
@@ -59,29 +59,29 @@ const makeItCumulative: MakeItCumulative = (
 };
 
 let timer: NodeJS.Timeout;
-export const cumulativeMiddleware: Middleware = ({ getState, dispatch }) => (
-  next
-) => (action) => {
-  next(action);
+export const cumulativeMiddleware: Middleware =
+  ({ getState, dispatch }) =>
+  (next) =>
+  (action) => {
+    next(action);
 
-  if (action.type !== ActionType.UPDATE_CELL) return;
+    if (action.type !== ActionType.UPDATE_CELL) return;
 
-  const { cells } = getState();
-  const cell = cells.data[action.payload.id];
+    const { cells } = getState();
+    const cell = cells.data[action.payload.id];
 
-  if (cell.type !== 'code') return;
+    if (cell.type !== 'code') return;
 
-  clearTimeout(timer);
-  timer = setTimeout(async () => {
-    const cumulativeCode = makeItCumulative(action, cells);
-    console.log(cumulativeCode);
+    clearTimeout(timer);
+    timer = setTimeout(async () => {
+      const cumulativeCode = makeItCumulative(action, cells);
 
-    dispatch({
-      type: ActionType.BUNDLE_IT,
-      payload: {
-        cellId: cell.id,
-        rawCode: cumulativeCode,
-      },
-    });
-  }, 1200);
-};
+      dispatch({
+        type: ActionType.BUNDLE_IT,
+        payload: {
+          cellId: cell.id,
+          rawCode: cumulativeCode,
+        },
+      });
+    }, 1200);
+  };
