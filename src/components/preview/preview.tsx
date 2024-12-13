@@ -70,7 +70,7 @@ const Preview: React.FC<PreviewProps> = ({ code, error }) => {
         title="Preview Output"
         ref={iframeRef}
         srcDoc={html}
-        sandbox="allow-scripts allow-modals"
+        sandbox="allow-scripts"
         style={{
           border: '1px solid #ccc',
           width: '100%',
