@@ -1,0 +1,12 @@
+a.button {
+  &.cta {
+    @apply text-white !important; // override default a styles; see src/styles.scss
+  }
+  text-decoration: none;
+  color: inherit;
+  &:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+  transition: none;
+}
