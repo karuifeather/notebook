@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Reset & Overrides */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-gray-800 font-sans antialiased;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-gray-900 text-gray-200;
+  }
+
+  a {
+    @apply text-blue-400 hover:text-blue-500;
+  }
+
+  button {
+    @apply bg-blue-700 text-white;
+  }
+
+  button:hover {
+    @apply bg-blue-800;
+  }
+
+  code {
+    @apply bg-gray-800 text-gray-100;
+  }
+
+  pre {
+    @apply bg-gray-800 text-gray-100;
+  }
+}
+
+/* Default Light Mode */
+a {
+  @apply text-blue-600 hover:underline transition-colors;
+}
+
+button {
+  @apply px-4 py-2 rounded bg-blue-500 text-white font-medium transition-all;
+}
+
+button:hover {
+  @apply bg-blue-600;
+}
+
+code {
+  @apply font-mono text-sm bg-gray-200 px-1 py-0.5 rounded;
+}
+
+pre {
+  @apply bg-gray-100 p-4 rounded shadow overflow-auto text-sm font-mono;
+}
