@@ -1,25 +1,20 @@
-.main-wrapper {
-  display: flex;
-  height: 100%;
-  overflow: hidden;
+.code-cell {
+  min-height: 30rem !important;
+  height: max-content;
 }
 
 .progress-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
   height: 100%;
 }
 
 .progress-cover {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   height: 100%;
 }
 
-.resize-handle {
-  width: 5px;
-  cursor: ew-resize;
-  background-color: #ddd;
+.progress {
+  width: 50%;
 }

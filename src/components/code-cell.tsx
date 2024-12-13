@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-
-import './code-cell.css';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 
 import { useActions } from '../hooks/use-actions.ts';
@@ -8,6 +6,7 @@ import { useTypedSelector } from '../hooks/use-typed-selector.ts';
 import CodeEditor from './code-editor.tsx';
 import Preview from './preview.tsx';
 import { Cell } from '../state/index.ts';
+import './code-cell.css';
 
 interface CodeCellProps {
   cell: Cell;
@@ -19,23 +18,18 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
 
   useEffect(() => {
     bundleIt(cell.id, cell.content);
-  }, [bundleIt, cell.id, cell.content]);
+  }, []);
 
   return (
-    <PanelGroup direction="vertical">
+    <PanelGroup className="code-cell" direction="horizontal">
       {/* First panel for the editor */}
       <Panel>
-        <PanelGroup direction="horizontal">
-          {/* Code editor with horizontal resizing */}
-          <Panel>
-            <CodeEditor
-              defaultValue={cell.content || '//type your code here'}
-              onChange={(value) => updateCell(cell.id, value)}
-            />
-          </Panel>
-          <PanelResizeHandle />
-        </PanelGroup>
+        <CodeEditor
+          defaultValue={cell.content || 'print("Hello, World!")'}
+          onChange={(value) => updateCell(cell.id, value)}
+        />
       </Panel>
+
       <PanelResizeHandle />
       {/* Second panel for the preview */}
       <Panel>
