@@ -3,8 +3,8 @@ import 'bulmaswatch/darkly/bulmaswatch.min.css';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
-import { store } from './state/index.ts';
-import CellList from './components/cell-list.tsx';
+import { store } from '@/state/index.ts';
+import CellList from '@/components/cell-list/cell-list.tsx';
 
 const App = () => {
   return (

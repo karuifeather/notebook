@@ -1,4 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { Cell } from '@/state/index.ts';
+import { useActions } from '@/hooks/use-actions.ts';
+import { BubbleMenuBar } from '@/components/bubble-menu/bubble-menu.tsx';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Color from '@tiptap/extension-color';
@@ -6,23 +9,19 @@ import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
 import Typography from '@tiptap/extension-typography';
 import Underline from '@tiptap/extension-underline';
-import { Cell } from '../state/index.ts';
-import { useActions } from '../hooks/use-actions.ts';
-
-import './text-editor.css';
-import { BubbleMenuBar } from './bubble-menu/bubble-menu.tsx';
 import Placeholder from '@tiptap/extension-placeholder';
 import Paragraph from '@tiptap/extension-paragraph';
 import TextStyle from '@tiptap/extension-text-style';
 import Document from '@tiptap/extension-document';
 import Text from '@tiptap/extension-text';
 
+import './text-editor.css';
+
 interface TextEditorProps {
   cell: Cell;
 }
 
 const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
-  const ref = useRef<HTMLDivElement | null>(null);
   const { updateCell } = useActions();
   const throttlingRef = useRef(false); // To manage the throttling state
   const timerRef = useRef<number | null>(null); // To store the timeout reference

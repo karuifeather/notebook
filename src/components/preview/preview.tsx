@@ -15,12 +15,12 @@ const html = `
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <style>
         body {
-          background-color: #dbdee0;
+          background-color:#eaeaea;
           margin: 0;
           font-family: Arial, sans-serif;
         }
         #root {
-          padding: 1rem;
+          padding: 10px;
         }
       </style>
     </head>
@@ -70,7 +70,7 @@ const Preview: React.FC<PreviewProps> = ({ code, error }) => {
         title="Preview Output"
         ref={iframeRef}
         srcDoc={html}
-        sandbox="allow-scripts"
+        sandbox="allow-scripts allow-modals"
         style={{
           border: '1px solid #ccc',
           width: '100%',

@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 
-import { useActions } from '../hooks/use-actions.ts';
-import { useTypedSelector } from '../hooks/use-typed-selector.ts';
-import CodeEditor from './code-editor.tsx';
-import Preview from './preview.tsx';
-import { Cell } from '../state/index.ts';
-import { makeSelectBundleById } from '../state/selectors/index.ts';
+import { useActions } from '@/hooks/use-actions.ts';
+import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
+import CodeEditor from '@/components/code-editor/code-editor.tsx';
+import Preview from '@/components/preview/preview.tsx';
+import { Cell } from '@/state/index.ts';
+import { makeSelectBundleById } from '@/state/selectors/index.ts';
 import './code-cell.css';
 
 interface CodeCellProps {
@@ -22,7 +22,6 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const starterCode = 'print("Hello, World!")';
 
   useEffect(() => {
-    console.log('Bundling', cell.id);
     bundleIt(cell.id, starterCode);
   }, []);
 

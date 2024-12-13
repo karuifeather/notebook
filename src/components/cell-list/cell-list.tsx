@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 
-import { useTypedSelector } from '../hooks/use-typed-selector.ts';
-import CellListItem from './cell-list-item.tsx';
-import AddCell from './add-cell.tsx';
+import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
+import CellListItem from '@/components/cell-list-item/cell-list-item.tsx';
+import AddCell from '@/components/add-cell/add-cell.tsx';
+import { selectCells } from '@/state/selectors/index.ts';
 
 import './cell-list.css';
-import { selectCells } from '@/state/selectors/index.ts';
 
 const CellList: React.FC = () => {
   const cells = useTypedSelector(selectCells);

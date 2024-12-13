@@ -1,4 +1,4 @@
-import { applyMiddleware, compose, Middleware } from 'redux';
+import { compose, Middleware } from 'redux';
 import { thunk } from 'redux-thunk';
 import { configureStore } from '@reduxjs/toolkit'; // Preferred over createStore
 import reducers from './reducers/index.ts';
@@ -11,9 +11,6 @@ declare global {
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
   }
 }
-
-// Enable Redux DevTools extension if available
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 // Define middlewares array
 const middlewares: Middleware[] = [

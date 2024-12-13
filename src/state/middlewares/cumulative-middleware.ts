@@ -75,7 +75,6 @@ export const cumulativeMiddleware: Middleware =
     clearTimeout(timer);
     timer = setTimeout(async () => {
       const cumulativeCode = makeItCumulative(action, cells);
-      console.log(cumulativeCode);
 
       dispatch({
         type: ActionType.BUNDLE_IT,
