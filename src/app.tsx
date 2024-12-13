@@ -8,6 +8,7 @@ import CellList from '@/components/cell-list/cell-list.tsx';
 import './style.scss';
 import { useDarkMode } from './hooks/use-dark-mode.ts';
 import { useEffect } from 'react';
+import Header from './components/header/header.tsx';
 
 export const App = () => {
   const isDarkMode = useDarkMode();
@@ -24,10 +25,7 @@ export const App = () => {
     <Provider store={store}>
       <Router>
         <div>
-          <nav>
-            <a href="/">Home</a> | <a href="/cells">Cells</a> |{' '}
-            <a href="/about">About</a>
-          </nav>
+          <Header />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/cells" element={<CellList />} />
