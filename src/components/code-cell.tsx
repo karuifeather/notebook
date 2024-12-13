@@ -6,18 +6,24 @@ import { useTypedSelector } from '../hooks/use-typed-selector.ts';
 import CodeEditor from './code-editor.tsx';
 import Preview from './preview.tsx';
 import { Cell } from '../state/index.ts';
+import { makeSelectBundleById } from '../state/selectors/index.ts';
 import './code-cell.css';
 
 interface CodeCellProps {
   cell: Cell;
 }
 
+const selectBundle = makeSelectBundleById();
+
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const { updateCell, bundleIt } = useActions();
-  const bundle = useTypedSelector(({ bundles }) => bundles[cell.id]);
+  const bundle = useTypedSelector((state) => selectBundle(state, cell.id));
+
+  const starterCode = 'print("Hello, World!")';
 
   useEffect(() => {
-    bundleIt(cell.id, cell.content);
+    console.log('Bundling', cell.id);
+    bundleIt(cell.id, starterCode);
   }, []);
 
   return (
@@ -25,7 +31,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
       {/* First panel for the editor */}
       <Panel>
         <CodeEditor
-          defaultValue={cell.content || 'print("Hello, World!")'}
+          defaultValue={cell.content || starterCode}
           onChange={(value) => updateCell(cell.id, value)}
         />
       </Panel>
@@ -41,7 +47,10 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
               </progress>
             </div>
           ) : (
-            <Preview code={bundle.code} error={bundle.error} />
+            <Preview
+              code={bundle.code as string}
+              error={bundle.error as string}
+            />
           )}
         </div>
       </Panel>
