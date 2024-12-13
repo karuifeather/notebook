@@ -24,6 +24,8 @@ interface TextEditorProps {
 const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const { updateCell } = useActions();
+  const throttlingRef = useRef(false); // To manage the throttling state
+  const timerRef = useRef<number | null>(null); // To store the timeout reference
 
   // Initialize TipTap Editor
   const editor = useEditor({
@@ -46,16 +48,30 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
     ],
     content: cell.content || '*Click to edit*',
     onUpdate: ({ editor }) => {
-      const htmlContent = editor.getHTML(); // Fetch the editor's current HTML content
-      updateCell(cell.id, htmlContent); // Update the state with editor's content
+      if (!throttlingRef.current) {
+        // Save content immediately on first call
+        const htmlContent = editor.getHTML();
+        updateCell(cell.id, htmlContent);
+
+        // Start throttling
+        throttlingRef.current = true;
+
+        // Reset throttling state after 500ms
+        timerRef.current = window.setTimeout(() => {
+          throttlingRef.current = false;
+        }, 500);
+      }
     },
   });
 
   useEffect(() => {
-    if (editor) {
-      editor.commands.setContent(cell.content || '');
-    }
-  }, [cell.content, editor]);
+    return () => {
+      // Cleanup timeout on unmount
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   if (!editor) {
     return <div>Loading...</div>;
