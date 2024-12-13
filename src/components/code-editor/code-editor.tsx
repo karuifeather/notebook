@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as monaco from 'monaco-editor';
 import { Editor, OnMount } from '@monaco-editor/react';
 import * as prettier from 'prettier/standalone.mjs';
@@ -13,7 +13,8 @@ interface MonacoEditorProps {
 }
 
 const MonacoEditor = ({ defaultValue, onChange }: MonacoEditorProps) => {
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null); // Explicitly allow null
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const [theme, setTheme] = useState('vs-dark');
 
   const handleOnMount: OnMount = (editor) => {
     editorRef.current = editor; // Assign the editor instance to the ref
@@ -45,6 +46,22 @@ const MonacoEditor = ({ defaultValue, onChange }: MonacoEditorProps) => {
     }
   };
 
+  useEffect(() => {
+    // Detect user's preferred color scheme
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    setTheme(prefersDark.matches ? 'vs-dark' : 'vs-light');
+
+    const handleChange = (e) => {
+      setTheme(e.matches ? 'vs-dark' : 'vs-light');
+    };
+
+    prefersDark.addEventListener('change', handleChange);
+
+    return () => {
+      prefersDark.removeEventListener('change', handleChange);
+    };
+  }, []);
+
   return (
     <div className="editor-wrapper">
       <button
@@ -60,13 +77,13 @@ const MonacoEditor = ({ defaultValue, onChange }: MonacoEditorProps) => {
         width="100%"
         defaultLanguage="javascript"
         defaultValue={defaultValue}
-        theme="vs-dark"
+        theme={theme}
         options={{
-          lineNumbers: 'on',
+          lineNumbers: 'relative',
           cursorBlinking: 'smooth',
           scrollBeyondLastLine: false,
           wordWrap: 'on',
-          fontSize: 16,
+          fontSize: 18,
           minimap: { enabled: false },
         }}
       />
