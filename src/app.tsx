@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import { store } from '@/state/index.ts';
-import Home from '@/pages/home.tsx';
+import Home from '@/pages/home/home.tsx';
 import CellList from '@/components/cell-list/cell-list.tsx';
 
 import './style.scss';
