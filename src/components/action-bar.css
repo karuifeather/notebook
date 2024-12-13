@@ -3,6 +3,8 @@
   top: 0;
   right: 0;
   z-index: 10;
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
 .action-bar button {

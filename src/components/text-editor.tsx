@@ -1,11 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { Markdown } from 'tiptap-markdown';
-
-import './text-editor.css';
+import Color from '@tiptap/extension-color';
+import Highlight from '@tiptap/extension-highlight';
+import TextAlign from '@tiptap/extension-text-align';
+import Typography from '@tiptap/extension-typography';
+import Underline from '@tiptap/extension-underline';
 import { Cell } from '../state/index.ts';
 import { useActions } from '../hooks/use-actions.ts';
+
+import './text-editor.css';
+import { BubbleMenuBar } from './bubble-menu/bubble-menu.tsx';
+import Placeholder from '@tiptap/extension-placeholder';
+import Paragraph from '@tiptap/extension-paragraph';
+import TextStyle from '@tiptap/extension-text-style';
+import Document from '@tiptap/extension-document';
+import Text from '@tiptap/extension-text';
 
 interface TextEditorProps {
   cell: Cell;
@@ -13,43 +23,37 @@ interface TextEditorProps {
 
 const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [editing, setEditing] = useState(false);
   const { updateCell } = useActions();
 
-  // Initialize TipTap editor with Markdown extension
+  // Initialize TipTap Editor
   const editor = useEditor({
-    extensions: [StarterKit, Markdown],
-    content: cell.content || '# Click to edit',
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: 'Start typing here...', // Customize placeholder text
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'], // Enable text alignment for headings and paragraphs
+      }),
+      Highlight,
+      Typography,
+      Underline,
+      Document,
+      Paragraph,
+      Text,
+      TextStyle,
+      Color,
+    ],
+    content: cell.content || '*Click to edit*',
     onUpdate: ({ editor }) => {
-      // Transform editor content to Markdown on every update
-      const markdownContent = editor.storage.markdown?.getMarkdown?.() ?? '';
-      updateCell(cell.id, markdownContent);
+      const htmlContent = editor.getHTML(); // Fetch the editor's current HTML content
+      updateCell(cell.id, htmlContent); // Update the state with editor's content
     },
-    editable: editing,
   });
 
   useEffect(() => {
-    const listener = (event: MouseEvent) => {
-      if (
-        ref.current &&
-        event.target instanceof Node &&
-        ref.current.contains(event.target)
-      ) {
-        return;
-      }
-      setEditing(false);
-    };
-
-    document.addEventListener('click', listener, { capture: true });
-
-    return () => {
-      document.removeEventListener('click', listener, { capture: true });
-    };
-  }, []);
-
-  useEffect(() => {
     if (editor) {
-      editor.commands.setContent(cell.content || '# Click to edit');
+      editor.commands.setContent(cell.content || '');
     }
   }, [cell.content, editor]);
 
@@ -58,19 +62,11 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
   }
 
   return (
-    <div ref={ref} className="text-editor">
-      {editing ? (
-        <EditorContent editor={editor} />
-      ) : (
-        <div
-          className="card-content"
-          onClick={() => setEditing(true)}
-          dangerouslySetInnerHTML={{
-            __html: editor.getHTML(), // Use getHTML() to render the content
-          }}
-        />
-      )}
-    </div>
+    <>
+      {editor && <BubbleMenuBar editor={editor} />}
+
+      <EditorContent editor={editor} />
+    </>
   );
 };
 

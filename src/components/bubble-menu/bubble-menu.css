@@ -1,0 +1,118 @@
+/* Bubble menu styles */
+.bubble-menu {
+  display: flex;
+  gap: 0.5rem; /* Add spacing between buttons */
+  padding: 0.6rem 1rem;
+  border-radius: var(--border-radius);
+  background-color: var(--menu-light);
+  box-shadow: var(--menu-shadow);
+  align-items: center;
+  min-width: min-content;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bubble-menu {
+    background-color: var(--menu-dark);
+  }
+}
+
+/* Button styles */
+.bubble-menu button {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1.2rem; /* Increased icon size for better visibility */
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+@media (prefers-color-scheme: dark) {
+  .bubble-menu button {
+    color: var(--text-dark);
+  }
+}
+
+/* Hover effect */
+.bubble-menu button:hover {
+  background-color: var(--border-light);
+  color: var(--active-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .bubble-menu button:hover {
+    background-color: var(--border-dark);
+    color: var(--active-dark);
+  }
+}
+
+/* Active button styles */
+.bubble-menu button.is-active {
+  background-color: var(--active-light);
+  color: #ffffff;
+  font-weight: bold;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bubble-menu button.is-active {
+    background-color: var(--active-dark);
+    color: #ffffff;
+  }
+}
+
+/* Color Picker */
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Space between the button and input */
+}
+
+.color-picker-btn {
+  background: none;
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius);
+  padding: 0.5rem;
+  cursor: pointer;
+  transition:
+    background-color var(--transition),
+    border-color var(--transition);
+}
+
+.color-picker-btn:hover {
+  background-color: var(--menu-light);
+  border-color: var(--active-light);
+}
+
+.color-picker-btn.is-active {
+  background-color: var(--active-light);
+  color: white;
+}
+
+.color-picker-input {
+  border: none;
+  background: none;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  cursor: pointer;
+  appearance: none; /* Remove default browser styles */
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.color-picker-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.color-picker-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker-input:hover {
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
