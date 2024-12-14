@@ -44,9 +44,9 @@ const reducer = (
 
       case ActionType.INSERT_CELL_AFTER: {
         const cell: Cell = {
-          content: '',
           type: action.payload.type,
           id: randomId(),
+          content: action.payload.content || '',
         };
 
         draft.data[cell.id] = cell;
