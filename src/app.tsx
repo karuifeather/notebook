@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import Header from './components/header/header.tsx';
 import Footer from './components/footer/footer.tsx';
 import NotFound from './components/not-found/not-found.tsx';
+import TryNow from './pages/try-now/try-now.tsx';
 
 export const App = () => {
   const isDarkMode = useDarkMode();
@@ -30,7 +31,7 @@ export const App = () => {
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/try-now" element={<CellList />} />
+            <Route path="/try-now" element={<TryNow />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
