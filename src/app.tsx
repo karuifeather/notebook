@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 
 import { store } from '@/state/index.ts';
 import Home from '@/pages/home/home.tsx';
-import CellList from '@/components/cell-list/cell-list.tsx';
 
 import './style.scss';
 import { useDarkMode } from './hooks/use-dark-mode.ts';
