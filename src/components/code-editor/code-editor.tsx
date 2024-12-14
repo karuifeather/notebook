@@ -3,6 +3,7 @@ import * as monaco from 'monaco-editor';
 import { Editor, OnMount } from '@monaco-editor/react';
 import * as prettier from 'prettier/standalone.mjs';
 import parserBabel from 'prettier/plugins/babel.mjs';
+import parserTypescript from 'prettier/plugins/typescript.mjs';
 import * as prettierPluginEstree from 'prettier/plugins/estree.mjs';
 
 import './code-editor.css';
@@ -29,8 +30,8 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
 
     // Enable JavaScript diagnostics (error detection)
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: false, // Enable semantic errors
-      noSyntaxValidation: false, // Enable syntax errors
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
     });
 
     // Configure JavaScript language features
@@ -38,10 +39,15 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
       target: monaco.languages.typescript.ScriptTarget.ESNext, // Modern JavaScript
       allowNonTsExtensions: true, // Allow non-TypeScript files
       noEmit: true, // Prevent output files
+      jsx: monaco.languages.typescript.JsxEmit.React, // Enable JSX
+      jsxFactory: 'JSXAlone.createElement', // React JSX factory function
+      typeRoots: ['node_modules/@types'],
     });
 
     // Add extra libraries for better IntelliSense (optional)
     monaco.languages.typescript.javascriptDefaults.addExtraLib(`
+       declare const React: any;
+      declare const ReactDOM: any;
       declare const window: any;
       declare const document: any;
       declare const console: any;
@@ -61,7 +67,7 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
         // Format code with Prettier
         const formattedCode = await prettier.format(unformattedCode, {
           parser: 'babel',
-          plugins: [parserBabel, prettierPluginEstree],
+          plugins: [parserBabel, prettierPluginEstree, parserTypescript],
           singleQuote: true,
           jsxSingleQuote: true,
           tabWidth: 2,

@@ -12,6 +12,8 @@ const html = `
       <meta charset="UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <!-- Load Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
       <style>
         * {
           margin: 0;
@@ -25,7 +27,6 @@ const html = `
           font-family: Arial, sans-serif;
         }
         #root {
-          padding: 10px;
           white-space: pre-wrap;
           overflow-y: auto;
           color: #333;

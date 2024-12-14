@@ -25,7 +25,7 @@ const makeItCumulative: MakeItCumulative = (
 
   const print = (value) => {
     const $$printContainer = document.createElement('div'); // Create a container for each print call
-    $$printContainer.style.margin = '1rem';
+    $$printContainer.style.margin = '.2rem';
     rootElement.appendChild($$printContainer); // Append the container to the #root
 
     // Check the type of the value being printed
