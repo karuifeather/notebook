@@ -4,6 +4,7 @@ import FeaturesSection from './components/features.tsx';
 import HowItWorks from './components/how-it-works.tsx';
 import 'aos/dist/aos.css';
 import AOS from 'aos';
+import FAQSection from './components/faq.tsx';
 
 const Home: React.FC = () => {
   useEffect(() => {
@@ -15,6 +16,7 @@ const Home: React.FC = () => {
       <HeroSection />
       <FeaturesSection />
       <HowItWorks />
+      <FAQSection />
     </div>
   );
 };
