@@ -52,33 +52,33 @@ const html = `
               border-radius: 8px;
               font-family: Arial, sans-serif;
             ">
-              <h4 style="
-                display: inline-block;
-                font-size: 18px;
-                color: #b71c1c;
-                font-weight: bold;
-              ">
-                Runtime Error
-              </h4>
-              <pre style="
-                white-space: pre-wrap;
-                word-break: break-word;
-                font-family: 'Courier New', Courier, monospace;
-                font-size: 14px;
-                color: #d32f2f;
-              ">
-                \${error.message}
-              </pre>
-              <pre style="
-                margin: 0;
-                white-space: pre-wrap;
-                word-break: break-word;
-                font-family: 'Courier New', Courier, monospace;
-                font-size: 12px;
-                color: #8e8e8e;
-              ">
-                \${error.stack || ''}
-              </pre>
+<h4 style="
+display: inline-block;
+font-size: 18px;
+color: #b71c1c;
+font-weight: bold;
+">
+Runtime Error
+</h4>
+<pre style="
+white-space: pre-wrap;
+word-break: break-word;
+font-family: 'Courier New', Courier, monospace;
+font-size: 14px;
+color: #d32f2f;
+">
+\${error.message}
+</pre>
+<pre style="
+margin: 0;
+white-space: pre-wrap;
+word-break: break-word;
+font-family: 'Courier New', Courier, monospace;
+font-size: 12px;
+color: #8e8e8e;
+">
+\${error.stack || ''}
+</pre>
             </div>
           \`;
           document.getElementById('root').innerHTML = errorMessage;
