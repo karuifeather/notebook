@@ -1,7 +1,7 @@
-import HeroSection from '@/pages/home/hero/hero.tsx';
+import HeroSection from '@/pages/home/components/hero.tsx';
 import React, { useEffect } from 'react';
-import FeaturesSection from './features/features.tsx';
-import HowItWorks from './how-it-works/how-it-works.tsx';
+import FeaturesSection from './components/features.tsx';
+import HowItWorks from './components/how-it-works.tsx';
 import 'aos/dist/aos.css';
 import AOS from 'aos';
 
