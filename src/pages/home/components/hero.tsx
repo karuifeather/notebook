@@ -30,7 +30,7 @@ export default function HeroSection() {
       {/* Decorative Graphic */}
       <div className="mt-12">
         <img
-          src="/editor.png" // Replace with the actual path to your graphic
+          src="/images/editor.png"
           alt="Unfeathered Notes Preview"
           className="w-full max-w-4xl mx-auto drop-shadow-lg rounded-lg"
         />
