@@ -10,37 +10,9 @@ export default function Header() {
           <span className="font-extrabold">Unfeathered Notes</span>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="hidden md:flex space-x-6 text-lg">
-          <Link
-            to="/features"
-            className="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition"
-          >
-            Features
-          </Link>
-          <Link
-            to="/pricing"
-            className="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition"
-          >
-            Pricing
-          </Link>
-          <Link
-            to="/about"
-            className="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition"
-          >
-            About
-          </Link>
-          <Link
-            to="/contact"
-            className="text-gray-600 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-dark transition"
-          >
-            Contact
-          </Link>
-        </nav>
-
         {/* CTA Button */}
-        <Button to="/signup" cta>
-          Sign Up
+        <Button to="/try-now" cta>
+          Try Now
         </Button>
 
         {/* Mobile Menu Toggle */}

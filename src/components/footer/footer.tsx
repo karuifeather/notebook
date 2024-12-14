@@ -24,23 +24,12 @@ export default function Footer() {
             >
               Features
             </Link>
-            <Link
-              to="/pricing"
-              className="hover:text-primary-light dark:hover:text-primary-dark transition"
-            >
-              Pricing
-            </Link>
+
             <Link
               to="/about"
               className="hover:text-primary-light dark:hover:text-primary-dark transition"
             >
               About Us
-            </Link>
-            <Link
-              to="/contact"
-              className="hover:text-primary-light dark:hover:text-primary-dark transition"
-            >
-              Contact
             </Link>
           </nav>
         </div>

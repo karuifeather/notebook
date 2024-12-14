@@ -29,7 +29,7 @@ export const App = () => {
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/cells" element={<CellList />} />
+            <Route path="/try-now" element={<CellList />} />
           </Routes>
           <Footer />
         </div>
