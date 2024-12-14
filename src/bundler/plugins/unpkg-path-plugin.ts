@@ -14,24 +14,19 @@ export const unpkgPathPlugin = () => {
 
       // Handle relative paths in a module
       build.onResolve({ filter: /^\.+\// }, (args: any) => {
-        const path = new URL(
-          args.path,
-          'https://unpkg.com' +
-            args.resolveDir +
-            '/' /* We need the trailing slash. See URL API. */
-        ).href;
-
+        const path = new URL(args.path, `https://unpkg.com${args.resolveDir}/`)
+          .href;
         return {
           namespace: 'a',
           path,
         };
       });
 
-      // Handle main file of a module
+      // Handle package paths (e.g., react, react-dom)
       build.onResolve({ filter: /.*/ }, (args: any) => {
         return {
           namespace: 'a',
-          path: `https://unpkg.com/${args.path}`,
+          path: `https://unpkg.com/${args.path}`, // No .js extension added here
         };
       });
     },
