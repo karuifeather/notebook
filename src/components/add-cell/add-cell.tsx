@@ -11,7 +11,7 @@ const AddCell: React.FC<AddCellProps> = ({ prevCellId, forceVisible }) => {
 
   return (
     <div
-      className={`flex items-center my-4 ${
+      className={`flex items-center my-6 ${
         forceVisible ? '' : 'opacity-50 hover:opacity-100 transition-opacity'
       }`}
     >

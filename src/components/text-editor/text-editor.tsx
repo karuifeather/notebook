@@ -1,7 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { Cell } from '@/state/index.ts';
-import { useActions } from '@/hooks/use-actions.ts';
-import { BubbleMenuBar } from '@/components/bubble-menu/bubble-menu.tsx';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Color from '@tiptap/extension-color';
@@ -11,12 +8,20 @@ import Typography from '@tiptap/extension-typography';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
 import TextStyle from '@tiptap/extension-text-style';
+import MarkdownIt from 'markdown-it';
+import TurndownService from 'turndown';
 
 import './text-editor.css';
+import { Cell } from '@/state/index.ts';
+import { useActions } from '@/hooks/use-actions.ts';
+import { BubbleMenuBar } from '@/components/bubble-menu/bubble-menu.tsx';
 
 interface TextEditorProps {
   cell: Cell;
 }
+
+const md = new MarkdownIt();
+const turndownService = new TurndownService();
 
 const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
   const { updateCell } = useActions();
@@ -39,12 +44,12 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
       TextStyle,
       Color,
     ],
-    content: cell.content || '*Click to edit*',
+    content: cell.content ? md.render(cell.content) : '<p>Click to edit</p>',
     onUpdate: ({ editor }) => {
       if (!throttlingRef.current) {
         // Save content immediately on first call
-        const htmlContent = editor.getHTML();
-        updateCell(cell.id, htmlContent);
+        const markdownContent = turndownService.turndown(editor.getHTML());
+        updateCell(cell.id, markdownContent);
 
         // Start throttling
         throttlingRef.current = true;
