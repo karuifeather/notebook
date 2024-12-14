@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { Button } from '../button/button.tsx';
 
 export default function Header() {

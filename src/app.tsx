@@ -10,6 +10,7 @@ import { useDarkMode } from './hooks/use-dark-mode.ts';
 import { useEffect } from 'react';
 import Header from './components/header/header.tsx';
 import Footer from './components/footer/footer.tsx';
+import NotFound from './components/not-found/not-found.tsx';
 
 export const App = () => {
   const isDarkMode = useDarkMode();
@@ -30,6 +31,7 @@ export const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/try-now" element={<CellList />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
         </div>
