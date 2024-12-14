@@ -158,11 +158,6 @@ const Preview: React.FC<PreviewProps> = ({ code, initialError = '' }) => {
         try {
           if (code.trim()) {
             iframe.contentWindow?.postMessage(code, '*');
-          } else {
-            iframe.contentWindow?.postMessage(
-              "console.log('No code provided');",
-              '*'
-            );
           }
         } catch (err) {
           console.error('Error posting message:', err);

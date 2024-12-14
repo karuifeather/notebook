@@ -8,7 +8,7 @@ const ActionBar: React.FC<ActionBarProps> = ({ id }) => {
   const { moveCell, deleteCell } = useActions();
 
   return (
-    <div className="absolute top-0 -right-0 z-10 flex flex-col  rounded overflow-hidden group">
+    <div className="absolute top-0 -right-0 z-10 flex rounded overflow-hidden group">
       {/* Move Up Button */}
       <button
         className="w-8 h-8 flex items-center justify-center bg-teal-400 dark:bg-teal-500 text-white hover:bg-teal-500 dark:hover:bg-teal-600 transition-opacity duration-300 opacity-40 group-hover:opacity-100"

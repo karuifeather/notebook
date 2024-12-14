@@ -121,7 +121,7 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
           cursorBlinking: 'smooth',
           scrollBeyondLastLine: false,
           wordWrap: 'on',
-          fontSize: 16,
+          fontSize: 18,
           minimap: { enabled: false },
           tabSize: 2,
           automaticLayout: true,
