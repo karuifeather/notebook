@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Button } from '../button/button.tsx';
 
 export default function Header() {
@@ -5,9 +6,12 @@ export default function Header() {
     <header className=" w-full z-50 backdrop-blur-md bg-white/70 dark:bg-gray-900/70 border-b border-gray-200 dark:border-gray-700">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="flex items-center space-x-2 text-2xl font-bold tracking-wide text-gray-800 dark:text-primary-dark hover:text-primary-light  transition-colors cursor-pointer">
+        <Link
+          to={'/'}
+          className="flex items-center space-x-2 text-2xl font-bold tracking-wide text-gray-800 dark:text-primary-dark hover:text-primary-light  transition-colors"
+        >
           <span className="font-extrabold">Unfeathered Notes</span>
-        </div>
+        </Link>
 
         {/* CTA Button */}
         <Button to="/try-now" cta>
