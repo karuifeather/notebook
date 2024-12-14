@@ -6,9 +6,16 @@ import AddCell from '@/components/add-cell/add-cell.tsx';
 import { selectCells } from '@/state/selectors/index.ts';
 
 import './cell-list.css';
+import { Cell } from '@/state/cell.ts';
 
-const CellList: React.FC = () => {
-  const cells = useTypedSelector(selectCells);
+interface CellListProps {
+  cells?: Cell[];
+}
+
+const CellList: React.FC<CellListProps> = ({ cells = [] }) => {
+  if (cells.length === 0) {
+    cells = useTypedSelector(selectCells);
+  }
 
   const renderedCells = cells.map((cell) => (
     <Fragment key={cell.id}>
