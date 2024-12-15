@@ -42,6 +42,27 @@ const reducer = (
         return;
       }
 
+      case ActionType.MOVE_CELL: {
+        const { fromIndex, toIndex } = action.payload;
+
+        if (
+          fromIndex < 0 ||
+          toIndex < 0 ||
+          fromIndex >= draft.order.length ||
+          toIndex >= draft.order.length
+        ) {
+          return; // Ensure indices are within bounds
+        }
+
+        // Remove the cell from its current position
+        const [movedCell] = draft.order.splice(fromIndex, 1);
+
+        // Insert the cell into its new position
+        draft.order.splice(toIndex, 0, movedCell);
+
+        return;
+      }
+
       case ActionType.INSERT_CELL_AFTER: {
         const cell: Cell = {
           type: action.payload.type,

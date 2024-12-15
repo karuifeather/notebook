@@ -24,27 +24,34 @@ interface SortableItemProps {
 }
 
 const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+  const {
+    isDragging,
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    opacity: isDragging ? 0.8 : 1, // Adjust opacity while dragging
   };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="sortable-item group bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md  hover:shadow-lg transition"
+      {...attributes} // Attach drag attributes to the container
+      className="sortable-item group bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition"
     >
       <ActionBar id={id}>
         {/* Insert Cell Button */}
         <AddCell currentCellId={id} />
         {/* Drag Button */}
         <button
-          {...listeners} // Attach drag listeners
-          {...attributes}
+          {...listeners} // Attach drag listeners here
           className="cursor-grab active:cursor-grabbing"
           aria-label="Drag Item"
         >
@@ -66,10 +73,13 @@ const CellList: React.FC = () => {
   const onDragEnd = (event: any) => {
     const { active, over } = event;
 
+    if (!over) return; // Prevent errors if dropped outside a valid droppable area
+
     if (active.id !== over.id) {
       const fromIndex = cells.findIndex((cell) => cell.id === active.id);
       const toIndex = cells.findIndex((cell) => cell.id === over.id);
 
+      // Dispatch the action to reorder cells
       moveCell(fromIndex, toIndex);
     }
   };
@@ -77,18 +87,16 @@ const CellList: React.FC = () => {
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
       <SortableContext
-        items={cells.map((cell) => cell.id)}
+        items={cells.map((cell) => cell.id)} // Ensure this matches the updated order
         strategy={verticalListSortingStrategy}
       >
-        <div className="cells-container">
-          {cells.map((cell) => (
-            <Fragment key={cell.id}>
-              <SortableItem id={cell.id}>
-                <CellListItem cell={cell} />
-              </SortableItem>
-            </Fragment>
-          ))}
-        </div>
+        {cells.map((cell) => (
+          <Fragment key={cell.id}>
+            <SortableItem id={cell.id}>
+              <CellListItem cell={cell} />
+            </SortableItem>
+          </Fragment>
+        ))}
       </SortableContext>
     </DndContext>
   );
