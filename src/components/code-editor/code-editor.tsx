@@ -3,6 +3,7 @@ import * as monaco from 'monaco-editor';
 import { Editor, OnMount } from '@monaco-editor/react';
 import * as prettier from 'prettier/standalone.mjs';
 import parserBabel from 'prettier/plugins/babel.mjs';
+import parserTypescript from 'prettier/plugins/typescript.mjs';
 import * as prettierPluginEstree from 'prettier/plugins/estree.mjs';
 
 import './code-editor.css';
@@ -12,12 +13,50 @@ interface MonacoEditorProps {
   onChange(value: string): void;
 }
 
-const MonacoEditor = ({ defaultValue, onChange }: MonacoEditorProps) => {
+interface MonacoEditorProps {
+  defaultValue: string;
+  onChange: (value: string) => void;
+}
+
+const MonacoEditor: React.FC<MonacoEditorProps> = ({
+  defaultValue,
+  onChange,
+}) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [theme, setTheme] = useState('vs-dark');
 
-  const handleOnMount: OnMount = (editor) => {
-    editorRef.current = editor; // Assign the editor instance to the ref
+  const handleOnMount: OnMount = (editor, monaco) => {
+    editorRef.current = editor;
+
+    // Enable JavaScript diagnostics (error detection)
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
+    });
+
+    // Configure JavaScript language features
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ESNext, // Modern JavaScript
+      allowNonTsExtensions: true, // Allow non-TypeScript files
+      noEmit: true, // Prevent output files
+      jsx: monaco.languages.typescript.JsxEmit.React, // Enable JSX
+      jsxFactory: 'JSXAlone.createElement', // React JSX factory function
+      typeRoots: ['node_modules/@types'],
+    });
+
+    // Add extra libraries for better IntelliSense (optional)
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(`
+       declare const React: any;
+      declare const ReactDOM: any;
+      declare const window: any;
+      declare const document: any;
+      declare const console: any;
+    `);
+
+    // Add custom command for triggering suggestions
+    editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyJ, () => {
+      editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
+    });
   };
 
   const onFormatClick = async () => {
@@ -28,11 +67,10 @@ const MonacoEditor = ({ defaultValue, onChange }: MonacoEditorProps) => {
         // Format code with Prettier
         const formattedCode = await prettier.format(unformattedCode, {
           parser: 'babel',
-          // @ts-ignore
-          plugins: [parserBabel, prettierPluginEstree],
+          plugins: [parserBabel, prettierPluginEstree, parserTypescript],
           singleQuote: true,
           jsxSingleQuote: true,
-          tabWidth: 4,
+          tabWidth: 2,
           semi: true,
         });
 
@@ -51,7 +89,7 @@ const MonacoEditor = ({ defaultValue, onChange }: MonacoEditorProps) => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     setTheme(prefersDark.matches ? 'vs-dark' : 'vs-light');
 
-    const handleChange = (e) => {
+    const handleChange = (e: MediaQueryListEvent) => {
       setTheme(e.matches ? 'vs-dark' : 'vs-light');
     };
 
@@ -85,6 +123,13 @@ const MonacoEditor = ({ defaultValue, onChange }: MonacoEditorProps) => {
           wordWrap: 'on',
           fontSize: 18,
           minimap: { enabled: false },
+          tabSize: 2,
+          automaticLayout: true,
+          suggestOnTriggerCharacters: true,
+          quickSuggestions: { other: true, comments: true, strings: true },
+          acceptSuggestionOnEnter: 'on',
+          parameterHints: { enabled: true },
+          snippetSuggestions: 'bottom',
         }}
       />
     </div>

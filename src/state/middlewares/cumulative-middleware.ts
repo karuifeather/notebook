@@ -17,27 +17,34 @@ const makeItCumulative: MakeItCumulative = (
   const orderedCells = order.map((id) => data[id]);
 
   const printDeclaration = `
-          import _React from 'react';
-          import _ReactDOM from 'react-dom';
-          const root = document.getElementById('root');
-          var print = (value) => {
-            const $$printOutput = document.createElement('div');
-            $$printOutput.style.margin = '1rem';
+  import _React from 'react';
+  import { createRoot } from 'react-dom/client';
 
-            if (typeof value === 'object') {
-              if (value.$$typeof && value.props) {
-                _ReactDOM.render(value, root);
-              } else {
-                $$printOutput.innerHTML = JSON.stringify(value);
-                root.insertAdjacentElement('beforeend', $$printOutput);
-              }
-                          
-            } else {
-              $$printOutput.innerHTML = JSON.stringify(value);
-              root.insertAdjacentElement('beforeend', $$printOutput);
-            }           
-          };
-        `;
+  const rootElement = document.getElementById('root');
+  const rootContainers = []; // Store separate React roots for each print call
+
+  const print = (value) => {
+    const $$printContainer = document.createElement('div'); // Create a container for each print call
+    $$printContainer.style.margin = '.2rem';
+    rootElement.appendChild($$printContainer); // Append the container to the #root
+
+    // Check the type of the value being printed
+    if (typeof value === 'object') {
+      if (value.$$typeof && value.props) {
+        // If value is a React element, use React 18+ API to render it
+        const reactRoot = createRoot($$printContainer);
+        rootContainers.push(reactRoot); // Keep track of the React roots
+        reactRoot.render(value);
+      } else {
+        // Render objects as JSON
+        $$printContainer.innerHTML = \`<pre>\${JSON.stringify(value, null, 2)}</pre>\`;
+      }
+    } else {
+      // Render non-object values (e.g., strings, numbers)
+      $$printContainer.textContent = value;
+    }
+  };
+`;
 
   const printRemoval = 'var print = () => {}';
 

@@ -4,6 +4,7 @@ import { configureStore } from '@reduxjs/toolkit'; // Preferred over createStore
 import reducers from './reducers/index.ts';
 import { bundlerMiddleware } from './middlewares/bundler-middleware.ts';
 import { cumulativeMiddleware } from './middlewares/cumulative-middleware.ts';
+import { updateOrderMiddleware } from './middlewares/update-order-middleware.ts';
 
 // Type definition for Redux DevTools compose
 declare global {
@@ -19,6 +20,8 @@ const middlewares: Middleware[] = [
   cumulativeMiddleware,
   // @ts-ignore: Ignore type incompatibility for bundlerMiddleware
   bundlerMiddleware,
+  // @ts-ignore: Ignore type incompatibility for bundlerMiddleware
+  updateOrderMiddleware,
 ];
 
 // Configure the store

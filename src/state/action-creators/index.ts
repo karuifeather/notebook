@@ -4,10 +4,10 @@ import {
   MoveCellAction,
   DeleteCellAction,
   InsertCellAfterAction,
-  Direction,
   BundleItAction,
 } from '../actions/index.ts';
-import { CellTypes } from '../cell.ts';
+import { CellTypes } from '../types/cell.ts';
+import { Note } from '../types/note.ts';
 
 export const updateCell = (id: string, content: string): UpdateCellAction => {
   return {
@@ -26,12 +26,15 @@ export const deleteCell = (id: string): DeleteCellAction => {
   };
 };
 
-export const moveCell = (id: string, direction: Direction): MoveCellAction => {
+export const moveCell = (
+  fromIndex: number,
+  toIndex: number
+): MoveCellAction => {
   return {
     type: ActionType.MOVE_CELL,
     payload: {
-      id,
-      direction,
+      fromIndex,
+      toIndex,
     },
   };
 };
@@ -60,3 +63,28 @@ export const bundleIt = (id: string, content: string): BundleItAction => {
     },
   };
 };
+
+export const addNote = (note: Note) => ({
+  type: ActionType.ADD_NOTE,
+  payload: note,
+});
+
+export const removeNote = (noteId: string) => ({
+  type: ActionType.REMOVE_NOTE,
+  payload: { noteId },
+});
+
+export const addDependency = (noteId: string, dependency: string) => ({
+  type: ActionType.ADD_DEPENDENCY,
+  payload: { noteId, dependency },
+});
+
+export const removeDependency = (noteId: string, dependency: string) => ({
+  type: ActionType.REMOVE_DEPENDENCY,
+  payload: { noteId, dependency },
+});
+
+export const updateDependencies = (noteId: string, dependencies: string[]) => ({
+  type: ActionType.UPDATE_DEPENDENCIES,
+  payload: { noteId, dependencies },
+});

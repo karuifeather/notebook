@@ -1,106 +1,79 @@
 :root {
-  /* Light mode colors */
-  --background-light: #f8f9fa; /* Light gray background */
-  --panel-background-light: #ffffff; /* Panel white background */
-  --text-light: #1e1e1e; /* Text color for light mode */
-  --border-light: #e6e6e6; /* Border color */
-  --progress-bg-light: #e0e0e0; /* Progress background */
-  --progress-primary-light: #007bff; /* Primary progress color */
-
-  /* Dark mode colors */
-  --background-dark: #121212; /* Dark gray background */
-  --panel-background-dark: #1f1f1f; /* Panel dark background */
-  --text-dark: #e4e4e4; /* Text color for dark mode */
-  --border-dark: #333333; /* Border color for dark mode */
-  --progress-bg-dark: #333333; /* Progress background for dark mode */
-  --progress-primary-dark: #1e90ff; /* Primary progress color for dark mode */
+  /* Dark and Light mode colors */
+  --background-light: #f8f9fa;
+  --background-dark: #121212;
+  --text-light: #1e1e1e;
+  --text-dark: #e4e4e4;
+  --border-light: #e6e6e6;
+  --border-dark: #333333;
+  --tab-active: #0056b3; /* Active tab color */
+  --progress-light: #e0e0e0;
+  --progress-dark: #333333;
 
   /* Shared styles */
   --border-radius: 0.5rem;
-  --shadow-light: 0 4px 10px rgba(0, 0, 0, 0.1);
-  --shadow-dark: 0 4px 10px rgba(0, 0, 0, 0.4);
-}
-
-/* Resizable container */
-.resizable-code-cell {
-  resize: vertical; /* Enable vertical resizing */
-  overflow: hidden; /* Hide overflow during resizing */
-  min-height: 300px; /* Minimum height of the CodeCell */
-  max-height: 800px; /* Maximum height of the CodeCell */
-  border: 1px solid var(--border-light); /* Optional: Add a border for better visibility */
-  border-radius: var(--border-radius);
-  background-color: var(--background-light);
-  transition:
-    height 0.3s ease,
-    background-color 0.3s ease;
-}
-
-@media (prefers-color-scheme: dark) {
-  .resizable-code-cell {
-    border: 1px solid var(--border-dark);
-    background-color: var(--background-dark);
-  }
+  --menu-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 /* Code Cell Container */
 .code-cell {
-  min-height: 30rem;
-  height: max-content;
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  padding: 1rem 2rem;
-  background-color: var(--background-light);
+  flex-direction: column;
+  border: none;
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
+  box-shadow: var(--menu-shadow);
+  background-color: var(--background-light);
   transition:
     background-color 0.3s ease,
     box-shadow 0.3s ease;
+  outline: none;
+  outline: 1px solid var(--border-light);
+}
+
+.code-cell:focus-within {
+  outline: 1px solid var(--tab-active); /* Primary color border on focus or hover */
 }
 
 @media (prefers-color-scheme: dark) {
   .code-cell {
     background-color: var(--background-dark);
-    box-shadow: var(--shadow-dark);
+    outline: 1px solid var(--border-dark);
+  }
+
+  .code-cell:focus-within {
+    outline: 1px solid var(--tab-active); /* Hover effect in dark mode */
   }
 }
 
-/* Panels */
-.code-cell .Panel {
-  flex: 1 1 auto;
-  overflow: auto;
-  background-color: var(--panel-background-light);
+/* Editor and Preview Area */
+.code-editor-container,
+.preview-container {
+  flex: 1;
+  padding: 1rem;
   border: 1px solid var(--border-light);
-  border-radius: var(--border-radius);
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  background-color: var(--background-light);
   transition:
     background-color 0.3s ease,
     border-color 0.3s ease;
 }
 
-.code-cell .Panel:first-child {
-  width: 60%;
-}
-
-.code-cell .Panel:last-child {
-  width: 40%;
-}
-
 @media (prefers-color-scheme: dark) {
-  .code-cell .Panel {
-    background-color: var(--panel-background-dark);
+  .code-editor-container,
+  .preview-container {
     border: 1px solid var(--border-dark);
+    background-color: var(--background-dark);
   }
 }
 
 /* Progress Wrapper */
 .progress-wrapper {
   position: relative;
-  height: 100%;
+  height: 30rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--panel-background-light);
-  border: 1px solid var(--border-light);
+  background-color: var(--background-light);
   border-radius: var(--border-radius);
   transition:
     background-color 0.3s ease,
@@ -109,32 +82,7 @@
 
 @media (prefers-color-scheme: dark) {
   .progress-wrapper {
-    background-color: var(--panel-background-dark);
-    border: 1px solid var(--border-dark);
-  }
-}
-
-/* Progress Bar */
-.progress {
-  width: 50%;
-  height: 0.5rem;
-  border-radius: 0.25rem;
-  background-color: var(--progress-bg-light);
-  overflow: hidden;
-  transition: background-color 0.3s ease;
-}
-
-.progress::-webkit-progress-value {
-  background-color: var(--progress-primary-light);
-}
-
-@media (prefers-color-scheme: dark) {
-  .progress {
-    background-color: var(--progress-bg-dark);
-  }
-
-  .progress::-webkit-progress-value {
-    background-color: var(--progress-primary-dark);
+    background-color: var(--background-dark);
   }
 }
 
@@ -142,60 +90,21 @@
 .loading-spinner {
   width: 2rem;
   height: 2rem;
-  border: 4px solid var(--progress-bg-light);
-  border-top-color: var(--progress-primary-light);
+  border: 4px solid var(--progress-light);
+  border-top-color: var(--tab-active);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  transition: border-color 0.3s ease;
 }
 
 @media (prefers-color-scheme: dark) {
   .loading-spinner {
-    border: 4px solid var(--progress-bg-dark);
-    border-top-color: var(--progress-primary-dark);
+    border: 4px solid var(--progress-dark);
+    border-top-color: var(--tab-hover);
   }
 }
 
-/* Keyframe Animation */
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-/* Resize Handle */
-.resize-handle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 0.5rem; /* Width of the handle */
-  background-color: var(--border-light); /* Light mode background */
-  cursor: col-resize; /* Draggable cursor */
-  transition: background-color 0.3s ease;
-}
-
-.resize-handle:hover {
-  background-color: var(--active-light); /* Highlight on hover */
-}
-
-@media (prefers-color-scheme: dark) {
-  .resize-handle {
-    background-color: var(--border-dark); /* Dark mode background */
-  }
-
-  .resize-handle:hover {
-    background-color: var(--active-dark); /* Highlight on hover */
-  }
-}
-
-.resize-icon {
-  color: var(--text-light); /* Icon color for light mode */
-  font-size: 1rem; /* Adjust size as needed */
-  transition: color 0.3s ease;
-}
-
-@media (prefers-color-scheme: dark) {
-  .resize-icon {
-    color: var(--text-dark); /* Icon color for dark mode */
   }
 }

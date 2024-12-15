@@ -1,13 +1,13 @@
 import { ActionType } from '../action-types/index.ts';
-import { CellTypes } from '../cell.ts';
+import { CellTypes } from '../types/cell.ts';
 
 export type Direction = 'up' | 'down';
 
 export interface MoveCellAction {
   type: ActionType.MOVE_CELL;
   payload: {
-    id: string;
-    direction: Direction;
+    fromIndex: number;
+    toIndex: number;
   };
 }
 
@@ -31,6 +31,11 @@ export interface UpdateCellAction {
     id: string;
     content: string;
   };
+}
+
+export interface UpdateCellOrder {
+  type: ActionType.UPDATE_CELL_ORDER;
+  payload: string[];
 }
 
 export interface BundleCreatedAction {
@@ -63,6 +68,7 @@ export type Action =
   | MoveCellAction
   | DeleteCellAction
   | UpdateCellAction
+  | UpdateCellOrder
   | InsertCellAfterAction
   | BundleItAction
   | BundleCreatingAction

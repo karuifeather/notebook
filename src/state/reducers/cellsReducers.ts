@@ -1,7 +1,7 @@
 import { produce, Draft } from 'immer';
 import { ActionType } from '../action-types/index.ts';
 import { Action } from '../actions/index.ts';
-import { Cell } from '../cell.ts';
+import { Cell } from '../types/cell.ts';
 
 export interface CellsState {
   loading: boolean;
@@ -42,6 +42,27 @@ const reducer = (
         return;
       }
 
+      case ActionType.MOVE_CELL: {
+        const { fromIndex, toIndex } = action.payload;
+
+        if (
+          fromIndex < 0 ||
+          toIndex < 0 ||
+          fromIndex >= draft.order.length ||
+          toIndex >= draft.order.length
+        ) {
+          return; // Ensure indices are within bounds
+        }
+
+        // Remove the cell from its current position
+        const [movedCell] = draft.order.splice(fromIndex, 1);
+
+        // Insert the cell into its new position
+        draft.order.splice(toIndex, 0, movedCell);
+
+        return;
+      }
+
       case ActionType.INSERT_CELL_AFTER: {
         const cell: Cell = {
           type: action.payload.type,
@@ -55,28 +76,8 @@ const reducer = (
           (orderId) => orderId === action.payload.id
         );
 
-        if (foundIndex < 0) {
-          draft.order.unshift(cell.id);
-        } else {
-          draft.order.splice(foundIndex + 1, 0, cell.id);
-        }
-        return;
-      }
+        draft.order.splice(foundIndex + 1, 0, cell.id);
 
-      case ActionType.MOVE_CELL: {
-        const { id, direction } = action.payload;
-        const index = draft.order.findIndex((orderId) => orderId === id);
-        const targetIndex = direction === 'up' ? index - 1 : index + 1;
-
-        if (index < 0 || targetIndex < 0 || targetIndex >= draft.order.length) {
-          return;
-        }
-
-        // Swap positions
-        [draft.order[index], draft.order[targetIndex]] = [
-          draft.order[targetIndex],
-          draft.order[index],
-        ];
         return;
       }
 
