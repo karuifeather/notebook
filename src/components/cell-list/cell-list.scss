@@ -1,0 +1,10 @@
+.sortable-item {
+  position: relative;
+
+  &:hover,
+  &:focus-within {
+    .action-bar {
+      visibility: visible;
+    }
+  }
+}
