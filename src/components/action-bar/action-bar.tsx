@@ -8,32 +8,32 @@ const ActionBar: React.FC<ActionBarProps> = ({ id }) => {
   const { moveCell, deleteCell } = useActions();
 
   return (
-    <div className="absolute top-0 -right-0 z-10 flex rounded overflow-hidden group">
+    <div className="action-bar absolute top-1/3 -left-10 -translate-y-1/2 z-10 flex flex-col items-center space-y-2 invisible group-hover:visible transition-opacity duration-300">
       {/* Move Up Button */}
       <button
-        className="w-8 h-8 flex items-center justify-center bg-teal-400 dark:bg-teal-500 text-white hover:bg-teal-500 dark:hover:bg-teal-600 transition-opacity duration-300 opacity-40 group-hover:opacity-100"
+        className="flex items-center justify-center w-7 h-7 rounded-full bg-transparent border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 shadow-sm"
         onClick={() => moveCell(id, 'up')}
         aria-label="Move Cell Up"
       >
-        <i className="fas fa-arrow-up" />
+        <i className="fas fa-chevron-up text-sm" />
       </button>
 
       {/* Move Down Button */}
       <button
-        className="w-8 h-8 flex items-center justify-center bg-amber-400 dark:bg-amber-500 text-white hover:bg-amber-500 dark:hover:bg-amber-600 transition-opacity duration-300 opacity-40 group-hover:opacity-100"
+        className="flex items-center justify-center w-7 h-7 rounded-full bg-transparent border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 shadow-sm"
         onClick={() => moveCell(id, 'down')}
         aria-label="Move Cell Down"
       >
-        <i className="fas fa-arrow-down" />
+        <i className="fas fa-chevron-down text-sm" />
       </button>
 
       {/* Delete Button */}
       <button
-        className="w-8 h-8 flex items-center justify-center bg-rose-400 dark:bg-rose-500 text-white hover:bg-rose-500 dark:hover:bg-rose-600 transition-opacity duration-300 opacity-40 group-hover:opacity-100"
+        className="flex items-center justify-center w-7 h-7 rounded-full bg-transparent border border-gray-300 dark:border-gray-600 hover:bg-red-100 dark:hover:bg-red-700 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 shadow-sm"
         onClick={() => deleteCell(id)}
         aria-label="Delete Cell"
       >
-        <i className="fas fa-times" />
+        <i className="fas fa-trash-alt text-sm" />
       </button>
     </div>
   );

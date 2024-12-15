@@ -51,7 +51,7 @@ export const NoteComponent = () => {
   return (
     <div className="bg-gray-100 dark:bg-gray-900 min-h-screen py-10 px-4">
       {/* Page Container */}
-      <div className="bg-white dark:bg-gray-800 max-w-4xl mx-auto p-8 rounded-xl shadow-lg">
+      <div className="bg-white dark:bg-gray-800 max-w-5xl mx-auto px-16 py-4 rounded-xl shadow-lg">
         <div className="p-4">
           <button
             onClick={() => setModalOpen(true)}

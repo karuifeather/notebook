@@ -3,3 +3,7 @@
   margin: 1rem 0.5rem;
   border-radius: 0.5rem;
 }
+
+.cell-list-item:focus-within .action-bar {
+  @apply visible;
+}
