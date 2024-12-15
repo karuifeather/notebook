@@ -45,11 +45,11 @@
   line-height: var(--line-height-base);
   color: var(--text-light);
   background-color: var(--background-light);
-  padding: 2rem;
+  padding: 1rem 1.5rem;
   border-radius: var(--border-radius);
   box-shadow: var(--menu-shadow);
   outline: none;
-  min-height: 350px;
+  min-height: min-content;
   margin: 3rem auto;
   border: 1px solid var(--border-light);
   transition: var(--transition);
