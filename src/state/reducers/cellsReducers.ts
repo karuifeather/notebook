@@ -55,28 +55,8 @@ const reducer = (
           (orderId) => orderId === action.payload.id
         );
 
-        if (foundIndex < 0) {
-          draft.order.unshift(cell.id);
-        } else {
-          draft.order.splice(foundIndex + 1, 0, cell.id);
-        }
-        return;
-      }
+        draft.order.splice(foundIndex + 1, 0, cell.id);
 
-      case ActionType.MOVE_CELL: {
-        const { id, direction } = action.payload;
-        const index = draft.order.findIndex((orderId) => orderId === id);
-        const targetIndex = direction === 'up' ? index - 1 : index + 1;
-
-        if (index < 0 || targetIndex < 0 || targetIndex >= draft.order.length) {
-          return;
-        }
-
-        // Swap positions
-        [draft.order[index], draft.order[targetIndex]] = [
-          draft.order[targetIndex],
-          draft.order[index],
-        ];
         return;
       }
 

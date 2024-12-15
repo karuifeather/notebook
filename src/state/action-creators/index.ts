@@ -4,7 +4,6 @@ import {
   MoveCellAction,
   DeleteCellAction,
   InsertCellAfterAction,
-  Direction,
   BundleItAction,
 } from '../actions/index.ts';
 import { CellTypes } from '../types/cell.ts';
@@ -27,12 +26,15 @@ export const deleteCell = (id: string): DeleteCellAction => {
   };
 };
 
-export const moveCell = (id: string, direction: Direction): MoveCellAction => {
+export const moveCell = (
+  fromIndex: number,
+  toIndex: number
+): MoveCellAction => {
   return {
     type: ActionType.MOVE_CELL,
     payload: {
-      id,
-      direction,
+      fromIndex,
+      toIndex,
     },
   };
 };
