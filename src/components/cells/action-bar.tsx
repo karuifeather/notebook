@@ -1,5 +1,5 @@
 import { useActions } from '@/hooks/use-actions.ts';
-import './action-bar.scss';
+import './styles/action-bar.scss';
 
 interface ActionBarProps {
   id: string;

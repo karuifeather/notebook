@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import './cell-list-item.css';
 import { Cell } from '@/state/index.ts';
-import CodeCell from '@/components/code-cell/code-cell.tsx';
-import TextEditor from '@/components/text-editor/text-editor.tsx';
+import CodeCell from '@/components/cells/code-cell.tsx';
+import TextEditor from '@/components/editors/text-editor.tsx';
+import './styles/cell-list-item.scss';
 
 interface CellListItemProps {
   cell: Cell;

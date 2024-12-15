@@ -1,12 +1,13 @@
-import { insertCellAfter } from '@/state/action-creators/index.ts';
-import { store } from '@/state/store.ts';
 import { useEffect, useState } from 'react';
-import CellList from '../cell-list/cell-list.tsx';
-import LoadNpmModuleModal from '../load-npm/load-npm.tsx';
+
+import { store } from '@/state/store.ts';
+import { insertCellAfter } from '@/state/action-creators/index.ts';
 import { useActions } from '@/hooks/use-actions.ts';
 import { Cell } from '@/state/index.ts';
 import { Note } from '@/state/index.ts';
-import { Sidebar } from '../sidebar/sidebar.tsx';
+import CellList from '@/components/cells/cell-list.tsx';
+import LoadNpmModuleModal from './load-npm.tsx';
+import { Sidebar } from './sidebar.tsx';
 
 const sampleNote: Note = {
   title: 'Welcome to Notes',

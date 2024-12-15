@@ -3,16 +3,16 @@ import { Provider } from 'react-redux';
 import { Suspense, lazy, useEffect } from 'react';
 
 import { store } from '@/state/index.ts';
+import { useDarkMode } from '@/hooks/use-dark-mode.ts';
+import Loader from '@/components/loader.tsx';
 import './style.scss';
-import { useDarkMode } from './hooks/use-dark-mode.ts';
-import Loader from './components/loader/loader.tsx';
 
 // Dynamic imports for code splitting
 const Home = lazy(() => import('@/pages/home/home.tsx'));
-const TryNow = lazy(() => import('./pages/try-now/try-now.tsx'));
-const NotFound = lazy(() => import('./components/not-found/not-found.tsx'));
-const Header = lazy(() => import('./components/header/header.tsx'));
-const Footer = lazy(() => import('./components/footer/footer.tsx'));
+const TryNow = lazy(() => import('./pages/try-now.tsx'));
+const NotFound = lazy(() => import('./components/not-found.tsx'));
+const Header = lazy(() => import('./components/header.tsx'));
+const Footer = lazy(() => import('./components/footer.tsx'));
 
 export const App = () => {
   const isDarkMode = useDarkMode();

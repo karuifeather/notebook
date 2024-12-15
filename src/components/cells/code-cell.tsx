@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useActions } from '@/hooks/use-actions.ts';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
-import CodeEditor from '@/components/code-editor/code-editor.tsx';
-import Preview from '@/components/preview/preview.tsx';
+import CodeEditor from '@/components/editors/code-editor.tsx';
+import Preview from '@/components/cells/preview.tsx';
 import { Cell } from '@/state/index.ts';
 import { makeSelectBundleById } from '@/state/selectors/index.ts';
-import './code-cell.css';
+import './styles/code-cell.scss';
 
 interface CodeCellProps {
   cell: Cell;
@@ -78,10 +78,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
                 <div className="loading-spinner"></div>
               </div>
             ) : (
-              <Preview
-                code={bundle.code as string}
-                error={bundle.error as string}
-              />
+              <Preview code={bundle.code as string} />
             )}
           </div>
         )}

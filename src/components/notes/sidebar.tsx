@@ -1,5 +1,6 @@
-import { Note } from '@/state/index.ts';
 import React, { useState } from 'react';
+
+import { Note } from '@/state/index.ts';
 
 interface SidebarProps {
   notes: Note[];

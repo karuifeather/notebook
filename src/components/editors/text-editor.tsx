@@ -11,10 +11,10 @@ import TextStyle from '@tiptap/extension-text-style';
 import MarkdownIt from 'markdown-it';
 import TurndownService from 'turndown';
 
-import './text-editor.css';
 import { Cell } from '@/state/index.ts';
 import { useActions } from '@/hooks/use-actions.ts';
-import { BubbleMenuBar } from '@/components/bubble-menu/bubble-menu.tsx';
+import { BubbleMenuBar } from '@/components/editors/bubble-menu.tsx';
+import './styles/text-editor.scss';
 
 interface TextEditorProps {
   cell: Cell;

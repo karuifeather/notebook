@@ -10,12 +10,11 @@ import { CSS } from '@dnd-kit/utilities';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import { useActions } from '@/hooks/use-actions.ts';
 import { selectCells } from '@/state/selectors/index.ts';
+import CellListItem from '@/components/cells/cell-list-item.tsx';
+import AddCell from '@/components/cells/add-cell.tsx';
+import ActionBar from '@/components/cells/action-bar.tsx';
 
-import CellListItem from '@/components/cell-list-item/cell-list-item.tsx';
-import AddCell from '@/components/add-cell/add-cell.tsx';
-
-import './cell-list.scss';
-import ActionBar from '../action-bar/action-bar.tsx';
+import './styles/cell-list.scss';
 
 // Sortable Item Component
 interface SortableItemProps {
