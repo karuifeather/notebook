@@ -1,9 +1,5 @@
 .cell-list-item {
   position: relative;
-  margin: 1rem 0.5rem;
+  margin: 4rem 0.5rem;
   border-radius: 0.5rem;
-}
-
-.cell-list-item:focus-within .action-bar {
-  @apply visible;
 }
