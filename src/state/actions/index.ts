@@ -33,6 +33,11 @@ export interface UpdateCellAction {
   };
 }
 
+export interface UpdateCellOrder {
+  type: ActionType.UPDATE_CELL_ORDER;
+  payload: string[];
+}
+
 export interface BundleCreatedAction {
   type: ActionType.BUNDLE_CREATED;
   payload: {
@@ -63,6 +68,7 @@ export type Action =
   | MoveCellAction
   | DeleteCellAction
   | UpdateCellAction
+  | UpdateCellOrder
   | InsertCellAfterAction
   | BundleItAction
   | BundleCreatingAction

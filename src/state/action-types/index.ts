@@ -3,6 +3,7 @@ export enum ActionType {
   DELETE_CELL = 'delete_cell',
   INSERT_CELL_AFTER = 'insert_cell_after',
   UPDATE_CELL = 'update_cell',
+  UPDATE_CELL_ORDER = 'update_cell_order',
   BUNDLE_IT = 'bundle_it',
   BUNDLE_CREATING = 'bundle_creating',
   BUNDLE_CREATED = 'bundle_created',
