@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button } from '../button/button.tsx';
+import { Button } from './button.tsx';
 
 export default function Header() {
   return (

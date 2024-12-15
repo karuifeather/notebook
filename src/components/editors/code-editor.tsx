@@ -6,7 +6,7 @@ import parserBabel from 'prettier/plugins/babel.mjs';
 import parserTypescript from 'prettier/plugins/typescript.mjs';
 import * as prettierPluginEstree from 'prettier/plugins/estree.mjs';
 
-import './code-editor.css';
+import './styles/code-editor.scss';
 
 interface MonacoEditorProps {
   defaultValue: string;

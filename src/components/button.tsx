@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import './button.scss';
+import './styles/button.scss';
 
 type ButtonProps = {
   to: string;

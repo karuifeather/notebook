@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTools } from '@fortawesome/free-solid-svg-icons';
 
-import { Button } from '../button/button.tsx';
+import { Button } from './button.tsx';
 
 export default function NotFound() {
   return (

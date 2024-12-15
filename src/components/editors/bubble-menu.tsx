@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BubbleMenu, Editor } from '@tiptap/react';
-import './bubble-menu.css';
+import './styles/bubble-menu.scss';
 
 export const BubbleMenuBar = ({ editor }: { editor: Editor }) => {
   const [color, setColor] = useState('#000000'); // Default color

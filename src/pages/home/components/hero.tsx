@@ -1,4 +1,4 @@
-import { Button } from '@/components/button/button.tsx';
+import { Button } from '@/components/button.tsx';
 
 export default function HeroSection() {
   return (
