@@ -7,8 +7,8 @@ import {
   Direction,
   BundleItAction,
 } from '../actions/index.ts';
-import { CellTypes } from '../cell.ts';
-import { Note } from '../note.ts';
+import { CellTypes } from '../types/cell.ts';
+import { Note } from '../types/note.ts';
 
 export const updateCell = (id: string, content: string): UpdateCellAction => {
   return {

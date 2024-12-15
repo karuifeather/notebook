@@ -1,5 +1,5 @@
 import { ActionType } from '../action-types/index.ts';
-import { Note } from '../note.ts';
+import { Note } from '../types/note.ts';
 
 export interface NotesState {
   loading: boolean;
