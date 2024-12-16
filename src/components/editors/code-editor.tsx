@@ -57,6 +57,20 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
     editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyJ, () => {
       editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
     });
+
+    // Allow parent page to scroll when editor is not focused
+    const editorElement = editor.getDomNode();
+    if (editorElement) {
+      editorElement.addEventListener('wheel', (e) => {
+        if (!editor.hasTextFocus()) {
+          e.preventDefault();
+          e.stopPropagation();
+          // Propagate the scroll event to the parent
+          const deltaY = e.deltaY;
+          window.scrollBy({ top: deltaY, behavior: 'smooth' });
+        }
+      });
+    }
   };
 
   const onFormatClick = async () => {
