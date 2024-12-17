@@ -12,7 +12,6 @@ export interface Notebook {
   id: string;
   name: string;
   description: string;
-  notes: string[];
 }
 
 const initialState: NotebookState = {
@@ -45,7 +44,7 @@ const reducer = (
 
       case ActionType.CREATE_NOTEBOOK:
         const { id, title, description } = action.payload;
-        draft.data[id] = { id, name: title, description, notes: [] };
+        draft.data[id] = { id, name: title, description };
         return;
 
       case ActionType.DELETE_NOTEBOOK:
