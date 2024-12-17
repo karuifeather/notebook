@@ -131,7 +131,7 @@ interface FetchNotebooksErrorAction {
 
 interface CreateNotebookAction {
   type: ActionType.CREATE_NOTEBOOK;
-  payload: { name: string; description: string; id: string };
+  payload: { title: string; description: string; id: string };
 }
 
 interface DeleteNotebookAction {

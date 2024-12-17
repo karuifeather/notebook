@@ -44,8 +44,8 @@ const reducer = (
         return;
 
       case ActionType.CREATE_NOTEBOOK:
-        const { id, name, description } = action.payload;
-        draft.data[id] = { id, name, description, notes: [] };
+        const { id, title, description } = action.payload;
+        draft.data[id] = { id, name: title, description, notes: [] };
         return;
 
       case ActionType.DELETE_NOTEBOOK:
