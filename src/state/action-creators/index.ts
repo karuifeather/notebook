@@ -11,14 +11,14 @@ import { Note } from '../types/note.ts';
 
 // Update Cell Action
 export const updateCell = (
-  notebookId: string,
+  noteId: string,
   id: string,
   content: string
 ): UpdateCellAction => {
   return {
     type: ActionType.UPDATE_CELL,
     payload: {
-      notebookId,
+      noteId,
       id,
       content,
     },
@@ -26,14 +26,11 @@ export const updateCell = (
 };
 
 // Delete Cell Action
-export const deleteCell = (
-  notebookId: string,
-  id: string
-): DeleteCellAction => {
+export const deleteCell = (noteId: string, id: string): DeleteCellAction => {
   return {
     type: ActionType.DELETE_CELL,
     payload: {
-      notebookId,
+      noteId,
       id,
     },
   };
@@ -41,14 +38,14 @@ export const deleteCell = (
 
 // Move Cell Action
 export const moveCell = (
-  notebookId: string,
+  noteId: string,
   fromIndex: number,
   toIndex: number
 ): MoveCellAction => {
   return {
     type: ActionType.MOVE_CELL,
     payload: {
-      notebookId,
+      noteId,
       fromIndex,
       toIndex,
     },
@@ -57,7 +54,7 @@ export const moveCell = (
 
 // Insert Cell After Action
 export const insertCellAfter = (
-  notebookId: string,
+  noteId: string,
   id: string | null,
   cellType: CellTypes,
   content?: string
@@ -65,7 +62,7 @@ export const insertCellAfter = (
   return {
     type: ActionType.INSERT_CELL_AFTER,
     payload: {
-      notebookId,
+      noteId,
       id,
       type: cellType,
       content,
