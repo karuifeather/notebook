@@ -14,8 +14,8 @@ export default function Header() {
         </Link>
 
         {/* CTA Button */}
-        <Button to="/try-now" cta>
-          Try Now
+        <Button to="/app/create-notebook" cta>
+          Create
         </Button>
 
         {/* Mobile Menu Toggle */}
