@@ -2,6 +2,7 @@ import { produce, Draft } from 'immer';
 import { ActionType } from '../action-types/index.ts';
 import { Action } from '../actions/index.ts';
 import { Cell } from '../types/cell.ts';
+import { randomId } from '@/utils/randomId.ts';
 
 export interface CellsState {
   // key = noteID
@@ -120,7 +121,5 @@ const reducer = (
         break;
     }
   });
-
-const randomId = (): string => Math.random().toString(36).substring(2, 7);
 
 export default reducer;

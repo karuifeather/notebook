@@ -11,6 +11,7 @@ export interface NotebookState {
 export interface Notebook {
   id: string;
   name: string;
+  description: string;
   notes: string[];
 }
 
@@ -43,9 +44,8 @@ const reducer = (
         return;
 
       case ActionType.CREATE_NOTEBOOK:
-        const { name } = action.payload;
-        const id = randomId();
-        draft.data[id] = { id, name, notes: [] };
+        const { id, name, description } = action.payload;
+        draft.data[id] = { id, name, description, notes: [] };
         return;
 
       case ActionType.DELETE_NOTEBOOK:
@@ -64,7 +64,5 @@ const reducer = (
     }
   });
 };
-
-const randomId = (): string => Math.random().toString(36).substring(2, 7);
 
 export default reducer;

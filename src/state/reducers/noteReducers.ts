@@ -19,9 +19,6 @@ const initialState: NotesState = {
   data: {},
 };
 
-// Helper function to generate a random ID
-const randomId = (): string => Math.random().toString(36).substring(2, 7);
-
 // Reducer
 const notesReducer = (state = initialState, action: Action): NotesState =>
   produce(state, (draft: Draft<NotesState>) => {
@@ -51,15 +48,16 @@ const notesReducer = (state = initialState, action: Action): NotesState =>
       // Create a new Note
       case ActionType.CREATE_NOTE: {
         const { parentId, note } = action.payload;
-        const noteId = randomId();
-        const newNote: Note = { ...note, id: noteId };
+
+        const noteId = note.id;
+        const newNote: Note = { ...note };
 
         if (!draft.data[parentId]) {
           draft.data[parentId] = { data: {}, lastCreatedNoteId: null };
         }
 
-        draft.data[parentId].data[noteId] = newNote;
-        draft.data[parentId].lastCreatedNoteId = noteId;
+        draft.data[parentId].data[noteId!] = newNote;
+        draft.data[parentId].lastCreatedNoteId = noteId!;
         break;
       }
 
