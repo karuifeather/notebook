@@ -1,15 +1,33 @@
 export enum ActionType {
+  // Cells actions
+  FETCH_CELLS = 'fetch_cells',
+  FETCH_CELLS_SUCCESS = 'fetch_cells_success',
+  FETCH_CELLS_ERROR = 'fetch_cells_error',
   MOVE_CELL = 'move_cell',
   DELETE_CELL = 'delete_cell',
   INSERT_CELL_AFTER = 'insert_cell_after',
   UPDATE_CELL = 'update_cell',
   UPDATE_CELL_ORDER = 'update_cell_order',
+  // Bundles actions
   BUNDLE_IT = 'bundle_it',
   BUNDLE_CREATING = 'bundle_creating',
   BUNDLE_CREATED = 'bundle_created',
-  ADD_DEPENDENCY = 'ADD_DEPENDENCY',
-  REMOVE_DEPENDENCY = 'REMOVE_DEPENDENCY',
-  UPDATE_DEPENDENCIES = 'UPDATE_DEPENDENCIES',
-  ADD_NOTE = 'add_note',
-  REMOVE_NOTE = 'remove_note',
+  // Notes actions
+  FETCH_NOTES = 'fetch_notes',
+  FETCH_NOTES_SUCCESS = 'fetch_notes_success',
+  FETCH_NOTES_ERROR = 'fetch_notes_error',
+  CREATE_NOTE = 'create_note',
+  DELETE_NOTE = 'delete_note',
+  UPDATE_NOTE = 'update_note',
+  ADD_DEPENDENCY = 'add_dependency',
+  REMOVE_DEPENDENCY = 'remove_dependency',
+  UPDATE_DEPENDENCIES = 'update_dependencies',
+  UPDATE_NOTE_DETAILS = 'update_note_details',
+  // Notebook actions
+  FETCH_NOTEBOOKS = 'fetch_notebooks',
+  FETCH_NOTEBOOKS_SUCCESS = 'fetch_notebooks_success',
+  FETCH_NOTEBOOKS_ERROR = 'fetch_notebooks_error',
+  CREATE_NOTEBOOK = 'create_notebook',
+  DELETE_NOTEBOOK = 'delete_notebook',
+  UPDATE_NOTEBOOK = 'update_notebook',
 }

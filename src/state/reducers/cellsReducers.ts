@@ -4,88 +4,122 @@ import { Action } from '../actions/index.ts';
 import { Cell } from '../types/cell.ts';
 
 export interface CellsState {
-  loading: boolean;
-  error: string | null;
-  order: string[];
-  data: {
-    [key: string]: Cell;
+  // key = noteID
+  [key: string]: {
+    loading: boolean;
+    error: string | null;
+    order: string[];
+    data: {
+      [key: string]: Cell; // key = cellID
+    };
   };
 }
 
-const initialState: CellsState = {
-  loading: false,
-  error: null,
-  order: [],
-  data: {},
-};
+const initialState: CellsState = {};
 
 const reducer = (
   state: CellsState = initialState,
   action: Action
-): CellsState => {
-  return produce(state, (draft: Draft<CellsState>) => {
+): CellsState =>
+  produce(state, (draft: Draft<CellsState>) => {
+    // @ts-ignore
+    const { noteId } = action.payload || {}; // Extract the note ID
+
     switch (action.type) {
       case ActionType.UPDATE_CELL: {
         const { id, content } = action.payload;
-        if (draft.data[id]) {
-          draft.data[id].content = content;
+        if (draft[noteId] && draft[noteId].data[id]) {
+          draft[noteId].data[id].content = content;
         }
-        return;
+        break;
       }
 
       case ActionType.DELETE_CELL: {
-        const id = action.payload;
-        if (draft.data[id]) {
-          delete draft.data[id];
-          draft.order = draft.order.filter((orderId) => orderId !== id);
+        const { id } = action.payload;
+        if (draft[noteId]) {
+          delete draft[noteId].data[id];
+          draft[noteId].order = draft[noteId].order.filter(
+            (orderId) => orderId !== id
+          );
         }
-        return;
+        break;
       }
 
       case ActionType.MOVE_CELL: {
         const { fromIndex, toIndex } = action.payload;
 
         if (
-          fromIndex < 0 ||
-          toIndex < 0 ||
-          fromIndex >= draft.order.length ||
-          toIndex >= draft.order.length
+          draft[noteId] &&
+          fromIndex >= 0 &&
+          toIndex >= 0 &&
+          fromIndex < draft[noteId].order.length &&
+          toIndex < draft[noteId].order.length
         ) {
-          return; // Ensure indices are within bounds
+          const [movedCell] = draft[noteId].order.splice(fromIndex, 1);
+          draft[noteId].order.splice(toIndex, 0, movedCell);
         }
-
-        // Remove the cell from its current position
-        const [movedCell] = draft.order.splice(fromIndex, 1);
-
-        // Insert the cell into its new position
-        draft.order.splice(toIndex, 0, movedCell);
-
-        return;
+        break;
       }
 
       case ActionType.INSERT_CELL_AFTER: {
-        const cell: Cell = {
-          type: action.payload.type,
+        const { id, type, content } = action.payload;
+
+        const newCell: Cell = {
           id: randomId(),
-          content: action.payload.content || '',
+          type,
+          content: content || '',
         };
 
-        draft.data[cell.id] = cell;
+        if (draft[noteId]) {
+          draft[noteId].data[newCell.id] = newCell;
 
-        const foundIndex = draft.order.findIndex(
-          (orderId) => orderId === action.payload.id
-        );
+          const foundIndex = draft[noteId].order.findIndex(
+            (orderId) => orderId === id
+          );
+          if (foundIndex !== -1) {
+            draft[noteId].order.splice(foundIndex + 1, 0, newCell.id);
+          } else {
+            draft[noteId].order.push(newCell.id);
+          }
+        }
+        break;
+      }
 
-        draft.order.splice(foundIndex + 1, 0, cell.id);
+      case ActionType.FETCH_CELLS: {
+        draft[noteId] = {
+          loading: true,
+          error: null,
+          data: {},
+          order: [],
+        };
+        break;
+      }
 
-        return;
+      case ActionType.FETCH_CELLS_SUCCESS: {
+        const { data, order } = action.payload;
+        draft[noteId] = {
+          loading: false,
+          error: null,
+          data,
+          order,
+        };
+        break;
+      }
+
+      case ActionType.FETCH_CELLS_ERROR: {
+        draft[noteId] = {
+          loading: false,
+          error: action.payload.error,
+          data: {},
+          order: [],
+        };
+        break;
       }
 
       default:
-        return;
+        break;
     }
   });
-};
 
 const randomId = (): string => Math.random().toString(36).substring(2, 7);
 

@@ -9,37 +9,55 @@ import {
 import { CellTypes } from '../types/cell.ts';
 import { Note } from '../types/note.ts';
 
-export const updateCell = (id: string, content: string): UpdateCellAction => {
+// Update Cell Action
+export const updateCell = (
+  notebookId: string,
+  id: string,
+  content: string
+): UpdateCellAction => {
   return {
     type: ActionType.UPDATE_CELL,
     payload: {
+      notebookId,
       id,
       content,
     },
   };
 };
 
-export const deleteCell = (id: string): DeleteCellAction => {
+// Delete Cell Action
+export const deleteCell = (
+  notebookId: string,
+  id: string
+): DeleteCellAction => {
   return {
     type: ActionType.DELETE_CELL,
-    payload: id,
+    payload: {
+      notebookId,
+      id,
+    },
   };
 };
 
+// Move Cell Action
 export const moveCell = (
+  notebookId: string,
   fromIndex: number,
   toIndex: number
 ): MoveCellAction => {
   return {
     type: ActionType.MOVE_CELL,
     payload: {
+      notebookId,
       fromIndex,
       toIndex,
     },
   };
 };
 
+// Insert Cell After Action
 export const insertCellAfter = (
+  notebookId: string,
   id: string | null,
   cellType: CellTypes,
   content?: string
@@ -47,6 +65,7 @@ export const insertCellAfter = (
   return {
     type: ActionType.INSERT_CELL_AFTER,
     payload: {
+      notebookId,
       id,
       type: cellType,
       content,
@@ -65,12 +84,23 @@ export const bundleIt = (id: string, content: string): BundleItAction => {
 };
 
 export const addNote = (note: Note) => ({
-  type: ActionType.ADD_NOTE,
+  type: ActionType.CREATE_NOTE,
   payload: note,
 });
 
+export const updateNoteDetails = (
+  id: string,
+  field: keyof Note,
+  value: any
+) => {
+  return {
+    type: ActionType.UPDATE_NOTE_DETAILS,
+    payload: { id, field, value },
+  };
+};
+
 export const removeNote = (noteId: string) => ({
-  type: ActionType.REMOVE_NOTE,
+  type: ActionType.DELETE_NOTE,
   payload: { noteId },
 });
 

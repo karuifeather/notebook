@@ -1,20 +1,20 @@
 import { Draft, produce } from 'immer';
 import { ActionType } from '../action-types/index.ts';
+import { NoteDetails } from '../types/note.ts';
+import { Action } from '../actions/index.ts';
 import { Note } from '../types/note.ts';
 
 export interface NotesState {
   loading: boolean;
   error: string | null;
-  order: string[]; // Order of cells by ID
   data: {
-    [key: string]: Note; // Notes by ID
+    [key: string]: NoteDetails; // key = notebookId
   };
 }
 
 // Initial State
 const initialState: NotesState = {
   loading: false,
-  order: [],
   error: null,
   data: {},
 };
@@ -22,71 +22,103 @@ const initialState: NotesState = {
 // Helper function to generate a random ID
 const randomId = (): string => Math.random().toString(36).substring(2, 7);
 
-const notesReducer = (state = initialState, action: any): NotesState =>
+// Reducer
+const notesReducer = (state = initialState, action: Action): NotesState =>
   produce(state, (draft: Draft<NotesState>) => {
     switch (action.type) {
-      // Update the order of cells
-      case ActionType.UPDATE_CELL_ORDER: {
-        draft.order = action.payload;
+      // Fetch Notes: Start loading
+      case ActionType.FETCH_NOTES: {
+        draft.loading = true;
+        draft.error = null;
         break;
       }
 
-      // Add a new note
-      case ActionType.ADD_NOTE: {
-        const note: Note = action.payload;
-        note.id = randomId();
-        draft.data[note.id] = note;
-        draft.order.push(note.id);
+      // Fetch Notes: Success
+      case ActionType.FETCH_NOTES_SUCCESS: {
+        draft.loading = false;
+        draft.error = null;
+        draft.data = action.payload;
         break;
       }
 
-      // Remove a note
-      case ActionType.REMOVE_NOTE: {
-        const { noteId } = action.payload;
-
-        // Remove the note from data and update the order
-        delete draft.data[noteId];
-        draft.order = draft.order.filter((id) => id !== noteId);
+      // Fetch Notes: Error
+      case ActionType.FETCH_NOTES_ERROR: {
+        draft.loading = false;
+        draft.error = action.payload;
         break;
       }
 
-      // Add a dependency to a note
-      case ActionType.ADD_DEPENDENCY: {
-        const { noteId, dependency } = action.payload;
+      // Create a new Note
+      case ActionType.CREATE_NOTE: {
+        const { parentId, note } = action.payload;
+        const noteId = randomId();
+        const newNote: Note = { ...note, id: noteId };
 
-        // Add the dependency if it doesn't already exist
-        const dependencies = draft.data[noteId]?.dependencies;
-        if (dependencies && !dependencies.includes(dependency)) {
-          dependencies.push(dependency);
+        if (!draft.data[parentId]) {
+          draft.data[parentId] = { data: {}, lastCreatedNoteId: null };
+        }
+
+        draft.data[parentId].data[noteId] = newNote;
+        draft.data[parentId].lastCreatedNoteId = noteId;
+        break;
+      }
+
+      // Delete a Note
+      case ActionType.DELETE_NOTE: {
+        const { parentId, noteId } = action.payload;
+
+        if (draft.data[parentId] && draft.data[parentId].data[noteId]) {
+          delete draft.data[parentId].data[noteId];
         }
         break;
       }
 
-      // Remove a dependency from a note
-      case ActionType.REMOVE_DEPENDENCY: {
-        const { noteId, dependency } = action.payload;
+      // Update a Note
+      case ActionType.UPDATE_NOTE: {
+        const { parentId, noteId, updates } = action.payload;
 
-        const dependencies = draft.data[noteId]?.dependencies;
-        if (dependencies) {
-          draft.data[noteId].dependencies = dependencies.filter(
+        if (draft.data[parentId]?.data[noteId]) {
+          Object.assign(draft.data[parentId].data[noteId], updates);
+        }
+        break;
+      }
+
+      // Add a Dependency to a Note
+      case ActionType.ADD_DEPENDENCY: {
+        const { parentId, noteId, dependency } = action.payload;
+
+        const note = draft.data[parentId]?.data[noteId];
+        if (note && !note.dependencies.includes(dependency)) {
+          note.dependencies.push(dependency);
+        }
+        break;
+      }
+
+      // Remove a Dependency from a Note
+      case ActionType.REMOVE_DEPENDENCY: {
+        const { parentId, noteId, dependency } = action.payload;
+
+        const note = draft.data[parentId]?.data[noteId];
+        if (note) {
+          note.dependencies = note.dependencies.filter(
             (dep) => dep !== dependency
           );
         }
         break;
       }
 
-      // Replace all dependencies for a note
+      // Replace Dependencies for a Note
       case ActionType.UPDATE_DEPENDENCIES: {
-        const { noteId, dependencies } = action.payload;
+        const { parentId, noteId, dependencies } = action.payload;
 
-        if (draft.data[noteId]) {
-          draft.data[noteId].dependencies = dependencies;
+        const note = draft.data[parentId]?.data[noteId];
+        if (note) {
+          note.dependencies = dependencies;
         }
         break;
       }
 
       default:
-        // For unhandled action types, return the state unchanged
         break;
     }
   });

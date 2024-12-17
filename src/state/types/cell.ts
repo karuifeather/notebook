@@ -1,4 +1,4 @@
-export type CellTypes = 'code' | 'markdown';
+export type CellTypes = 'code' | 'markdown' | 'text' | 'todo';
 
 export interface Cell {
   id: string;

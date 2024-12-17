@@ -16,11 +16,11 @@ declare global {
 // Define middlewares array
 const middlewares: Middleware[] = [
   thunk,
-  // @ts-ignore: Ignore type incompatibility for cumulativeMiddleware
+  // @ts-ignore
   cumulativeMiddleware,
-  // @ts-ignore: Ignore type incompatibility for bundlerMiddleware
+  // @ts-ignore
   bundlerMiddleware,
-  // @ts-ignore: Ignore type incompatibility for bundlerMiddleware
+  // @ts-ignore
   updateOrderMiddleware,
 ];
 
@@ -28,7 +28,7 @@ const middlewares: Middleware[] = [
 export const store = configureStore({
   reducer: reducers,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(middlewares),
+    getDefaultMiddleware({ thunk: true }).concat(middlewares),
   devTools: process.env.NODE_ENV !== 'production',
 });
 
