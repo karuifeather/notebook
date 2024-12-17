@@ -1,55 +1,84 @@
 import { createSelector } from 'reselect';
 import { RootState } from '../store.ts';
 
-// Base selector to get the notebook state by ID
+// ----------------------------------
+// Base Selectors
+// ----------------------------------
+
+export const selectNotebooks = (state: RootState) => state.notebooks.data;
+
 export const selectNotebookById = (state: RootState, notebookId: string) =>
   state.notebooks.data[notebookId] || { title: '', description: '', notes: [] };
 
-// Selector to get the `data` for a note by notebookId by noteID
-export const selectNoteById = (
-  state: RootState,
-  notebookId: string,
-  noteID: string
-) =>
-  state.notes.data[notebookId].data[noteID] || {
-    title: '',
-    description: '',
-    dependencies: [],
-  };
+export const selectNotes = (state: RootState) => state.notes;
 
-// Selector to get the cell order by noteID
-const selectOrder = (state: RootState, noteId: string) =>
-  state.cells[noteId].order;
+export const selectCells = (state: RootState) => state.cells;
 
-// Memoized selector to get all cells for a notebook
-export const selectCells = (state: RootState, noteId: string) => {
-  const order = selectOrder(state, noteId);
-  return order.map((id) => state.cells[noteId].data[id]);
-};
-
-export const selectBundleById = (state: RootState, id: string) =>
-  state.bundles[id];
-
-export const makeSelectBundleById = () =>
-  createSelector(
-    [(state: RootState) => state.bundles, (_: RootState, id: string) => id],
-    (bundles, id) => {
-      // Ensure we return a new reference (or transform the data)
-      return { ...bundles[id] };
-    }
-  );
+export const selectBundles = (state: RootState) => state.bundles;
 
 export const selectLastGeneratedId = (state: RootState) =>
   state.temp.lastCreateId;
 
-// // Input selectors
-// const selectCellsOrder = (state: RootState, noteId: string) =>
-//   state.cells.order;
-// const selectData = (state: RootState) => state.cells.data;
-// // const selectNotesData = (state: RootState) => state.notes.data;
+// ----------------------------------
+// Derived Selectors
+// ----------------------------------
 
-// // Memoized selector
-// export const selectCells = createSelector(
-//   [selectOrder, selectData],
-//   (order, data) => order.map((id) => data[id])
-// );
+/**
+ * Selector to get all notes for a specific notebook ID
+ */
+export const makeSelectNotesByNotebookId = () =>
+  createSelector(
+    [selectNotes, (_: RootState, notebookId: string) => notebookId],
+    (notes, notebookId) =>
+      notes[notebookId]?.order.map((id) => notes[notebookId].data[id]) || []
+  );
+
+/**
+ * Selector to get a specific note by notebookId and noteId
+ */
+export const makeSelectNoteById = () =>
+  createSelector(
+    [
+      selectNotes,
+      (_: RootState, notebookId: string) => notebookId,
+      (_: RootState, __: string, noteId: string) => noteId,
+    ],
+    (notes, notebookId, noteId) =>
+      notes[notebookId]?.data[noteId] || {
+        title: '',
+        description: '',
+        dependencies: [],
+      }
+  );
+
+/**
+ * Selector to get the cell order for a noteId
+ */
+export const makeSelectCellOrder = () =>
+  createSelector(
+    [selectCells, (_: RootState, noteId: string) => noteId],
+    (cells, noteId) => cells[noteId]?.order || []
+  );
+
+/**
+ * Selector to get all cells for a specific noteId
+ */
+export const makeSelectCells = () =>
+  createSelector(
+    [
+      makeSelectCellOrder(),
+      selectCells,
+      (_: RootState, noteId: string) => noteId,
+    ],
+    (order, cells, noteId) =>
+      order.map((id) => cells[noteId]?.data[id] || { content: '' })
+  );
+
+/**
+ * Selector to get a bundle by ID
+ */
+export const makeSelectBundleById = () =>
+  createSelector(
+    [selectBundles, (_: RootState, id: string) => id],
+    (bundles, id) => ({ ...bundles[id] }) // return new reference for safety
+  );

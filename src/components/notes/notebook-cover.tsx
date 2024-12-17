@@ -2,7 +2,7 @@ import { useActions } from '@/hooks/use-actions.ts';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import {
   selectNotebookById,
-  selectNotesByNotebookId,
+  makeSelectNotesByNotebookId,
 } from '@/state/selectors/index.ts';
 import React, { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -14,6 +14,7 @@ interface NotebookCoverProps {
 const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }): any => {
   const { notebookId } = useParams();
   const navigate = useNavigate();
+  const selectNotesByNotebookId = makeSelectNotesByNotebookId();
 
   if (!notebookId) {
     navigate('/404');
