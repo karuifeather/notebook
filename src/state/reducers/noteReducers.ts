@@ -1,23 +1,22 @@
 import { Draft, produce } from 'immer';
 import { ActionType } from '../action-types/index.ts';
-import { NoteDetails } from '../types/note.ts';
 import { Action } from '../actions/index.ts';
 import { Note } from '../types/note.ts';
 
 export interface NotesState {
-  loading: boolean;
-  error: string | null;
-  data: {
-    [key: string]: NoteDetails; // key = notebookId
+  // key = NotebookId
+  [key: string]: {
+    loading: boolean;
+    error: string | null;
+    order: string[]; // order of note IDs for the notebook
+    data: {
+      [key: string]: Note; // key = NoteId
+    };
   };
 }
 
 // Initial State
-const initialState: NotesState = {
-  loading: false,
-  error: null,
-  data: {},
-};
+const initialState: NotesState = {};
 
 // Reducer
 const notesReducer = (state = initialState, action: Action): NotesState =>
@@ -25,47 +24,67 @@ const notesReducer = (state = initialState, action: Action): NotesState =>
     switch (action.type) {
       // Fetch Notes: Start loading
       case ActionType.FETCH_NOTES: {
-        draft.loading = true;
-        draft.error = null;
+        const { parentId } = action.payload;
+        if (!draft[parentId]) {
+          draft[parentId] = { loading: true, error: null, order: [], data: {} };
+        } else {
+          draft[parentId].loading = true;
+          draft[parentId].error = null;
+        }
         break;
       }
 
       // Fetch Notes: Success
       case ActionType.FETCH_NOTES_SUCCESS: {
-        draft.loading = false;
-        draft.error = null;
-        draft.data = action.payload;
+        const { parentId, notes } = action.payload;
+        draft[parentId] = {
+          loading: false,
+          error: null,
+          order: notes.map((note: Note) => note.id!),
+          data: notes.reduce((acc: { [key: string]: Note }, note: Note) => {
+            acc[note.id!] = note;
+            return acc;
+          }, {}),
+        };
         break;
       }
 
       // Fetch Notes: Error
       case ActionType.FETCH_NOTES_ERROR: {
-        draft.loading = false;
-        draft.error = action.payload;
+        const { parentId, error } = action.payload;
+        if (!draft[parentId]) {
+          draft[parentId] = { loading: false, error, order: [], data: {} };
+        } else {
+          draft[parentId].loading = false;
+          draft[parentId].error = error;
+        }
         break;
       }
 
       // Create a new Note
       case ActionType.CREATE_NOTE: {
         const { parentId, note } = action.payload;
-
-        const noteId = note.id;
-        const newNote: Note = { ...note };
-
-        if (!draft.data[parentId]) {
-          draft.data[parentId] = { data: {} };
+        if (!draft[parentId]) {
+          draft[parentId] = {
+            loading: false,
+            error: null,
+            order: [],
+            data: {},
+          };
         }
-
-        draft.data[parentId].data[noteId!] = newNote;
+        draft[parentId].data[note.id!] = note;
+        draft[parentId].order.push(note.id!);
         break;
       }
 
       // Delete a Note
       case ActionType.DELETE_NOTE: {
         const { parentId, noteId } = action.payload;
-
-        if (draft.data[parentId] && draft.data[parentId].data[noteId]) {
-          delete draft.data[parentId].data[noteId];
+        if (draft[parentId]?.data[noteId]) {
+          delete draft[parentId].data[noteId];
+          draft[parentId].order = draft[parentId].order.filter(
+            (id) => id !== noteId
+          );
         }
         break;
       }
@@ -73,9 +92,8 @@ const notesReducer = (state = initialState, action: Action): NotesState =>
       // Update a Note
       case ActionType.UPDATE_NOTE: {
         const { parentId, noteId, updates } = action.payload;
-
-        if (draft.data[parentId]?.data[noteId]) {
-          Object.assign(draft.data[parentId].data[noteId], updates);
+        if (draft[parentId]?.data[noteId]) {
+          Object.assign(draft[parentId].data[noteId], updates);
         }
         break;
       }
@@ -83,8 +101,7 @@ const notesReducer = (state = initialState, action: Action): NotesState =>
       // Add a Dependency to a Note
       case ActionType.ADD_DEPENDENCY: {
         const { parentId, noteId, dependency } = action.payload;
-
-        const note = draft.data[parentId]?.data[noteId];
+        const note = draft[parentId]?.data[noteId];
         if (note && !note.dependencies.includes(dependency)) {
           note.dependencies.push(dependency);
         }
@@ -94,8 +111,7 @@ const notesReducer = (state = initialState, action: Action): NotesState =>
       // Remove a Dependency from a Note
       case ActionType.REMOVE_DEPENDENCY: {
         const { parentId, noteId, dependency } = action.payload;
-
-        const note = draft.data[parentId]?.data[noteId];
+        const note = draft[parentId]?.data[noteId];
         if (note) {
           note.dependencies = note.dependencies.filter(
             (dep) => dep !== dependency
@@ -107,8 +123,7 @@ const notesReducer = (state = initialState, action: Action): NotesState =>
       // Replace Dependencies for a Note
       case ActionType.UPDATE_DEPENDENCIES: {
         const { parentId, noteId, dependencies } = action.payload;
-
-        const note = draft.data[parentId]?.data[noteId];
+        const note = draft[parentId]?.data[noteId];
         if (note) {
           note.dependencies = dependencies;
         }

@@ -1,6 +1,6 @@
 import { ActionType } from '../action-types/index.ts';
 import { Cell, CellTypes } from '../types/cell.ts';
-import { Note, NoteDetails } from '../types/note.ts';
+import { Note } from '../types/note.ts';
 
 /**
  * Temp actions
@@ -107,12 +107,12 @@ export interface BundleItAction {
 /**
  * Notebook actions
  */
-interface FetchNotebooksAction {
+export interface FetchNotebooksAction {
   type: ActionType.FETCH_NOTEBOOKS;
   payload: null; // No payload
 }
 
-interface FetchNotebooksSuccessAction {
+export interface FetchNotebooksSuccessAction {
   type: ActionType.FETCH_NOTEBOOKS_SUCCESS;
   payload: {
     [key: string]: {
@@ -124,22 +124,22 @@ interface FetchNotebooksSuccessAction {
   }; // Payload contains the entire fetched notebooks structure
 }
 
-interface FetchNotebooksErrorAction {
+export interface FetchNotebooksErrorAction {
   type: ActionType.FETCH_NOTEBOOKS_ERROR;
   payload: string; // Error message
 }
 
-interface CreateNotebookAction {
+export interface CreateNotebookAction {
   type: ActionType.CREATE_NOTEBOOK;
   payload: { title: string; description: string; id: string };
 }
 
-interface DeleteNotebookAction {
+export interface DeleteNotebookAction {
   type: ActionType.DELETE_NOTEBOOK;
   payload: string; // Notebook ID to delete
 }
 
-interface UpdateNotebookAction {
+export interface UpdateNotebookAction {
   type: ActionType.UPDATE_NOTEBOOK;
   payload: { notebookId: string; name: string };
 }
@@ -148,72 +148,87 @@ interface UpdateNotebookAction {
  * Note actions
  */
 
+// Fetch Notes: Start
 export interface FetchNotesAction {
   type: ActionType.FETCH_NOTES;
-  payload: string; // Notebook ID
+  payload: {
+    parentId: string; // Notebook ID
+  };
 }
 
+// Fetch Notes: Success
 export interface FetchNotesSuccessAction {
   type: ActionType.FETCH_NOTES_SUCCESS;
   payload: {
-    [key: string]: NoteDetails;
-  }; // Payload contains the entire fetched notes structure
+    parentId: string; // Notebook ID
+    notes: Note[]; // Array of notes
+  };
 }
 
+// Fetch Notes: Error
 export interface FetchNotesErrorAction {
   type: ActionType.FETCH_NOTES_ERROR;
-  payload: string; // Error message
+  payload: {
+    parentId: string; // Notebook ID
+    error: string; // Error message
+  };
 }
 
+// Create a Note
 export interface CreateNoteAction {
   type: ActionType.CREATE_NOTE;
   payload: {
-    parentId: string; // ID of the parent (NoteDetails level)
-    note: Note; // Note to be created
+    parentId: string; // Notebook ID
+    note: Note; // New note object
   };
 }
 
+// Delete a Note
 export interface DeleteNoteAction {
   type: ActionType.DELETE_NOTE;
   payload: {
-    parentId: string; // ID of the parent (NoteDetails level)
-    noteId: string; // ID of the note to be deleted
+    parentId: string; // Notebook ID
+    noteId: string; // Note ID to delete
   };
 }
 
+// Update a Note
 export interface UpdateNoteAction {
   type: ActionType.UPDATE_NOTE;
   payload: {
-    parentId: string; // ID of the parent (NoteDetails level)
-    noteId: string; // ID of the note to be updated
-    updates: Partial<Note>; // Partial updates to the note
+    parentId: string; // Notebook ID
+    noteId: string; // Note ID to update
+    updates: Partial<Note>; // Fields to update
   };
 }
 
+// Add Dependency
 export interface AddDependencyAction {
   type: ActionType.ADD_DEPENDENCY;
   payload: {
-    parentId: string; // ID of the parent (NoteDetails level)
-    noteId: string; // ID of the note
+    parentId: string; // Notebook ID
+    noteId: string; // Note ID
     dependency: string; // Dependency to add
   };
 }
 
+// Remove Dependency
 export interface RemoveDependencyAction {
   type: ActionType.REMOVE_DEPENDENCY;
   payload: {
-    parentId: string; // ID of the parent (NoteDetails level)
-    noteId: string; // ID of the note
+    parentId: string; // Notebook ID
+    noteId: string; // Note ID
     dependency: string; // Dependency to remove
   };
 }
 
+// Replace Dependencies
 export interface UpdateDependenciesAction {
   type: ActionType.UPDATE_DEPENDENCIES;
   payload: {
-    parentId: string; // ID of the parent (NoteDetails level)
-    noteId: string; // ID of the note
-    dependencies: string[]; // New dependencies list
+    parentId: string; // Notebook ID
+    noteId: string; // Note ID
+    dependencies: string[]; // Updated list of dependencies
   };
 }
 
