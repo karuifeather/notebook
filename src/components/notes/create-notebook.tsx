@@ -1,13 +1,14 @@
 import { useActions } from '@/hooks/use-actions.ts';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import { selectLastGeneratedId } from '@/state/selectors/index.ts';
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CreateNotebook: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const navigate = useNavigate();
+  const [isMounted, setIsMounted] = useState(false);
 
   const { createNotebook } = useActions();
   const lastGenerateId = useTypedSelector(selectLastGeneratedId);
@@ -17,13 +18,18 @@ const CreateNotebook: React.FC = () => {
   };
 
   useEffect(() => {
+    setIsMounted(true);
     if (lastGenerateId) {
       navigate(`/app/notebook/${lastGenerateId}`);
     }
   }, [lastGenerateId]);
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh]  bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900   p-4">
+    <div
+      className={`flex items-center justify-center min-h-[80vh] bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900 p-4 transition-all duration-700 ease-out ${
+        isMounted ? 'animate-slide-up-fade' : 'opacity-0'
+      }`}
+    >
       {/* Glassmorphism Container */}
       <div className="w-full max-w-2xl p-6 sm:p-10 bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg shadow-2xl rounded-2xl text-center border border-gray-300 dark:border-gray-700">
         {/* Header */}

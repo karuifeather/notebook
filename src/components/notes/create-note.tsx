@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import '../styles/animation.css';
 
 const CreateNote: React.FC = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleSave = () => {
     // Save note logic
@@ -10,7 +16,11 @@ const CreateNote: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+    <div
+      className={`p-6 bg-white rounded-lg shadow-md dark:bg-gray-800 transition-all duration-500 ease-in-out ${
+        isMounted ? 'animate-fade-in' : 'opacity-0'
+      }`}
+    >
       <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
         Create New Note
       </h1>
