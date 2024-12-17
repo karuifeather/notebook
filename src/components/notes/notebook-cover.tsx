@@ -1,46 +1,52 @@
+import { useActions } from '@/hooks/use-actions.ts';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
-import { selectNotebookById } from '@/state/selectors/index.ts';
+import {
+  selectNotebookById,
+  selectNotesByNotebookId,
+} from '@/state/selectors/index.ts';
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 interface NotebookCoverProps {
-  title: string;
-  description: string;
   coverImage?: string;
-  notes: { id: string; title: string }[];
-  onEdit: () => void;
-  onAddNote: (title: string) => void;
-  onEditNote: (id: string, title: string) => void;
 }
 
-const NotebookCover: React.FC<NotebookCoverProps> = ({
-  title,
-  description,
-  coverImage,
-  notes,
-  onEdit,
-  onAddNote,
-  onEditNote,
-}): any => {
+const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }): any => {
   const { notebookId } = useParams();
   const navigate = useNavigate();
 
   if (!notebookId) {
-    return navigate('/404');
+    navigate('/404');
+    return null;
   }
-
-  const {} = useTypedSelector((state) => selectNotebookById(state, notebookId));
 
   const [imageLoaded, setImageLoaded] = useState(false);
   const [newNoteTitle, setNewNoteTitle] = useState('');
-  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
-  const [hoveredNoteId, setHoveredNoteId] = useState<string | null>(null);
+
+  // Fetch notebook and notes using selectors
+  const { description, name: title } = useTypedSelector((state) =>
+    selectNotebookById(state, notebookId)
+  );
+
+  const notes = useTypedSelector((state) =>
+    selectNotesByNotebookId(state, notebookId)
+  );
+
+  const { createNote } = useActions();
 
   const handleNewNote = () => {
-    if (newNoteTitle.trim()) {
-      onAddNote(newNoteTitle);
+    if (newNoteTitle) {
+      createNote(notebookId, {
+        title: newNoteTitle,
+        description: '',
+        dependencies: [],
+      });
       setNewNoteTitle('');
     }
+  };
+
+  const onEdit = () => {
+    alert('Feature not implemented yet.');
   };
 
   return (
@@ -122,40 +128,19 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({
           ) : (
             <ul className="space-y-4">
               {notes.map((note) => (
-                <li
+                <Link
+                  to={`/app/notebook/${notebookId}/note/${note.id}`}
                   key={note.id}
-                  className="group flex items-center justify-between p-4 border dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                  onMouseEnter={() => setHoveredNoteId(note.id)}
-                  onMouseLeave={() => setHoveredNoteId(null)}
                 >
-                  {/* Editable Title */}
-                  {editingNoteId === note.id ? (
-                    <input
-                      type="text"
-                      value={note.title}
-                      onChange={(e) => onEditNote(note.id, e.target.value)}
-                      onBlur={() => setEditingNoteId(null)}
-                      autoFocus
-                      className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-gray-200"
-                    />
-                  ) : (
-                    <span
-                      onDoubleClick={() => setEditingNoteId(note.id)}
-                      className="text-gray-800 dark:text-gray-200 cursor-pointer"
-                    >
+                  <li
+                    key={note.id}
+                    className="group flex items-center justify-between p-4 border dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  >
+                    <span className="text-gray-800 dark:text-gray-200 cursor-pointer">
                       {note.title}
                     </span>
-                  )}
-                  {/* Hover New Note Button */}
-                  {hoveredNoteId === note.id && (
-                    <button
-                      onClick={() => setEditingNoteId('')}
-                      className="text-sm bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md transition"
-                    >
-                      + New Note
-                    </button>
-                  )}
-                </li>
+                  </li>
+                </Link>
               ))}
 
               {/* New Note Input */}
