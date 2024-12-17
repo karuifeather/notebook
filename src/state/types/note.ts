@@ -9,5 +9,4 @@ export interface NoteDetails {
   data: {
     [key: string]: Note; // Notes by ID
   };
-  lastCreatedNoteId: string | null;
 }

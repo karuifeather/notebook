@@ -53,11 +53,10 @@ const notesReducer = (state = initialState, action: Action): NotesState =>
         const newNote: Note = { ...note };
 
         if (!draft.data[parentId]) {
-          draft.data[parentId] = { data: {}, lastCreatedNoteId: null };
+          draft.data[parentId] = { data: {} };
         }
 
         draft.data[parentId].data[noteId!] = newNote;
-        draft.data[parentId].lastCreatedNoteId = noteId!;
         break;
       }
 
