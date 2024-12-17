@@ -6,6 +6,7 @@ import {
   InsertCellAfterAction,
   BundleItAction,
   CreateNoteAction,
+  MoveNoteAction,
 } from '../actions/index.ts';
 import { CellTypes } from '../types/cell.ts';
 import { Note } from '../types/note.ts';
@@ -97,6 +98,21 @@ export const createNote = (
   type: ActionType.CREATE_NOTE,
   payload: { parentId: notebookId, note },
 });
+
+export const moveNote = (
+  parentId: string,
+  fromIndex: number,
+  toIndex: number
+): MoveNoteAction => {
+  return {
+    type: ActionType.MOVE_NOTE,
+    payload: {
+      parentId,
+      fromIndex,
+      toIndex,
+    },
+  };
+};
 
 /**
  * Notebook Action Creators

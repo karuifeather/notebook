@@ -19,6 +19,7 @@ export enum ActionType {
   CREATE_NOTE = 'create_note',
   DELETE_NOTE = 'delete_note',
   UPDATE_NOTE = 'update_note',
+  MOVE_NOTE = 'move_note',
   ADD_DEPENDENCY = 'add_dependency',
   REMOVE_DEPENDENCY = 'remove_dependency',
   UPDATE_DEPENDENCIES = 'update_dependencies',

@@ -98,6 +98,28 @@ const notesReducer = (state = initialState, action: Action): NotesState =>
         break;
       }
 
+      // Move a Note
+      case ActionType.MOVE_NOTE: {
+        const { parentId, fromIndex, toIndex } = action.payload;
+        if (draft[parentId] && draft[parentId].order) {
+          const order = draft[parentId].order;
+
+          // Validate indices
+          if (
+            fromIndex >= 0 &&
+            fromIndex < order.length &&
+            toIndex >= 0 &&
+            toIndex < order.length
+          ) {
+            // Remove the note at `fromIndex`
+            const [movedNote] = order.splice(fromIndex, 1);
+            // Insert the note at `toIndex`
+            order.splice(toIndex, 0, movedNote);
+          }
+        }
+        break;
+      }
+
       // Add a Dependency to a Note
       case ActionType.ADD_DEPENDENCY: {
         const { parentId, noteId, dependency } = action.payload;

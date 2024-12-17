@@ -202,6 +202,15 @@ export interface UpdateNoteAction {
   };
 }
 
+export interface MoveNoteAction {
+  type: ActionType.MOVE_NOTE;
+  payload: {
+    parentId: string; // Notebook ID
+    fromIndex: number; // Current position of the note in order
+    toIndex: number; // Target position to move the note to
+  };
+}
+
 // Add Dependency
 export interface AddDependencyAction {
   type: ActionType.ADD_DEPENDENCY;
@@ -261,6 +270,7 @@ export type Action =
   | CreateNoteAction
   | DeleteNoteAction
   | UpdateNoteAction
+  | MoveNoteAction
   | AddDependencyAction
   | RemoveDependencyAction
   | UpdateDependenciesAction;
