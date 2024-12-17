@@ -63,7 +63,8 @@ const reducer = (
       }
 
       case ActionType.INSERT_CELL_AFTER: {
-        const { id, type, content } = action.payload;
+        console.log(action.payload);
+        const { noteId, id, type, content } = action.payload;
 
         const newCell: Cell = {
           id: randomId(),
@@ -71,17 +72,25 @@ const reducer = (
           content: content || '',
         };
 
-        if (draft[noteId]) {
-          draft[noteId].data[newCell.id] = newCell;
+        if (!draft[noteId]) {
+          const newSubCellState = {
+            data: { [newCell.id]: newCell },
+            order: [],
+            loading: false,
+            error: null,
+          };
+          draft[noteId] = newSubCellState;
+        }
 
-          const foundIndex = draft[noteId].order.findIndex(
-            (orderId) => orderId === id
-          );
-          if (foundIndex !== -1) {
-            draft[noteId].order.splice(foundIndex + 1, 0, newCell.id);
-          } else {
-            draft[noteId].order.push(newCell.id);
-          }
+        draft[noteId].data[newCell.id] = newCell;
+
+        const foundIndex = draft[noteId].order.findIndex(
+          (orderId) => orderId === id
+        );
+        if (foundIndex !== -1) {
+          draft[noteId].order.splice(foundIndex + 1, 0, newCell.id);
+        } else {
+          draft[noteId].order.push(newCell.id);
         }
         break;
       }
