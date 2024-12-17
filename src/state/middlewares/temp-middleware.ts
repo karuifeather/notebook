@@ -33,16 +33,20 @@ export const tempMiddleware: Middleware =
           meta: { processed: true }, // Add flag
         });
         break;
-      case ActionType.CREATE_NOTE:
+
+      case ActionType.CREATE_NOTE: {
+        const note = action.payload.note;
+        note.id = id;
         dispatch({
           type: action.type,
           payload: {
             ...action.payload,
-            id,
+            note,
           },
           meta: { processed: true }, // Add flag
         });
         break;
+      }
     }
 
     dispatch({
