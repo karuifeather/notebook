@@ -9,7 +9,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import { useActions } from '@/hooks/use-actions.ts';
-import { selectCells } from '@/state/selectors/index.ts';
+import { makeSelectCells } from '@/state/selectors/index.ts';
 import CellListItem from '@/components/cells/cell-list-item.tsx';
 import AddCell from '@/components/cells/add-cell.tsx';
 import ActionBar from '@/components/cells/action-bar.tsx';
@@ -64,8 +64,9 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
   );
 };
 
-const CellList: React.FC = () => {
-  const cells = useTypedSelector(selectCells);
+const CellList: React.FC<{ noteId: string }> = ({ noteId }) => {
+  const selectCells = makeSelectCells();
+  const cells = useTypedSelector((state) => selectCells(state, noteId));
   const { moveCell } = useActions();
 
   // Handle drag end
@@ -79,7 +80,7 @@ const CellList: React.FC = () => {
       const toIndex = cells.findIndex((cell) => cell.id === over.id);
 
       // Dispatch the action to reorder cells
-      moveCell(fromIndex, toIndex);
+      moveCell(noteId, fromIndex, toIndex);
     }
   };
 
