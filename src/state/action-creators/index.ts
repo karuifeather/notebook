@@ -9,6 +9,9 @@ import {
 import { CellTypes } from '../types/cell.ts';
 import { Note } from '../types/note.ts';
 
+/**
+ * Cell Action Creators
+ */
 // Update Cell Action
 export const updateCell = (
   noteId: string,
@@ -70,6 +73,9 @@ export const insertCellAfter = (
   };
 };
 
+/**
+ * Bundles Action Creators
+ */
 export const bundleIt = (id: string, content: string): BundleItAction => {
   return {
     type: ActionType.BUNDLE_IT,
@@ -80,6 +86,9 @@ export const bundleIt = (id: string, content: string): BundleItAction => {
   };
 };
 
+/**
+ * Note Action Creators
+ */
 export const addNote = (note: Note) => ({
   type: ActionType.CREATE_NOTE,
   payload: note,
@@ -114,4 +123,12 @@ export const removeDependency = (noteId: string, dependency: string) => ({
 export const updateDependencies = (noteId: string, dependencies: string[]) => ({
   type: ActionType.UPDATE_DEPENDENCIES,
   payload: { noteId, dependencies },
+});
+
+/**
+ * Notebook Action Creators
+ */
+export const createNotebook = (title: string, description: string) => ({
+  type: ActionType.CREATE_NOTEBOOK,
+  payload: { title, description },
 });

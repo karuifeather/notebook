@@ -30,4 +30,6 @@ export enum ActionType {
   CREATE_NOTEBOOK = 'create_notebook',
   DELETE_NOTEBOOK = 'delete_notebook',
   UPDATE_NOTEBOOK = 'update_notebook',
+  // Temp actions
+  GENERATED_ID = 'generated_id',
 }

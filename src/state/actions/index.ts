@@ -3,6 +3,14 @@ import { Cell, CellTypes } from '../types/cell.ts';
 import { Note, NoteDetails } from '../types/note.ts';
 
 /**
+ * Temp actions
+ */
+export interface GeneratedIdAction {
+  type: ActionType.GENERATED_ID;
+  payload: { id: string };
+}
+
+/**
  * Cell actions
  */
 export interface FetchCellsAction {
@@ -110,6 +118,7 @@ interface FetchNotebooksSuccessAction {
     [key: string]: {
       id: string;
       name: string;
+      description: string;
       notes: string[];
     };
   }; // Payload contains the entire fetched notebooks structure
@@ -122,7 +131,7 @@ interface FetchNotebooksErrorAction {
 
 interface CreateNotebookAction {
   type: ActionType.CREATE_NOTEBOOK;
-  payload: { name: string };
+  payload: { name: string; description: string; id: string };
 }
 
 interface DeleteNotebookAction {
@@ -160,7 +169,7 @@ export interface CreateNoteAction {
   type: ActionType.CREATE_NOTE;
   payload: {
     parentId: string; // ID of the parent (NoteDetails level)
-    note: Omit<Note, 'id'>; // Note without ID, as ID is typically generated on creation
+    note: Note; // Note to be created
   };
 }
 
@@ -209,6 +218,7 @@ export interface UpdateDependenciesAction {
 }
 
 export type Action =
+  | GeneratedIdAction
   // Cell Actions
   | FetchCellsAction
   | FetchCellsSuccessAction

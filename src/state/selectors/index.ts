@@ -39,8 +39,8 @@ export const makeSelectBundleById = () =>
     }
   );
 
-export const selectLastCreatedNoteId = (state: RootState, notebookId: string) =>
-  state.notes.data[notebookId].lastCreatedNoteId;
+export const selectLastGeneratedId = (state: RootState) =>
+  state.temp.lastCreateId;
 
 // // Input selectors
 // const selectCellsOrder = (state: RootState, noteId: string) =>
