@@ -92,7 +92,7 @@ export const Sidebar: React.FC = () => {
                 Notebooks
               </h1>
               {/* Create Button */}
-              <div className={`p-4 ${isCollapsed ? 'hidden' : 'block'}`}>
+              <div className={`${isCollapsed ? 'hidden' : 'block'}`}>
                 <button
                   className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white  bg-blue-500 hover:bg-blue-600 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                   onClick={() => navigate('/app/create-notebook')}

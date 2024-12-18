@@ -83,7 +83,7 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
       </div>
 
       {/* Main Container */}
-      <div className="xl:absolute xl:top-1/4 min-h-[60vh]  w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden mt-6 sm:mt-8 p-4 sm:p-6 lg:p-8">
+      <div className="xl:absolute xl:top-1/4 min-h-[80vh]  w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden mt-6 sm:mt-8 p-4 sm:p-6 lg:p-8">
         {/* Content Section */}
         <div className="mb-6">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
