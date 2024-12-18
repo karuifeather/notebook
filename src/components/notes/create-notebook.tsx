@@ -9,17 +9,19 @@ const CreateNotebook: React.FC = () => {
   const [description, setDescription] = useState('');
   const navigate = useNavigate();
   const [isMounted, setIsMounted] = useState(false);
+  const [notebookCreated, setNotebookCreated] = useState(false);
 
   const { createNotebook } = useActions();
   const lastGenerateId = useTypedSelector(selectLastGeneratedId);
 
   const handleOnCreate = (title: string, description: string) => {
     createNotebook(title, description);
+    setNotebookCreated(true);
   };
 
   useEffect(() => {
     setIsMounted(true);
-    if (lastGenerateId) {
+    if (notebookCreated && lastGenerateId) {
       navigate(`/app/notebook/${lastGenerateId}`);
     }
   }, [lastGenerateId]);
@@ -31,13 +33,13 @@ const CreateNotebook: React.FC = () => {
       }`}
     >
       {/* Glassmorphism Container */}
-      <div className="w-full max-w-2xl p-6 sm:p-10 bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg shadow-2xl rounded-2xl text-center border border-gray-300 dark:border-gray-700">
+      <div className="w-full max-w-2xl p-6 sm:p-10 bg-white/60 dark:bg-gray-900/70 backdrop-blur-md shadow-2xl rounded-2xl text-center border border-gray-200 dark:border-gray-700">
         {/* Header */}
         <h1 className="text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-6">
-          🚀 Create Your Notebook
+          ✨ Create Your Notebook
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg mb-8">
-          Start fresh with a new notebook. Give it a name and a little detail!
+          Give your notebook a meaningful name and description.
         </p>
 
         {/* Input Section */}
@@ -51,11 +53,11 @@ const CreateNotebook: React.FC = () => {
               onChange={(e) => setTitle(e.target.value)}
               placeholder=" "
               aria-label="Notebook Name"
-              className="peer w-full px-4 pt-6 pb-3 text-lg text-gray-900 dark:text-gray-200 bg-transparent border border-gray-300 dark:border-gray-700 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-700 transition-all outline-none"
+              className="peer w-full px-4 pt-6 pb-3 text-lg text-gray-900 dark:text-gray-200 bg-transparent border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all outline-none"
             />
             <label
               htmlFor="notebook-title"
-              className="absolute top-3 left-4 text-gray-400 dark:text-gray-500 text-sm peer-placeholder-shown:top-6 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 transition-all duration-200"
+              className="absolute top-2 left-4 text-gray-400 dark:text-gray-500 text-sm peer-placeholder-shown:top-6 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 transition-all duration-200"
             >
               Notebook Name
             </label>
@@ -70,11 +72,11 @@ const CreateNotebook: React.FC = () => {
               placeholder=" "
               rows={3}
               aria-label="Notebook Description"
-              className="peer w-full px-4 pt-6 pb-3 text-lg text-gray-900 dark:text-gray-200 bg-transparent border border-gray-300 dark:border-gray-700 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-700 resize-none transition-all outline-none"
+              className="peer w-full px-4 pt-6 pb-3 text-lg text-gray-900 dark:text-gray-200 bg-transparent border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none transition-all outline-none"
             ></textarea>
             <label
               htmlFor="notebook-description"
-              className="absolute top-3 left-4 text-gray-400 dark:text-gray-500 text-sm peer-placeholder-shown:top-6 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 transition-all duration-200"
+              className="absolute top-2 left-4 text-gray-400 dark:text-gray-500 text-sm peer-placeholder-shown:top-6 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 transition-all duration-200"
             >
               Description (Optional)
             </label>
@@ -88,7 +90,7 @@ const CreateNotebook: React.FC = () => {
             disabled={!title.trim()}
             className={`w-full py-3 text-lg font-semibold rounded-lg transition-transform transform duration-200 focus:ring-4 focus:outline-none ${
               title.trim()
-                ? 'bg-blue-600 hover:bg-blue-700 text-white active:scale-95'
+                ? 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white active:scale-95'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
