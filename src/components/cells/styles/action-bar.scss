@@ -12,5 +12,12 @@
     i {
       @apply text-lg;
     }
+
+    /* Media Query for Larger Screens */
+    @media (min-width: 768px) {
+      i {
+        @apply text-xl;
+      }
+    }
   }
 }
