@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import CreateNotebook from '@/components/notes/create-notebook.tsx';
-import NotebookCover from '@/components/notes/notebook-cover.tsx';
+import NotebookView from '@/components/notes/notebook-view.tsx';
 import NotFound from '@/components/not-found.tsx';
 import NoteView from '@/components/notes/note-view.tsx';
 import { Sidebar } from '@/components/notes/sidebar.tsx';
@@ -21,7 +21,7 @@ export default function WorkSpace() {
           <Route
             path="/notebook/:notebookId"
             element={
-              <NotebookCover
+              <NotebookView
                 coverImage="/images/notebook-cover.jpg" // todo: support for cover images
               />
             }
