@@ -12,12 +12,12 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <HeroSection />
       <FeaturesSection />
       <HowItWorks />
       <FAQSection />
-    </div>
+    </>
   );
 };
 

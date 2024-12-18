@@ -2,41 +2,44 @@ import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
-    <footer className="bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark py-8 border-t border-gray-200 dark:border-gray-700">
-      <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="bg-gradient-to-t from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-700 dark:text-gray-300 py-16">
+      <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
         {/* Company Info */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-extrabold text-primary-light dark:text-primary-dark">
+        <div className="space-y-6">
+          <h2 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
             Unfeathered
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-            Breaking Limits, Building Futures
+          <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+            Breaking Limits, Building Futures.
           </p>
         </div>
 
         {/* Navigation Links */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold">Quick Links</h3>
-          <nav className="flex flex-col space-y-2">
+        <div className="space-y-6">
+          <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
+            Quick Links
+          </h3>
+          <nav className="flex flex-col space-y-3">
             <Link
               to="/features"
-              className="hover:text-primary-light dark:hover:text-primary-dark transition"
+              className="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-purple-500 transition"
             >
               Features
             </Link>
-
             <Link
               to="/about"
-              className="hover:text-primary-light dark:hover:text-primary-dark transition"
+              className="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-purple-500 transition"
             >
               About Us
             </Link>
           </nav>
         </div>
 
-        {/* Social Media and Contact */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold">Connect with Us</h3>
+        {/* Social Media Links */}
+        <div className="space-y-6">
+          <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
+            Connect with Us
+          </h3>
           <div className="flex space-x-6">
             {/* X (formerly Twitter) */}
             <a
@@ -44,7 +47,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="X"
-              className="text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark transition"
+              className="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-purple-500 transition"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +66,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark transition"
+              className="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-purple-500 transition"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +89,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              className="text-gray-600 dark:text-gray-400 hover:text-primary-light dark:hover:text-primary-dark transition"
+              className="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-purple-500 transition"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +112,7 @@ export default function Footer() {
       </div>
 
       {/* Footer Bottom */}
-      <div className="mt-8 pt-4 border-t border-gray-300 dark:border-gray-700 text-center text-sm text-gray-600 dark:text-gray-400">
+      <div className="mt-12 pt-8 border-t border-gray-300 dark:border-gray-700 text-center text-sm text-gray-600 dark:text-gray-400">
         © {new Date().getFullYear()} Unfeathered. All rights reserved.
       </div>
     </footer>
