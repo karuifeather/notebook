@@ -42,12 +42,21 @@ export const Sidebar: React.FC = () => {
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
           onClick={toggleMobileSidebar}
+          aria-hidden="true"
         />
       )}
 
+      <button
+        className="p-2 rounded-lg md:hidden text-gray-500 dark:text-gray-300 fixed top-16 left-2 sm:top-20 z-50"
+        onClick={toggleMobileSidebar}
+        aria-label="Toggle Sidebar"
+      >
+        <i className="fas fa-bars"></i>
+      </button>
+
       {/* Sidebar */}
       <aside
-        className={`fixed md:relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-lg transform transition-all duration-500 ease-in-out z-50 ${
+        className={`fixed md:relative bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 backdrop-blur-lg shadow-lg transform transition-all duration-500 z-50 ${
           isCollapsed ? 'w-16' : 'w-72'
         } ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} 
         h-screen flex flex-col`}
@@ -55,8 +64,8 @@ export const Sidebar: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md">
           {!isCollapsed && (
-            <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">
-              Notes
+            <h1 className="text-2xl font-extrabold text-gray-800 dark:text-gray-100">
+              Notebooks
             </h1>
           )}
           <button
@@ -70,12 +79,6 @@ export const Sidebar: React.FC = () => {
               } text-gray-500 dark:text-gray-400`}
             ></i>
           </button>
-          <button
-            className="p-2 rounded-lg md:hidden text-gray-500 dark:text-gray-300"
-            onClick={toggleMobileSidebar}
-          >
-            <i className="fas fa-bars"></i>
-          </button>
         </div>
 
         {/* Search */}
@@ -87,7 +90,7 @@ export const Sidebar: React.FC = () => {
                 placeholder="Search notebooks..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 text-sm bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 backdrop-blur-md"
+                className="w-full pl-10 pr-3 py-2 text-sm bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
               <i className="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
             </div>
@@ -99,8 +102,9 @@ export const Sidebar: React.FC = () => {
           {notebooks.map(({ notes, id: notebookId, name: notebookTitle }) => (
             <div key={notebookId} className="group">
               <div
-                className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-white/50 dark:bg-gray-800/50 hover:bg-blue-100 dark:hover:bg-blue-700 backdrop-blur-md transition-all"
+                className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-700 transition"
                 onClick={() => toggleFolder(notebookId)}
+                aria-expanded={expandedFolders.includes(notebookId)}
               >
                 <div className="flex items-center gap-2">
                   <i
@@ -116,40 +120,12 @@ export const Sidebar: React.FC = () => {
                     </span>
                   )}
                 </div>
-                {!isCollapsed && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setNewNoteTitles((prev) => ({
-                        ...prev,
-                        [notebookId]: '',
-                      }));
-                    }}
-                    className="opacity-0 group-hover:opacity-100 p-1 text-blue-500 hover:text-blue-600 transition-all"
-                  >
-                    <i className="fas fa-plus"></i>
-                  </button>
-                )}
               </div>
 
               {/* Notes */}
               {expandedFolders.includes(notebookId) && (
-                <ul className="ml-5 mt-1 space-y-1">
-                  {notes.map((note) => (
-                    <li
-                      key={note.id}
-                      className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-700 text-gray-700 dark:text-gray-300"
-                      onClick={() =>
-                        navigate(`/app/notebook/${notebookId}/note/${note.id}`)
-                      }
-                    >
-                      <i className="fas fa-file-alt text-gray-400"></i>
-                      {!isCollapsed && (
-                        <span className="text-sm">{note.title}</span>
-                      )}
-                    </li>
-                  ))}
-                  {/* New Note */}
+                <ul className="ml-5 mt-2 space-y-2">
+                  {/* Add Note */}
                   <li className="flex items-center gap-2">
                     <i className="fas fa-plus text-gray-400"></i>
                     <input
@@ -165,9 +141,23 @@ export const Sidebar: React.FC = () => {
                         e.key === 'Enter' && handleAddNote(notebookId)
                       }
                       placeholder="New note title..."
-                      className="flex-1 px-2 py-1 text-sm bg-white/50 dark:bg-gray-800/50 rounded-md focus:ring-2 focus:ring-blue-500 backdrop-blur-md"
+                      className="flex-1 px-2 py-1 text-sm bg-white/50 dark:bg-gray-800/50 rounded-md focus:ring-2 focus:ring-blue-500"
                     />
                   </li>
+                  {notes.map((note) => (
+                    <li
+                      key={note.id}
+                      className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-700 text-gray-700 dark:text-gray-300"
+                      onClick={() =>
+                        navigate(`/app/notebook/${notebookId}/note/${note.id}`)
+                      }
+                    >
+                      <i className="fas fa-file-alt text-gray-400"></i>
+                      {!isCollapsed && (
+                        <span className="text-sm">{note.title}</span>
+                      )}
+                    </li>
+                  ))}
                 </ul>
               )}
             </div>
