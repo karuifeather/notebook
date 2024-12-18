@@ -11,16 +11,13 @@ export const Sidebar: React.FC = () => {
     {}
   );
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const navigate = useNavigate();
   const { createNote } = useActions();
 
   const selectNotebooksWithNotes = makeSelectNotebooksWithNotes();
-
-  // 1. Select all notebooks
   const notebooks = useTypedSelector(selectNotebooksWithNotes);
-
-  // 2. Precompute notes for all notebooks at the top level
 
   const handleAddNote = (notebookId: string) => {
     const title = newNoteTitles[notebookId]?.trim();
@@ -36,56 +33,73 @@ export const Sidebar: React.FC = () => {
     );
   };
 
-  return (
-    <aside
-      className={`relative bg-gray-50 dark:bg-gray-900 shadow-lg transition-all duration-300 ${
-        isCollapsed ? 'w-16' : 'w-80'
-      } flex flex-col rounded-lg overflow-hidden`}
-    >
-      {/* Sidebar Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b dark:border-gray-700">
-        {!isCollapsed && (
-          <h1 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-            My Notebooks
-          </h1>
-        )}
-        <button
-          className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          aria-label={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-        >
-          <i
-            className={`fas ${
-              isCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'
-            } text-gray-600 dark:text-gray-400`}
-          ></i>
-        </button>
-      </div>
+  const toggleMobileSidebar = () => setIsMobileOpen(!isMobileOpen);
 
-      {/* Search Bar */}
-      {!isCollapsed && (
-        <div className="p-3">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search notebooks..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 py-2 text-sm bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-            <i className="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
-          </div>
-        </div>
+  return (
+    <>
+      {/* Mobile Sidebar Overlay */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={toggleMobileSidebar}
+        />
       )}
 
-      {/* Notebook List */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
-        {notebooks.map(({ notes, id: notebookId, name: notebookTitle }) => {
-          return (
+      {/* Sidebar */}
+      <aside
+        className={`fixed md:relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-lg transform transition-all duration-500 ease-in-out z-50 ${
+          isCollapsed ? 'w-16' : 'w-72'
+        } ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} 
+        h-screen flex flex-col`}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md">
+          {!isCollapsed && (
+            <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+              Notes
+            </h1>
+          )}
+          <button
+            className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            aria-label={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          >
+            <i
+              className={`fas ${
+                isCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'
+              } text-gray-500 dark:text-gray-400`}
+            ></i>
+          </button>
+          <button
+            className="p-2 rounded-lg md:hidden text-gray-500 dark:text-gray-300"
+            onClick={toggleMobileSidebar}
+          >
+            <i className="fas fa-bars"></i>
+          </button>
+        </div>
+
+        {/* Search */}
+        {!isCollapsed && (
+          <div className="p-3">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search notebooks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-3 py-2 text-sm bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 backdrop-blur-md"
+              />
+              <i className="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+            </div>
+          </div>
+        )}
+
+        {/* Notebooks */}
+        <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
+          {notebooks.map(({ notes, id: notebookId, name: notebookTitle }) => (
             <div key={notebookId} className="group">
-              {/* Notebook Folder */}
               <div
-                className="flex items-center justify-between cursor-pointer p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800"
+                className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-white/50 dark:bg-gray-800/50 hover:bg-blue-100 dark:hover:bg-blue-700 backdrop-blur-md transition-all"
                 onClick={() => toggleFolder(notebookId)}
               >
                 <div className="flex items-center gap-2">
@@ -111,34 +125,31 @@ export const Sidebar: React.FC = () => {
                         [notebookId]: '',
                       }));
                     }}
-                    className="opacity-0 group-hover:opacity-100 p-1 text-blue-500 hover:text-blue-600 transition"
+                    className="opacity-0 group-hover:opacity-100 p-1 text-blue-500 hover:text-blue-600 transition-all"
                   >
                     <i className="fas fa-plus"></i>
                   </button>
                 )}
               </div>
 
-              {/* Notes List */}
+              {/* Notes */}
               {expandedFolders.includes(notebookId) && (
                 <ul className="ml-5 mt-1 space-y-1">
                   {notes.map((note) => (
                     <li
                       key={note.id}
-                      className="flex items-center gap-2 p-2 rounded-md cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
+                      className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-700 text-gray-700 dark:text-gray-300"
                       onClick={() =>
                         navigate(`/app/notebook/${notebookId}/note/${note.id}`)
                       }
                     >
                       <i className="fas fa-file-alt text-gray-400"></i>
                       {!isCollapsed && (
-                        <span className="text-sm text-gray-600 dark:text-gray-300">
-                          {note.title}
-                        </span>
+                        <span className="text-sm">{note.title}</span>
                       )}
                     </li>
                   ))}
-
-                  {/* New Note Input */}
+                  {/* New Note */}
                   <li className="flex items-center gap-2">
                     <i className="fas fa-plus text-gray-400"></i>
                     <input
@@ -154,15 +165,15 @@ export const Sidebar: React.FC = () => {
                         e.key === 'Enter' && handleAddNote(notebookId)
                       }
                       placeholder="New note title..."
-                      className="flex-1 px-2 py-1 text-sm bg-gray-100 dark:bg-gray-800 rounded-md focus:ring-2 focus:ring-blue-500"
+                      className="flex-1 px-2 py-1 text-sm bg-white/50 dark:bg-gray-800/50 rounded-md focus:ring-2 focus:ring-blue-500 backdrop-blur-md"
                     />
                   </li>
                 </ul>
               )}
             </div>
-          );
-        })}
-      </div>
-    </aside>
+          ))}
+        </div>
+      </aside>
+    </>
   );
 };
