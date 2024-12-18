@@ -32,46 +32,37 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   );
 
   return (
-    <div className="code-cell border rounded shadow-md bg-gray-800 text-white">
+    <div className="code-cell">
       {/* Tab Header */}
-      <div className="flex border-b border-gray-800 bg-gray-900 rounded-t-lg shadow-md">
+      <div className="tab-header">
         <button
-          className={`relative flex items-center gap-2 px-4 py-2 text-sm font-medium focus:outline-none transition-all duration-300 rounded-t-md ${
-            activeTab === 'write'
-              ? 'text-white bg-gray-700 shadow-sm'
-              : 'text-gray-400 hover:text-white hover:bg-gray-700'
-          }`}
+          className={`tab-button ${activeTab === 'write' ? 'active' : ''}`}
           onClick={() => setActiveTab('write')}
         >
-          <i className="fas fa-code text-xs"></i> Code
-          {activeTab === 'write' && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 rounded-full transition-all duration-300"></span>
-          )}
+          Code
         </button>
         <button
-          className={`relative flex items-center gap-2 px-4 py-2 text-sm font-medium focus:outline-none transition-all duration-300 rounded-t-md ${
-            activeTab === 'preview'
-              ? 'text-white bg-gray-700 shadow-sm'
-              : 'text-gray-400 hover:text-white hover:bg-gray-700'
-          }`}
+          className={`tab-button ${activeTab === 'preview' ? 'active' : ''}`}
           onClick={() => setActiveTab('preview')}
         >
-          <i className="fas fa-eye text-xs"></i> Preview
-          {activeTab === 'preview' && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 rounded-full transition-all duration-300"></span>
-          )}
+          Preview
         </button>
+        <div
+          className="tab-indicator"
+          style={{
+            transform: `translateX(${activeTab === 'write' ? '0%' : '100%'})`,
+          }}
+        />
       </div>
 
       {/* Tab Content */}
-      <>
-        {activeTab === 'write' && (
+      <div className="tab-content">
+        {activeTab === 'write' ? (
           <CodeEditor
             defaultValue={cell.content || starterCode}
             onChange={handleEditorChange}
           />
-        )}
-        {activeTab === 'preview' && (
+        ) : (
           <div className="progress-wrapper">
             {!bundle || bundle.loading ? (
               <div className="progress-cover">
@@ -82,7 +73,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
             )}
           </div>
         )}
-      </>
+      </div>
     </div>
   );
 };
