@@ -1,43 +1,27 @@
 import { Link } from 'react-router-dom';
-import { Button } from './button.tsx';
 
 export default function Header() {
   return (
-    <header className=" w-full z-50 backdrop-blur-md bg-white/70 dark:bg-gray-900/70 border-b border-gray-200 dark:border-gray-700">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+    <header className="w-full z-50 backdrop-blur-lg bg-white/70 dark:bg-gray-900/70 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
         {/* Logo */}
         <Link
-          to={'/'}
-          className="flex items-center space-x-2 text-2xl font-bold tracking-wide text-gray-800 dark:text-primary-dark hover:text-primary-light  transition-colors"
+          to="/"
+          aria-label="Unfeathered Notes - Home"
+          className="flex items-center text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white hover:opacity-90 transition-opacity"
         >
-          <span className="font-extrabold">Unfeathered Notes</span>
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+            Unfeathered Notes
+          </span>
         </Link>
 
         {/* CTA Button */}
-        <Button to="/app/create-notebook" cta>
-          Create
-        </Button>
-
-        {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-gray-800 dark:text-gray-100 focus:outline-none"
-          aria-label="Toggle Menu"
+        <Link
+          to="/app/create-notebook"
+          className="ml-auto inline-block rounded-full px-4 sm:px-5 md:px-6 py-2 text-xs sm:text-sm md:text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
+          Create Notebook
+        </Link>
       </div>
     </header>
   );
