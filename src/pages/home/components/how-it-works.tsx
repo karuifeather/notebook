@@ -45,14 +45,14 @@ export default function HowItWorks() {
 
       <div className="container mx-auto text-center">
         {/* Section Heading */}
-        <h2 className="text-4xl font-extrabold text-gray-800 dark:text-gray-100">
+        <h2 className="text-4xl font-extrabold text-gray-800 dark:text-gray-100 sm:text-5xl">
           How{' '}
-          <span className="text-primary-light dark:text-primary-dark">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
             Notes
           </span>{' '}
           Works
         </h2>
-        <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+        <p className="mt-6 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
           Follow these simple steps to turn your ideas into reality.
         </p>
 
@@ -77,8 +77,8 @@ export default function HowItWorks() {
                   <div className="absolute top-full h-10 w-1 bg-gray-300 dark:bg-gray-700 left-1/2 transform -translate-x-1/2"></div>
                 )}
 
-                {/* Icon */}
-                <div className="w-28 h-28 flex items-center justify-center rounded-full bg-primary-light dark:bg-primary-dark text-white shadow-lg">
+                {/* Step Icon */}
+                <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg lg:absolute lg:top-1/2 lg:transform lg:-translate-y-1/2 lg:left-1/2 lg:-translate-x-1/2">
                   <FontAwesomeIcon icon={step.icon} className="w-10 h-10" />
                 </div>
 
