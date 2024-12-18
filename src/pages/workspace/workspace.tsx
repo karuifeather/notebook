@@ -7,11 +7,13 @@ import { Sidebar } from '@/components/notes/sidebar.tsx';
 
 export default function WorkSpace() {
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
+    <div className="flex">
       {/* Sidebar */}
       <div className="flex-shrink-0">
         <Sidebar />
       </div>
+
+      <div className="placeholder-div-for-sidebar xl:min-w-[5rem]"></div>
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-auto custom-scrollbar">

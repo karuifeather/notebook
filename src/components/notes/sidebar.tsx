@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { makeSelectNotebooksWithNotes } from '@/state/selectors/index.ts';
 import { useActions } from '@/hooks/use-actions.ts';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 
 export const Sidebar: React.FC = () => {
+  const sidebarRef = useRef(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState<string[]>([]);
   const [newNoteTitles, setNewNoteTitles] = useState<{ [key: string]: string }>(
@@ -18,6 +19,25 @@ export const Sidebar: React.FC = () => {
 
   const selectNotebooksWithNotes = makeSelectNotebooksWithNotes();
   const notebooks = useTypedSelector(selectNotebooksWithNotes);
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (
+        sidebarRef.current &&
+        // @ts-ignore
+        !sidebarRef.current.contains(event.target) &&
+        !event.target.closest('[aria-label="Toggle Sidebar"]') // Exclude toggle button
+      ) {
+        setIsCollapsed(true); // Collapse sidebar
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [setIsCollapsed]);
 
   const handleAddNote = (notebookId: string) => {
     const title = newNoteTitles[notebookId]?.trim();
@@ -46,27 +66,42 @@ export const Sidebar: React.FC = () => {
         />
       )}
 
+      {/* Mobile Toggle Button */}
       <button
-        className="p-2 rounded-lg md:hidden text-gray-500 dark:text-gray-300 fixed top-16 left-2 sm:top-20 z-50 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+        className="p-3 rounded-full shadow-lg md:hidden text-white fixed top-4 left-4 sm:top-6 z-50 bg-gradient-to-r from-blue-500 to-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800 transition-transform transform hover:scale-110 active:scale-95"
         onClick={toggleMobileSidebar}
         aria-label="Toggle Sidebar"
       >
-        <i className="fas fa-bars"></i>
+        <i className="fas fa-bars text-lg"></i>
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed md:relative bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 backdrop-blur-lg shadow-lg transform transition-all duration-500 z-50 ${
-          isCollapsed ? 'w-16' : 'w-72'
-        } ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} 
-        h-screen flex flex-col`}
+        ref={sidebarRef}
+        className={`fixed top-0 left-0 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 backdrop-blur-lg shadow-lg transform transition-all duration-500 z-50 
+    ${isCollapsed ? 'w-16' : 'w-72'} 
+    ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+    h-screen flex flex-col `}
+        //
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md">
           {!isCollapsed && (
-            <h1 className="text-2xl font-extrabold text-gray-800 dark:text-gray-100">
-              Notebooks
-            </h1>
+            <>
+              <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+                Notebooks
+              </h1>
+              {/* Create Button */}
+              <div className={`p-4 ${isCollapsed ? 'hidden' : 'block'}`}>
+                <button
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white  bg-blue-500 hover:bg-blue-600 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                  onClick={() => navigate('/app/create-notebook')}
+                  aria-label="Create New Notebook"
+                >
+                  <i className="fas fa-plus"></i>
+                </button>
+              </div>
+            </>
           )}
           <button
             className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
@@ -81,23 +116,7 @@ export const Sidebar: React.FC = () => {
           </button>
         </div>
 
-        {/* Search */}
-        {!isCollapsed && (
-          <div className="p-3">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search notebooks..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 text-sm bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-              <i className="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
-            </div>
-          </div>
-        )}
-
-        {/* Notebooks */}
+        {/* Content */}
         <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
           {notebooks.map(({ notes, id: notebookId, name: notebookTitle }) => (
             <div key={notebookId} className="group">
@@ -123,9 +142,14 @@ export const Sidebar: React.FC = () => {
               </div>
 
               {/* Notes */}
-              {expandedFolders.includes(notebookId) && (
+              <div
+                className={`transition-max-height duration-300 overflow-hidden ${
+                  expandedFolders.includes(notebookId)
+                    ? 'max-h-screen'
+                    : 'max-h-0'
+                }`}
+              >
                 <ul className="ml-5 mt-2 space-y-2">
-                  {/* Add Note */}
                   <li className="flex items-center gap-2">
                     <i className="fas fa-plus text-gray-400"></i>
                     <input
@@ -159,9 +183,29 @@ export const Sidebar: React.FC = () => {
                     </li>
                   ))}
                 </ul>
-              )}
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* Footer */}
+        <div
+          className={`mt-auto px-3 py-4 bg-gradient-to-t from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-t border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300 ${
+            isCollapsed
+              ? 'opacity-0 translate-y-4 pointer-events-none'
+              : 'opacity-100 translate-y-0 pointer-events-auto'
+          }`}
+        >
+          {!isCollapsed && (
+            <div className="text-center space-y-2">
+              <h2 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+                Unfeathered
+              </h2>
+              <p className="text-sm leading-relaxed">
+                Breaking Limits, Building Futures.
+              </p>
+            </div>
+          )}
         </div>
       </aside>
     </>

@@ -5,6 +5,8 @@ import HowItWorks from './components/how-it-works.tsx';
 import 'aos/dist/aos.css';
 import AOS from 'aos';
 import FAQSection from './components/faq.tsx';
+import Footer from '@/components/footer.tsx';
+import Header from '@/components/header.tsx';
 
 const Home: React.FC = () => {
   useEffect(() => {
@@ -13,10 +15,12 @@ const Home: React.FC = () => {
 
   return (
     <>
+      <Header />
       <HeroSection />
       <FeaturesSection />
       <HowItWorks />
       <FAQSection />
+      <Footer />
     </>
   );
 };
