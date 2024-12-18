@@ -14,7 +14,7 @@ export default function WorkSpace() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto custom-scrollbar">
         <Routes>
           <Route path="/create-notebook" element={<CreateNotebook />} />
 

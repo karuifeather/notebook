@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../styles/scroll-bar.scss';
 
 const LoadNpmModuleModal = ({
   isOpen,
