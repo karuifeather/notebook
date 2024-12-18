@@ -63,7 +63,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
             onChange={handleEditorChange}
           />
         ) : (
-          <div className="progress-wrapper">
+          <div className="progress-wrapper w-full">
             {!bundle || bundle.loading ? (
               <div className="progress-cover">
                 <div className="loading-spinner"></div>

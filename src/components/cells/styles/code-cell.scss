@@ -7,6 +7,10 @@
   --tab-border-dark: #444;
   --spinner-color: #007bff;
   --spinner-dark: #1e90ff;
+  --active-light: #007bff;
+  --background-dark: #1e1e1e;
+  --border-dark: #444444;
+  --text-dark: #d9d9d9;
 
   --tab-transition: all 0.3s ease;
 }
@@ -20,9 +24,23 @@
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: var(--tab-transition);
+  border: 1px solid var(--border-light);
 
   @media (prefers-color-scheme: dark) {
     background: var(--tab-bg-dark);
+  }
+}
+
+.code-cell:focus-within {
+  border-color: var(--active-light);
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  .code-cell {
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+    border: 1px solid var(--border-dark);
   }
 }
 
