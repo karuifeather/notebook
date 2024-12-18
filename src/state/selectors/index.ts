@@ -82,3 +82,21 @@ export const makeSelectBundleById = () =>
     [selectBundles, (_: RootState, id: string) => id],
     (bundles, id) => ({ ...bundles[id] }) // return new reference for safety
   );
+
+/**
+ * Selector to get all notebooks with their notes
+ */
+export const makeSelectNotebooksWithNotes = () =>
+  createSelector([selectNotebooks, selectNotes], (notebooks, notes) => {
+    return Object.values(notebooks).map((notebook) => {
+      const notebookNotes =
+        notes[notebook.id]?.order.map(
+          (noteId) => notes[notebook.id]?.data[noteId]
+        ) || [];
+
+      return {
+        ...notebook,
+        notes: notebookNotes,
+      };
+    });
+  });
