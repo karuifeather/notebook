@@ -35,7 +35,7 @@ const CreateNotebook: React.FC = () => {
       {/* Glassmorphism Container */}
       <div className="w-full max-w-2xl p-6 sm:p-10 bg-white/60 dark:bg-gray-900/70 backdrop-blur-md shadow-2xl rounded-2xl text-center border border-gray-200 dark:border-gray-700">
         {/* Header */}
-        <h1 className="text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-6">
+        <h1 className="text-2xl md:text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-6">
           ✨ Create Your Notebook
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg mb-8">

@@ -76,7 +76,7 @@ export const Sidebar: React.FC = () => {
             <i
               className={`fas ${
                 isCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'
-              } text-gray-500 dark:text-gray-400`}
+              }`}
             ></i>
           </button>
         </div>
