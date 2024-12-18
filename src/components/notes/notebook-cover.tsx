@@ -1,17 +1,17 @@
+import React, { useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useActions } from '@/hooks/use-actions.ts';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import {
   selectNotebookById,
   makeSelectNotesByNotebookId,
 } from '@/state/selectors/index.ts';
-import React, { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
 
 interface NotebookCoverProps {
   coverImage?: string;
 }
 
-const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }): any => {
+const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
   const { notebookId } = useParams();
   const navigate = useNavigate();
   const selectNotesByNotebookId = makeSelectNotesByNotebookId();
@@ -36,7 +36,7 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }): any => {
   const { createNote } = useActions();
 
   const handleNewNote = () => {
-    if (newNoteTitle) {
+    if (newNoteTitle.trim()) {
       createNote(notebookId, {
         title: newNoteTitle,
         description: '',
@@ -51,52 +51,46 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }): any => {
   };
 
   return (
-    <div className="flex items-start justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-800 dark:to-gray-900 p-4">
-      {/* Main Container */}
-      <div className="w-full max-w-4xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-2xl rounded-2xl overflow-hidden transition-transform duration-300">
-        {/* Cover Section */}
-        <div
-          className={`relative h-80 flex items-center justify-center bg-gradient-to-r ${
-            coverImage
-              ? 'from-blue-500/50 to-purple-500/50'
-              : 'from-gray-200/60 to-gray-300/60 dark:from-gray-700 dark:to-gray-800'
-          }`}
+    <div className="relative flex flex-col items-center justify-start min-h-screen bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
+      {/* Cover Section */}
+      <div className="relative w-full h-60 sm:h-72 lg:h-80 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+        {coverImage ? (
+          <>
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+            )}
+            <img
+              src={coverImage}
+              alt="Notebook Cover"
+              className={`w-full h-full object-cover transition-opacity duration-700 ${
+                imageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              onLoad={() => setImageLoaded(true)}
+            />
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400 text-4xl">
+            <i className="fas fa-image"></i>
+          </div>
+        )}
+        {/* Overlay Edit Button */}
+        <button
+          onClick={onEdit}
+          className="absolute top-4 right-4 bg-white/80 dark:bg-gray-700/80 hover:bg-white/90 dark:hover:bg-gray-600/90 text-gray-700 dark:text-gray-200 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium shadow backdrop-blur-md transition"
         >
-          {coverImage ? (
-            <>
-              {!imageLoaded && (
-                <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
-              )}
-              <img
-                src={coverImage}
-                alt="Notebook Cover"
-                className={`w-full h-full object-cover transition-opacity duration-1000 ${
-                  imageLoaded ? 'opacity-100' : 'opacity-0'
-                }`}
-                onLoad={() => setImageLoaded(true)}
-              />
-            </>
-          ) : (
-            <div className="text-gray-400 dark:text-gray-500 text-4xl">
-              <i className="fas fa-image"></i>
-            </div>
-          )}
-          {/* Overlay Edit Button */}
-          <button
-            onClick={onEdit}
-            className="absolute top-4 right-4 bg-white/80 dark:bg-gray-700/80 hover:bg-white/90 dark:hover:bg-gray-600/90 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg font-medium shadow backdrop-blur-md transition"
-          >
-            Edit Cover
-          </button>
-        </div>
+          Edit Cover
+        </button>
+      </div>
 
+      {/* Main Container */}
+      <div className="xl:absolute xl:top-1/4 min-h-[60vh]  w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden mt-6 sm:mt-8 p-4 sm:p-6 lg:p-8">
         {/* Content Section */}
-        <div className="p-8 text-center">
-          <h1 className="text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-4">
+        <div className="mb-6">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
             {title || 'Untitled Notebook'}
           </h1>
           <p
-            className={`text-gray-600 dark:text-gray-400 text-lg ${
+            className={`text-gray-600 dark:text-gray-400 text-base sm:text-lg ${
               !description ? 'italic' : ''
             }`}
           >
@@ -104,23 +98,23 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }): any => {
           </p>
         </div>
 
-        {/* Note List */}
-        <div className="px-8 pb-8">
+        {/* Notes Section */}
+        <div>
           {notes.length === 0 ? (
             <div className="text-center text-gray-500 dark:text-gray-400">
               <p>No notes here yet.</p>
-              <div className="mt-4 flex gap-2 items-center justify-center">
+              <div className="mt-4 flex flex-col sm:flex-row gap-3 items-center justify-center">
                 <input
                   type="text"
                   placeholder="Enter a note title..."
                   value={newNoteTitle}
                   onChange={(e) => setNewNoteTitle(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleNewNote()}
-                  className="p-2 border rounded-md w-64 dark:bg-gray-800 dark:text-gray-200"
+                  className="p-2 w-full sm:w-64 border rounded-md text-lg text-gray-900 dark:text-gray-200 bg-transparent border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 />
                 <button
                   onClick={handleNewNote}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-md transition"
                 >
                   Start Creating
                 </button>
@@ -133,30 +127,26 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }): any => {
                   to={`/app/notebook/${notebookId}/note/${note.id}`}
                   key={note.id}
                 >
-                  <li
-                    key={note.id}
-                    className="group flex items-center justify-between p-4 border dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                  >
-                    <span className="text-gray-800 dark:text-gray-200 cursor-pointer">
+                  <li className="group flex items-center justify-between p-4 border dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                    <span className="text-gray-800 dark:text-gray-200">
                       {note.title}
                     </span>
                   </li>
                 </Link>
               ))}
-
               {/* New Note Input */}
-              <li className="flex items-center gap-2">
+              <li className="flex flex-col sm:flex-row gap-3 items-center">
                 <input
                   type="text"
                   placeholder="Add a new note..."
                   value={newNoteTitle}
                   onChange={(e) => setNewNoteTitle(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleNewNote()}
-                  className="p-2 border rounded-md flex-1 dark:bg-gray-800 dark:text-gray-200"
+                  className="p-2 flex-1 border rounded-md text-lg text-gray-900 dark:text-gray-200 bg-transparent border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 />
                 <button
                   onClick={handleNewNote}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-md transition"
                 >
                   Add
                 </button>
