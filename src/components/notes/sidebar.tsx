@@ -47,7 +47,7 @@ export const Sidebar: React.FC = () => {
       )}
 
       <button
-        className="p-2 rounded-lg md:hidden text-gray-500 dark:text-gray-300 fixed top-16 left-2 sm:top-20 z-50"
+        className="p-2 rounded-lg md:hidden text-gray-500 dark:text-gray-300 fixed top-16 left-2 sm:top-20 z-50 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         onClick={toggleMobileSidebar}
         aria-label="Toggle Sidebar"
       >
@@ -69,7 +69,7 @@ export const Sidebar: React.FC = () => {
             </h1>
           )}
           <button
-            className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+            className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             onClick={() => setIsCollapsed(!isCollapsed)}
             aria-label={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >

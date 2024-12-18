@@ -55,13 +55,13 @@ const NoteView: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Main Content */}
-      <div className="flex-1 px-2 py-6 sm:px-6 lg:px-12">
+      <div className="flex-1 px-2 py-16 sm:py-6 sm:px-6 lg:px-12">
         <div className="relative sm:px-2 mx-auto w-full max-w-3xl xl:max-w-4xl bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-transform">
           <div className="absolute top-3 right-3 flex items-center gap-2 z-50">
             {/* Add Dependencies Button */}
             <button
               onClick={() => setModalOpen(true)}
-              className="flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white p-2 rounded-full shadow-md focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-700 transition-transform"
+              className="flex items-center justify-center text-white p-2 rounded-full shadow-md focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-700 transition-transform"
               aria-label="Open Settings"
             >
               <i className="fas fa-cog text-lg"></i>
