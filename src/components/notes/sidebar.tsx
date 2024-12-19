@@ -11,7 +11,7 @@ export const Sidebar: React.FC = () => {
   const [newNoteTitles, setNewNoteTitles] = useState<{ [key: string]: string }>(
     {}
   );
-  const [searchQuery, setSearchQuery] = useState('');
+  // const [searchQuery, setSearchQuery] = useState('');
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const navigate = useNavigate();

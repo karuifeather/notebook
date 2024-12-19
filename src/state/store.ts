@@ -4,7 +4,6 @@ import { configureStore } from '@reduxjs/toolkit'; // Preferred over createStore
 import reducers from './reducers/index.ts';
 import { bundlerMiddleware } from './middlewares/bundler-middleware.ts';
 import { cumulativeMiddleware } from './middlewares/cumulative-middleware.ts';
-import { updateOrderMiddleware } from './middlewares/update-order-middleware.ts';
 import { tempMiddleware } from './middlewares/temp-middleware.ts';
 
 // Type definition for Redux DevTools compose
