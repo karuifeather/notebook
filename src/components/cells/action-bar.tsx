@@ -2,11 +2,12 @@ import { useActions } from '@/hooks/use-actions.ts';
 import './styles/action-bar.scss';
 
 interface ActionBarProps {
-  id: string;
+  cellId: string;
+  noteId: string;
   children: React.ReactNode;
 }
 
-const ActionBar: React.FC<ActionBarProps> = ({ id, children }) => {
+const ActionBar: React.FC<ActionBarProps> = ({ cellId, noteId, children }) => {
   const { deleteCell } = useActions();
 
   return (
@@ -19,7 +20,10 @@ const ActionBar: React.FC<ActionBarProps> = ({ id, children }) => {
 
       {/* Delete Button */}
       {/* See styles/action-bar.scss for styling */}
-      <button onClick={() => deleteCell(id)} aria-label="Delete Cell">
+      <button
+        onClick={() => deleteCell(noteId, cellId)}
+        aria-label="Delete Cell"
+      >
         <i className="fas fa-trash-alt" />
       </button>
     </div>

@@ -9,11 +9,12 @@ import './styles/code-cell.scss';
 
 interface CodeCellProps {
   cell: Cell;
+  noteId: string;
 }
 
 const selectBundle = makeSelectBundleById();
 
-const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
+const CodeCell: React.FC<CodeCellProps> = ({ cell, noteId }) => {
   const { updateCell, bundleIt } = useActions();
   const bundle = useTypedSelector((state) => selectBundle(state, cell.id));
   const [activeTab, setActiveTab] = useState<'write' | 'preview'>('write'); // Active tab state
@@ -26,7 +27,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
 
   const handleEditorChange = useCallback(
     (value: string) => {
-      updateCell(cell.id, value);
+      updateCell(noteId, cell.id, value);
     },
     [updateCell, cell.id]
   );
