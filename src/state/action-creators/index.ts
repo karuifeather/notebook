@@ -99,6 +99,15 @@ export const createNote = (
   payload: { parentId: notebookId, note },
 });
 
+export const updateNote = (
+  notebookId: string,
+  noteId: string,
+  note: Partial<Note>
+) => ({
+  type: ActionType.UPDATE_NOTE,
+  payload: { parentId: notebookId, noteId, updates: note },
+});
+
 export const moveNote = (
   parentId: string,
   fromIndex: number,

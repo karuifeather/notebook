@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import { insertCellAfter } from '@/state/action-creators/index.ts';
@@ -7,6 +7,7 @@ import CellList from '../cells/cell-list.tsx';
 import LoadNpmModuleModal from './load-npm.tsx';
 import Block from '../editors/block.tsx';
 import { makeSelectNoteById } from '@/state/selectors/index.ts';
+import { useActions } from '@/hooks/use-actions.ts';
 
 const cells: Cell[] = [
   {
@@ -33,10 +34,16 @@ const NoteView: React.FC = () => {
   const selectNoteById = makeSelectNoteById();
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const note = useTypedSelector((state) =>
-    selectNoteById(state, notebookId, noteId)
-  );
+  // Local state for notebook title and description
+  const [noteTitle, setNoteTitle] = useState('');
+  const [noteDesc, setNoteDesc] = useState('');
 
+  const { title: globalNoteTitle, description: globalNoteDesc } =
+    useTypedSelector((state) => selectNoteById(state, notebookId, noteId));
+
+  const { updateNote } = useActions();
+
+  // todo: remove this later before releasing ide
   useEffect(() => {
     const initializeCells = () => {
       cells.forEach((cell) => {
@@ -48,9 +55,28 @@ const NoteView: React.FC = () => {
     initializeCells();
   }, []);
 
-  const updateNoteDetails = (id: string, field: string, value: string) => {
-    console.log(`Updated ${field} for Note ${id}: ${value}`);
-  };
+  useEffect(() => {
+    // Initialize local state with global state
+    setNoteTitle(globalNoteTitle || '');
+    setNoteDesc(globalNoteDesc || '');
+  }, [globalNoteTitle, globalNoteTitle]); // Run only when the global state changes
+
+  const handleBlur = useCallback(() => {
+    // Only call updateNotebook if there are changes
+    if (noteTitle !== globalNoteTitle || noteDesc !== globalNoteDesc) {
+      updateNote(notebookId, noteId, {
+        title: noteTitle ? noteTitle : 'Untitled Note',
+        description: noteDesc,
+      });
+    }
+  }, [
+    noteId,
+    noteTitle,
+    noteDesc,
+    globalNoteTitle,
+    globalNoteDesc,
+    updateNote,
+  ]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -72,16 +98,16 @@ const NoteView: React.FC = () => {
           <div className="relative flex flex-wrap sm:flex-nowrap justify-between items-center p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
             <div className="w-full sm:w-auto flex-1 space-y-4">
               <Block
-                content={note?.title || 'Untitled Note'}
-                handler={(value) => updateNoteDetails(noteId, 'title', value)}
-                className="text-xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100"
+                onBlur={handleBlur}
+                content={noteTitle}
+                variant="heading"
+                handler={setNoteTitle}
               />
               <Block
-                content={note?.description || 'Add a description...'}
-                handler={(value) =>
-                  updateNoteDetails(noteId, 'description', value)
-                }
-                className="text-sm sm:text-base text-gray-600 dark:text-gray-400"
+                onBlur={handleBlur}
+                content={noteDesc}
+                variant="description"
+                handler={setNoteDesc}
               />
             </div>
           </div>
