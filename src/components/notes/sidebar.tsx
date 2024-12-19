@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { makeSelectNotebooksWithNotes } from '@/state/selectors/index.ts';
 import { useActions } from '@/hooks/use-actions.ts';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
@@ -88,9 +88,11 @@ export const Sidebar: React.FC = () => {
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md">
           {!isCollapsed && (
             <>
-              <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-                Notebooks
-              </h1>
+              <Link to="/">
+                <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+                  Notebooks
+                </h1>
+              </Link>
               {/* Create Button */}
               <div className={`${isCollapsed ? 'hidden' : 'block'}`}>
                 <button
