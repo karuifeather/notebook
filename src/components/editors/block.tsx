@@ -57,10 +57,12 @@ const Block: React.FC<BlockProps> = ({
 
   const renderContent = () => {
     const baseStyles = {
-      heading: 'text-2xl sm:text-3xl lg:text-4xl font-bold',
-      description: 'text-base sm:text-lg text-gray-600 dark:text-gray-400',
-      text: 'text-gray-800 dark:text-gray-200',
-      todo: '',
+      heading:
+        'text-2xl sm:text-3xl lg:text-4xl font-bold placeholder-gray-400 dark:placeholder-gray-500',
+      description:
+        'text-base sm:text-lg text-gray-600 dark:text-gray-400 placeholder-gray-400 dark:placeholder-gray-500',
+      text: 'text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500',
+      todo: 'text-gray-800 dark:text-gray-200',
     };
 
     const baseInputStyles = `w-full bg-transparent border-none focus:ring-0 focus:outline-none ${baseStyles[variant]} ${className}`;
@@ -88,7 +90,11 @@ const Block: React.FC<BlockProps> = ({
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            placeholder="What's on your mind?"
+            placeholder={
+              variant === 'description'
+                ? 'Add a description...'
+                : "What's on your mind?"
+            }
             className={`w-full resize-none bg-transparent border-none focus:ring-0 focus:outline-none ${baseStyles[variant]} ${className}`}
             aria-label="Text block"
           />
@@ -99,7 +105,7 @@ const Block: React.FC<BlockProps> = ({
           <div className="flex items-start gap-3">
             <input
               type="checkbox"
-              className="mt-1 cursor-pointer"
+              className="mt-1 cursor-pointer w-5 h-5 text-blue-500 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition"
               aria-label="To-do checkbox"
             />
             <textarea
@@ -121,8 +127,10 @@ const Block: React.FC<BlockProps> = ({
 
   return (
     <div
-      className={`relative w-full p-4 bg-white dark:bg-[#1b1b1b] rounded-lg shadow-md border border-gray-200 dark:border-gray-800 transition-all duration-200 ${
-        isFocused ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''
+      className={`relative w-full p-4 bg-white dark:bg-[#1b1b1b] rounded-lg shadow-md border border-gray-200 dark:border-gray-800 hover:shadow-lg dark:hover:shadow-blue-500/10 transition-all duration-200 ${
+        isFocused
+          ? 'ring-2 ring-blue-500 dark:ring-blue-400 bg-blue-50 dark:bg-[#282828]'
+          : ''
       }`}
     >
       {renderContent()}
