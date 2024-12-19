@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useActions } from '@/hooks/use-actions.ts';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
@@ -6,6 +6,7 @@ import {
   selectNotebookById,
   makeSelectNotesByNotebookId,
 } from '@/state/selectors/index.ts';
+import Block from '../editors/block.tsx';
 
 interface NotebookCoverProps {
   coverImage?: string;
@@ -16,6 +17,10 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
   const navigate = useNavigate();
   const selectNotesByNotebookId = makeSelectNotesByNotebookId();
 
+  // Local state for notebook title and description
+  const [notebookTitle, setNotebookTitle] = useState('');
+  const [notebookDesc, setNotebookDesc] = useState('');
+
   if (!notebookId) {
     navigate('/404');
     return null;
@@ -25,15 +30,15 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
   const [newNoteTitle, setNewNoteTitle] = useState('');
 
   // Fetch notebook and notes using selectors
-  const { description, name: title } = useTypedSelector((state) =>
-    selectNotebookById(state, notebookId)
+  const { description: globalDesc, name: globalTitle } = useTypedSelector(
+    (state) => selectNotebookById(state, notebookId)
   );
 
   const notes = useTypedSelector((state) =>
     selectNotesByNotebookId(state, notebookId)
   );
 
-  const { createNote } = useActions();
+  const { createNote, updateNotebook } = useActions();
 
   const handleNewNote = () => {
     if (newNoteTitle.trim()) {
@@ -46,9 +51,33 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
     }
   };
 
-  const onEdit = () => {
-    alert('Feature not implemented yet.');
+  const onEditCover = () => {
+    alert('Feature not implemented yet.'); // todo
   };
+
+  useEffect(() => {
+    // Initialize local state with global state
+    setNotebookTitle(globalTitle || '');
+    setNotebookDesc(globalDesc || '');
+  }, [globalTitle, globalDesc]); // Run only when the global state changes
+
+  const handleBlur = useCallback(() => {
+    // Only call updateNotebook if there are changes
+    if (notebookTitle !== globalTitle || notebookDesc !== globalDesc) {
+      updateNotebook(
+        notebookId,
+        notebookTitle ? notebookTitle : 'Untitled Notebook',
+        notebookDesc
+      );
+    }
+  }, [
+    notebookId,
+    notebookTitle,
+    notebookDesc,
+    globalTitle,
+    globalDesc,
+    updateNotebook,
+  ]);
 
   return (
     <div className="relative flex flex-col items-center justify-start min-h-screen bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
@@ -75,7 +104,7 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
         )}
         {/* Overlay Edit Button */}
         <button
-          onClick={onEdit}
+          onClick={onEditCover}
           className="absolute top-4 right-4 bg-white/80 dark:bg-gray-700/80 hover:bg-white/90 dark:hover:bg-gray-600/90 text-gray-700 dark:text-gray-200 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium shadow backdrop-blur-md transition"
         >
           Edit Cover
@@ -87,15 +116,25 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
         {/* Content Section */}
         <div className="mb-6">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
-            {title || 'Untitled Notebook'}
+            <Block
+              content={notebookTitle}
+              handler={setNotebookTitle}
+              onBlur={handleBlur}
+              variant="heading"
+            />
           </h1>
-          <p
+          <div
             className={`text-gray-600 dark:text-gray-400 text-base sm:text-lg ${
-              !description ? 'italic' : ''
+              !notebookDesc ? 'italic' : ''
             }`}
           >
-            {description || 'Add a description to your notebook...'}
-          </p>
+            <Block
+              content={notebookDesc}
+              handler={setNotebookDesc}
+              onBlur={handleBlur}
+              variant="description"
+            />
+          </div>
         </div>
 
         {/* Notes Section */}
