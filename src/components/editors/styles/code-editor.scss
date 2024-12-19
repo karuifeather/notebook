@@ -13,12 +13,7 @@
   top: 1rem;
   right: 1rem;
   z-index: 20;
-  background: #007acc;
-  color: white;
   border: none;
-  border-radius: 0.25rem;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
   cursor: pointer;
   opacity: 0;
   transition:
@@ -27,11 +22,6 @@
 }
 
 /* Show button on hover */
-.editor-wrapper:hover .button-format {
+.editor-wrapper:focus-within .button-format {
   opacity: 1;
-}
-
-/* Hover state for button */
-.editor-wrapper .button-format:hover {
-  background: #005ea6; /* Darker shade for hover */
 }

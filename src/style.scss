@@ -28,3 +28,30 @@ code {
 pre {
   @apply bg-gray-100 p-4 rounded shadow overflow-auto text-sm font-mono dark:bg-gray-800 dark:text-gray-100;
 }
+
+/* General Scrollbar Styles */
+.custom-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.1); /* Firefox */
+}
+
+/* For WebKit Browsers (Chrome, Edge, Safari) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  height: 8px; /* Height of the scrollbar (horizontal) */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05); /* Subtle track background */
+  border-radius: 10px; /* Rounded edges */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2); /* Thumb color */
+  border-radius: 10px; /* Rounded edges */
+  border: 2px solid rgba(0, 0, 0, 0.05); /* Padding-like effect */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3); /* Slightly darker thumb on hover */
+}

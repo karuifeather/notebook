@@ -57,6 +57,20 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
     editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyJ, () => {
       editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
     });
+
+    // Allow parent page to scroll when editor is not focused
+    const editorElement = editor.getDomNode();
+    if (editorElement) {
+      editorElement.addEventListener('wheel', (e) => {
+        if (!editor.hasTextFocus()) {
+          e.preventDefault();
+          e.stopPropagation();
+          // Propagate the scroll event to the parent
+          const deltaY = e.deltaY;
+          window.scrollBy({ top: deltaY, behavior: 'smooth' });
+        }
+      });
+    }
   };
 
   const onFormatClick = async () => {
@@ -101,13 +115,16 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
   }, []);
 
   return (
-    <div className="editor-wrapper">
+    <div className="editor-wrapper ">
+      {/* Format Button */}
       <button
-        className="button button-format is-primary is-small"
+        className="button-format py-2 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-purple-700 focus:ring-4 focus:ring-blue-300 focus:outline-none active:scale-95 transition-all duration-200"
         onClick={onFormatClick}
       >
         Format
       </button>
+
+      {/* Monaco Editor */}
       <Editor
         onMount={handleOnMount}
         onChange={(value) => onChange(value || '')}
@@ -121,7 +138,7 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
           cursorBlinking: 'smooth',
           scrollBeyondLastLine: false,
           wordWrap: 'on',
-          fontSize: 18,
+          fontSize: 16, // Scalable font size
           minimap: { enabled: false },
           tabSize: 2,
           automaticLayout: true,

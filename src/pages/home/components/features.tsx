@@ -35,16 +35,16 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section className="relative bg-gradient-to-t from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 py-16 px-6">
-      <div className="container mx-auto px-6 text-center">
+    <section className="relative bg-gradient-to-t from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 py-16 px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto text-center">
         {/* Section Heading */}
-        <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100">
+        <h2 className="text-4xl font-extrabold text-gray-800 dark:text-gray-100 sm:text-5xl">
           Why Choose{' '}
-          <span className="text-primary-light dark:text-primary-dark">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
             Notes?
           </span>
         </h2>
-        <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        <p className="mt-4 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
           From brainstorming to execution, Notes empowers your creativity with
           powerful features.
         </p>
@@ -54,13 +54,16 @@ export default function FeaturesSection() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="flex flex-col items-center text-center space-y-4 bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition"
+              className="flex flex-col items-center text-center space-y-4 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-2"
             >
               {/* Icon */}
-              <FontAwesomeIcon
-                icon={feature.icon}
-                className="w-12 h-12 text-primary-light dark:text-primary-dark"
-              />
+              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-lg">
+                <FontAwesomeIcon
+                  icon={feature.icon}
+                  className="w-8 h-8"
+                  aria-hidden="true"
+                />
+              </div>
               {/* Title */}
               <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
                 {feature.title}

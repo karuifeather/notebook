@@ -1,108 +1,166 @@
 :root {
-  /* Dark and Light mode colors */
-  --background-light: #f8f9fa;
-  --background-dark: #121212;
-  --text-light: #1e1e1e;
-  --text-dark: #e4e4e4;
-  --border-light: #e6e6e6;
-  --border-dark: #333333;
-  --tab-active: #0056b3; /* Active tab color */
-  --progress-light: #e0e0e0;
-  --progress-dark: #333333;
+  --tab-active: #0056b3;
+  --tab-hover: #007bff;
+  --tab-bg: #f0f0f0;
+  --tab-bg-dark: #1e1e1e;
+  --tab-border: #ddd;
+  --tab-border-dark: #444;
+  --spinner-color: #007bff;
+  --spinner-dark: #1e90ff;
+  --active-light: #007bff;
+  --background-dark: #1e1e1e;
+  --border-dark: #444444;
+  --text-dark: #d9d9d9;
 
-  /* Shared styles */
-  --border-radius: 0.5rem;
-  --menu-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
+  --tab-transition: all 0.3s ease;
 }
 
 /* Code Cell Container */
 .code-cell {
   display: flex;
   flex-direction: column;
-  border: none;
-  border-radius: var(--border-radius);
-  box-shadow: var(--menu-shadow);
-  background-color: var(--background-light);
-  transition:
-    background-color 0.3s ease,
-    box-shadow 0.3s ease;
-  outline: none;
-  outline: 1px solid var(--border-light);
+  border-radius: 0.5rem;
+  background: var(--tab-bg);
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: var(--tab-transition);
+  border: 1px solid var(--border-light);
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--tab-bg-dark);
+  }
 }
 
 .code-cell:focus-within {
-  outline: 1px solid var(--tab-active); /* Primary color border on focus or hover */
+  border-color: var(--active-light);
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25);
 }
 
 @media (prefers-color-scheme: dark) {
   .code-cell {
     background-color: var(--background-dark);
-    outline: 1px solid var(--border-dark);
-  }
-
-  .code-cell:focus-within {
-    outline: 1px solid var(--tab-active); /* Hover effect in dark mode */
-  }
-}
-
-/* Editor and Preview Area */
-.code-editor-container,
-.preview-container {
-  flex: 1;
-  padding: 1rem;
-  border: 1px solid var(--border-light);
-  border-radius: 0 0 var(--border-radius) var(--border-radius);
-  background-color: var(--background-light);
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
-}
-
-@media (prefers-color-scheme: dark) {
-  .code-editor-container,
-  .preview-container {
+    color: var(--text-dark);
     border: 1px solid var(--border-dark);
-    background-color: var(--background-dark);
+  }
+}
+
+/* Tab Header */
+.tab-header {
+  display: flex;
+  border-bottom: 1px solid var(--tab-border);
+  background: var(--tab-bg);
+  position: relative; /* For active tab indicator */
+  transition: var(--tab-transition);
+
+  @media (prefers-color-scheme: dark) {
+    border-color: var(--tab-border-dark);
+    background: var(--tab-bg-dark);
+  }
+
+  .tab-button {
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--tab-border-dark);
+    background: none;
+    border: none;
+    transition: var(--tab-transition);
+
+    &:hover {
+      color: var(--tab-hover);
+      background: rgba(0, 123, 255, 0.1); /* Subtle hover effect */
+    }
+
+    &.active {
+      color: #fff;
+      background: var(--tab-active);
+      position: relative;
+      z-index: 1;
+
+      @media (prefers-color-scheme: dark) {
+        background: var(--spinner-dark);
+      }
+    }
+  }
+
+  /* Active Tab Indicator */
+  .tab-indicator {
+    position: absolute;
+    bottom: 0;
+    height: 4px;
+    background: var(--tab-active);
+    width: 50%; /* Adjust dynamically for active tab */
+    transition:
+      width 0.3s ease,
+      transform 0.3s ease;
+
+    @media (prefers-color-scheme: dark) {
+      background: var(--spinner-dark);
+    }
+  }
+}
+
+/* Tab Content */
+.tab-content {
+  display: flex;
+  flex: 1;
+  background: var(--tab-bg);
+  transition: var(--tab-transition);
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--tab-bg-dark);
   }
 }
 
 /* Progress Wrapper */
 .progress-wrapper {
-  position: relative;
-  height: 30rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--background-light);
-  border-radius: var(--border-radius);
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
-}
+  background: var(--tab-bg);
+  height: 100%;
 
-@media (prefers-color-scheme: dark) {
-  .progress-wrapper {
-    background-color: var(--background-dark);
+  @media (prefers-color-scheme: dark) {
+    background: var(--tab-bg-dark);
   }
-}
 
-/* Loading Spinner */
-.loading-spinner {
-  width: 2rem;
-  height: 2rem;
-  border: 4px solid var(--progress-light);
-  border-top-color: var(--tab-active);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@media (prefers-color-scheme: dark) {
   .loading-spinner {
-    border: 4px solid var(--progress-dark);
-    border-top-color: var(--tab-hover);
+    width: 2rem;
+    height: 2rem;
+    border: 4px solid #ddd;
+    border-top-color: var(--spinner-color);
+    border-radius: 50%;
+    animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+
+    @media (prefers-color-scheme: dark) {
+      border: 4px solid var(--spinner-dark);
+    }
   }
 }
 
+/* Mobile Styling */
+@media (max-width: 768px) {
+  .tab-header {
+    flex-direction: column;
+    .tab-button {
+      text-align: left;
+      padding: 0.75rem 1rem;
+    }
+
+    .tab-indicator {
+      height: 2px;
+      width: 100%;
+      bottom: unset;
+      left: 0;
+      top: calc(100% - 2px);
+    }
+  }
+}
+
+/* Animation */
 @keyframes spin {
   to {
     transform: rotate(360deg);

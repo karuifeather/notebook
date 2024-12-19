@@ -9,7 +9,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import { useActions } from '@/hooks/use-actions.ts';
-import { selectCells } from '@/state/selectors/index.ts';
+import { makeSelectCells } from '@/state/selectors/index.ts';
 import CellListItem from '@/components/cells/cell-list-item.tsx';
 import AddCell from '@/components/cells/add-cell.tsx';
 import ActionBar from '@/components/cells/action-bar.tsx';
@@ -18,11 +18,16 @@ import './styles/cell-list.scss';
 
 // Sortable Item Component
 interface SortableItemProps {
-  id: string;
+  cellId: string;
+  noteId: string;
   children: React.ReactNode;
 }
 
-const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
+const SortableItem: React.FC<SortableItemProps> = ({
+  noteId,
+  cellId,
+  children,
+}) => {
   const {
     isDragging,
     attributes,
@@ -30,7 +35,7 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id });
+  } = useSortable({ id: cellId });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -45,9 +50,9 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
       {...attributes} // Attach drag attributes to the container
       className="sortable-item group bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition"
     >
-      <ActionBar id={id}>
+      <ActionBar cellId={cellId} noteId={noteId}>
         {/* Insert Cell Button */}
-        <AddCell currentCellId={id} />
+        <AddCell currentCellId={cellId} />
         {/* Drag Button */}
         <button
           {...listeners} // Attach drag listeners here
@@ -64,8 +69,9 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
   );
 };
 
-const CellList: React.FC = () => {
-  const cells = useTypedSelector(selectCells);
+const CellList: React.FC<{ noteId: string }> = ({ noteId }) => {
+  const selectCells = makeSelectCells();
+  const cells = useTypedSelector((state) => selectCells(state, noteId));
   const { moveCell } = useActions();
 
   // Handle drag end
@@ -79,7 +85,7 @@ const CellList: React.FC = () => {
       const toIndex = cells.findIndex((cell) => cell.id === over.id);
 
       // Dispatch the action to reorder cells
-      moveCell(fromIndex, toIndex);
+      moveCell(noteId, fromIndex, toIndex);
     }
   };
 
@@ -91,8 +97,8 @@ const CellList: React.FC = () => {
       >
         {cells.map((cell) => (
           <Fragment key={cell.id}>
-            <SortableItem id={cell.id}>
-              <CellListItem cell={cell} />
+            <SortableItem cellId={cell.id} noteId={noteId}>
+              <CellListItem cell={cell} noteId={noteId} />
             </SortableItem>
           </Fragment>
         ))}

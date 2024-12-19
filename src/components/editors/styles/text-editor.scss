@@ -1,41 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Fira+Code:wght@400;500&family=Merriweather:wght@400;700&display=swap');
-
 :root {
   /* Light mode colors */
-  --background-light: #f9f9f9;
-  --text-light: #1e1e1e; /* Darker text for contrast */
-  --subtle-text-light: #6b6b6b; /* For secondary text */
-  --border-light: #e0e0e0;
-  --highlight-light: #fff4cc;
+  --background-light: #fafafa;
+  --text-light: #222222;
+  --subtle-text-light: #5a5a5a;
+  --border-light: #e3e3e3;
+  --highlight-light: #fff9e6;
   --menu-light: #ffffff;
-  --active-light: #0056b3;
+  --active-light: #007bff;
 
   /* Dark mode colors */
-  --background-dark: #1b1b1b;
-  --text-dark: #e4e4e4; /* Softer light text */
-  --subtle-text-dark: #a0a0a0; /* For secondary text */
-  --border-dark: #333333;
-  --highlight-dark: #4d4c3b;
-  --menu-dark: #1f1f1f;
-  --active-dark: #1e90ff;
+  --background-dark: #1e1e1e;
+  --text-dark: #d9d9d9;
+  --subtle-text-dark: #909090;
+  --border-dark: #444444;
+  --highlight-dark: #5a5340;
+  --menu-dark: #2b2b2b;
+  --active-dark: #3399ff;
 
   /* Shared styles */
-  --menu-shadow: 0px 4px 14px rgba(0, 0, 0, 0.15);
-  --border-radius: 0.6rem;
-  --transition: all 0.25s ease;
+  --menu-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  --border-radius: 0.5rem;
+  --transition: all 0.3s ease-in-out;
 
   /* Typography */
   --font-family-sans: 'Inter', sans-serif;
   --font-family-serif: 'Merriweather', serif;
   --font-family-mono: 'Fira Code', monospace;
 
-  --font-size-base: 18px;
-  --line-height-base: 1.7;
+  --font-size-base: clamp(16px, 1.5vw, 18px);
+  --line-height-base: 1.75;
 
-  --font-size-h1: 2.5rem;
-  --font-size-h2: 2rem;
-  --font-size-h3: 1.75rem;
-  --font-size-p: 1.1rem;
+  --font-size-h1: clamp(2rem, 5vw, 3rem);
+  --font-size-h2: clamp(1.75rem, 4vw, 2.5rem);
+  --font-size-h3: clamp(1.5rem, 3vw, 2rem);
+  --font-size-p: clamp(1rem, 2vw, 1.2rem);
 }
 
 /* Editor Container */
@@ -50,13 +48,14 @@
   box-shadow: var(--menu-shadow);
   outline: none;
   min-height: 20rem;
-  margin: 3rem auto;
+  margin: 2rem auto;
   border: 1px solid var(--border-light);
   transition: var(--transition);
 }
 
 .tiptap:focus-within {
   border-color: var(--active-light);
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -72,7 +71,6 @@
   content: 'Start typing something amazing...';
   color: var(--subtle-text-light);
   font-style: italic;
-  font-size: 1rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -129,7 +127,7 @@
 
 /* Code */
 code {
-  background-color: var(--menu-light);
+  background: linear-gradient(90deg, var(--menu-light), var(--highlight-light));
   border-radius: var(--border-radius);
   padding: 0.3rem 0.6rem;
   font-family: var(--font-family-mono);
@@ -138,7 +136,7 @@ code {
 
 @media (prefers-color-scheme: dark) {
   code {
-    background-color: var(--menu-dark);
+    background: linear-gradient(90deg, var(--menu-dark), var(--highlight-dark));
     color: var(--active-dark);
   }
 }
@@ -146,18 +144,18 @@ code {
 /* Blockquote */
 blockquote {
   border-left: 4px solid var(--active-light);
-  padding-left: 1rem;
+  padding: 1rem;
   margin: 1.5rem 0;
   color: var(--subtle-text-light);
   font-style: italic;
-  background-color: var(--menu-light);
+  background: linear-gradient(90deg, var(--menu-light), var(--highlight-light));
   border-radius: var(--border-radius);
 }
 
 @media (prefers-color-scheme: dark) {
   blockquote {
-    background-color: var(--menu-dark);
     border-left: 4px solid var(--active-dark);
     color: var(--subtle-text-dark);
+    background: linear-gradient(90deg, var(--menu-dark), var(--highlight-dark));
   }
 }

@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import './styles/preview.scss';
 
 interface PreviewProps {
   code: string;
@@ -120,6 +121,7 @@ const Preview: React.FC<PreviewProps> = ({ code, initialError = '' }) => {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [error, setError] = useState(initialError);
   const [logs, setLogs] = useState<string[]>([]);
+  const [showLogs, setShowLogs] = useState(true);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -127,13 +129,11 @@ const Preview: React.FC<PreviewProps> = ({ code, initialError = '' }) => {
         const { type, args } = event.data;
 
         if (type === 'error') {
-          setError(args.join('\n')); // Capture the error in the `error` state
+          setError(args.join('\n'));
         } else {
           const formattedArgs = args.map((arg: any) =>
             typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
           );
-          // @ts-ignore
-          console[type]?.(...formattedArgs); // Log to actual console
           setLogs((prevLogs) => [
             ...prevLogs,
             `${type.toUpperCase()}: ${formattedArgs.join(' ')}`,
@@ -143,7 +143,6 @@ const Preview: React.FC<PreviewProps> = ({ code, initialError = '' }) => {
     };
 
     window.addEventListener('message', handleMessage);
-
     return () => {
       window.removeEventListener('message', handleMessage);
     };
@@ -155,43 +154,60 @@ const Preview: React.FC<PreviewProps> = ({ code, initialError = '' }) => {
       iframe.srcdoc = html;
 
       iframe.onload = () => {
-        try {
-          if (code.trim()) {
-            iframe.contentWindow?.postMessage(code, '*');
-          }
-        } catch (err) {
-          console.error('Error posting message:', err);
+        if (code.trim()) {
+          iframe.contentWindow?.postMessage(code, '*');
         }
       };
     }
   }, [code]);
 
   return (
-    <div className="relative h-full flex-grow bg-gray-200 rounded border border-gray-300 overflow-hidden">
+    <div className="preview-container relative flex flex-col bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg shadow-md">
+      {/* Iframe for code execution */}
       <iframe
         title="Preview Output"
         ref={iframeRef}
         sandbox="allow-scripts"
-        className="h-full w-full border-none rounded bg-white"
+        className="h-full flex-grow w-full border-none rounded-lg bg-white dark:bg-gray-800"
       />
-      <div className="absolute bottom-0 left-0 right-0 bg-gray-800 text-white text-xs p-2 max-h-40 overflow-y-auto">
+
+      {/* Logs Panel */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 transition-transform duration-300 ${
+          showLogs ? 'translate-y-0' : 'translate-y-full'
+        } bg-gray-800 text-white text-xs p-2 max-h-40 overflow-y-auto`}
+      >
+        <div className="flex justify-between items-center mb-2">
+          <span className="font-bold">Logs</span>
+          <button
+            onClick={() => setShowLogs(!showLogs)}
+            className="text-gray-400 hover:text-white text-sm"
+          >
+            {showLogs ? 'Hide' : 'Show'}
+          </button>
+        </div>
         {logs.map((log, index) => (
-          <div key={index} className="mb-1">
+          <pre
+            key={index}
+            className="mb-1 whitespace-pre-wrap break-words bg-gray-700 p-2 rounded-md"
+          >
             {log}
-          </div>
+          </pre>
         ))}
       </div>
+
+      {/* Error Display */}
       {error && (
         <div className="absolute inset-0 p-4 bg-red-100 text-red-700 text-sm font-mono rounded shadow overflow-y-auto">
-          <h4 className="text-red-800 text-lg font-bold mb-2 flex justify-between">
-            <span>Build Error</span>
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="text-red-800 text-lg font-bold">Runtime Error</h4>
             <button
               onClick={() => setError('')}
               className="text-xs bg-red-800 text-white px-2 py-1 rounded hover:bg-red-700"
             >
               Dismiss
             </button>
-          </h4>
+          </div>
           <pre>{error}</pre>
         </div>
       )}

@@ -1,6 +1,6 @@
 import { Middleware } from './middleware.ts';
 import { ActionType } from '../action-types/index.ts';
-import { UpdateCellAction } from '../actions/index.ts';
+import { Action, UpdateCellAction } from '../actions/index.ts';
 import { CellsState } from '../reducers/cellsReducers.ts';
 
 interface _MakeItCumulative<A, C> {
@@ -9,12 +9,10 @@ interface _MakeItCumulative<A, C> {
 
 type MakeItCumulative = _MakeItCumulative<UpdateCellAction, CellsState>;
 
-const makeItCumulative: MakeItCumulative = (
-  { payload: { id: cellId, content } },
-  cells
-) => {
-  const { data, order } = cells;
-  const orderedCells = order.map((id) => data[id]);
+const makeItCumulative: MakeItCumulative = ({ payload }, cells) => {
+  const { noteId, id: cellId, content } = payload;
+  const cellMeta = cells[noteId];
+  const orderedCells = cellMeta.order.map((id) => cellMeta.data[id]);
 
   const printDeclaration = `
   import _React from 'react';
@@ -69,13 +67,15 @@ let timer: NodeJS.Timeout;
 export const cumulativeMiddleware: Middleware =
   ({ getState, dispatch }) =>
   (next) =>
-  (action) => {
+  (action: Action) => {
     next(action);
 
     if (action.type !== ActionType.UPDATE_CELL) return;
 
+    const { noteId, id } = action.payload;
+
     const { cells } = getState();
-    const cell = cells.data[action.payload.id];
+    const cell = cells[noteId].data[id];
 
     if (cell.type !== 'code') return;
 

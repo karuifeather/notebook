@@ -9,10 +9,8 @@ import './style.scss';
 
 // Dynamic imports for code splitting
 const Home = lazy(() => import('@/pages/home/home.tsx'));
-const TryNow = lazy(() => import('./pages/try-now.tsx'));
 const NotFound = lazy(() => import('./components/not-found.tsx'));
-const Header = lazy(() => import('./components/header.tsx'));
-const Footer = lazy(() => import('./components/footer.tsx'));
+const WorkSpace = lazy(() => import('./pages/workspace/workspace.tsx'));
 
 export const App = () => {
   const isDarkMode = useDarkMode();
@@ -30,13 +28,11 @@ export const App = () => {
       <Router>
         <div>
           <Suspense fallback={<Loader />}>
-            <Header />
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/try-now" element={<TryNow />} />
+              <Route path="/app/*" element={<WorkSpace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <Footer />
           </Suspense>
         </div>
       </Router>

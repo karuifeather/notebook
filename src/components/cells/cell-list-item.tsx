@@ -6,9 +6,10 @@ import './styles/cell-list-item.scss';
 
 interface CellListItemProps {
   cell: Cell;
+  noteId: string;
 }
 
-const CellListItem: React.FC<CellListItemProps> = ({ cell }) => {
+const CellListItem: React.FC<CellListItemProps> = ({ cell, noteId }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -20,8 +21,8 @@ const CellListItem: React.FC<CellListItemProps> = ({ cell }) => {
   let child: React.ReactNode;
 
   if (cell.type === 'code') {
-    child = <CodeCell cell={cell} />;
-  } else {
+    child = <CodeCell cell={cell} noteId={noteId} />;
+  } else if (cell.type === 'markdown') {
     child = <TextEditor cell={cell} />;
   }
 
