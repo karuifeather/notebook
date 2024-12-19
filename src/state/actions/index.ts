@@ -141,7 +141,7 @@ export interface DeleteNotebookAction {
 
 export interface UpdateNotebookAction {
   type: ActionType.UPDATE_NOTEBOOK;
-  payload: { notebookId: string; name: string };
+  payload: { notebookId: string; title: string; description: string };
 }
 
 /**

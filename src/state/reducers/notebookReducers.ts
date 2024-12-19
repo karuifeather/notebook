@@ -42,19 +42,21 @@ const reducer = (
         draft.error = action.payload;
         return;
 
-      case ActionType.CREATE_NOTEBOOK:
+      case ActionType.CREATE_NOTEBOOK: {
         const { id, title, description } = action.payload;
         draft.data[id] = { id, name: title, description };
         return;
+      }
 
       case ActionType.DELETE_NOTEBOOK:
         delete draft.data[action.payload];
         return;
 
       case ActionType.UPDATE_NOTEBOOK:
-        const { notebookId, name: newName } = action.payload;
+        const { notebookId, title, description } = action.payload;
         if (draft.data[notebookId]) {
-          draft.data[notebookId].name = newName;
+          draft.data[notebookId].name = title;
+          draft.data[notebookId].description = description;
         }
         return;
 

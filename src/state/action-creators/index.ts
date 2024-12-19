@@ -121,3 +121,12 @@ export const createNotebook = (title: string, description: string) => ({
   type: ActionType.CREATE_NOTEBOOK,
   payload: { title, description },
 });
+
+export const updateNotebook = (
+  notebookId: string,
+  title: string,
+  description: string
+) => ({
+  type: ActionType.UPDATE_NOTEBOOK,
+  payload: { notebookId, title, description },
+});
