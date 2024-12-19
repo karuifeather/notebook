@@ -122,26 +122,28 @@ export const Sidebar: React.FC = () => {
         <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
           {notebooks.map(({ notes, id: notebookId, name: notebookTitle }) => (
             <div key={notebookId} className="group">
-              <div
-                className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-700 transition"
-                onClick={() => toggleFolder(notebookId)}
-                aria-expanded={expandedFolders.includes(notebookId)}
-              >
-                <div className="flex items-center gap-2">
-                  <i
-                    className={`fas ${
-                      expandedFolders.includes(notebookId)
-                        ? 'fa-folder-open'
-                        : 'fa-folder'
-                    } text-blue-500`}
-                  ></i>
-                  {!isCollapsed && (
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {notebookTitle}
-                    </span>
-                  )}
+              <Link to={`/app/notebook/${notebookId}`}>
+                <div
+                  className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-700 transition"
+                  onClick={() => toggleFolder(notebookId)}
+                  aria-expanded={expandedFolders.includes(notebookId)}
+                >
+                  <div className="flex items-center gap-2">
+                    <i
+                      className={`fas ${
+                        expandedFolders.includes(notebookId)
+                          ? 'fa-folder-open'
+                          : 'fa-folder'
+                      } text-blue-500`}
+                    ></i>
+                    {!isCollapsed && (
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {notebookTitle}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Notes */}
               <div
