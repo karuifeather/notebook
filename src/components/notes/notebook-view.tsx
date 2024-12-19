@@ -138,22 +138,28 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
         </div>
 
         {/* Notes Section */}
-        <div>
+        <>
           {notes.length === 0 ? (
-            <div className="text-center text-gray-500 dark:text-gray-400">
-              <p>No notes here yet.</p>
-              <div className="mt-4 flex flex-col sm:flex-row gap-3 items-center justify-center">
+            <div className="flex flex-col items-center text-center text-gray-500 dark:text-gray-400">
+              {/* Empty State Message */}
+              <p className="text-lg font-medium">No notes here yet.</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+                Start by creating your first note.
+              </p>
+              <div className="mt-6 flex flex-col sm:flex-row gap-3 items-center justify-center">
+                {/* Input for New Note */}
                 <input
                   type="text"
                   placeholder="Enter a note title..."
                   value={newNoteTitle}
                   onChange={(e) => setNewNoteTitle(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleNewNote()}
-                  className="p-2 w-full sm:w-64 border rounded-md text-lg text-gray-900 dark:text-gray-200 bg-transparent border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  className="p-3 w-full sm:w-64 border rounded-md text-lg text-gray-900 dark:text-gray-200 bg-transparent border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
                 />
+                {/* Create Note Button */}
                 <button
                   onClick={handleNewNote}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-md transition"
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
                 >
                   Start Creating
                 </button>
@@ -161,12 +167,14 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
             </div>
           ) : (
             <ul className="space-y-4">
+              {/* Notes List */}
               {notes.map((note) => (
                 <Link
                   to={`/app/notebook/${notebookId}/note/${note.id}`}
                   key={note.id}
                 >
-                  <li className="group flex items-center justify-between p-4 border dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                  <li className="group flex items-center justify-between p-4 border dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition shadow-sm hover:shadow-md">
+                    {/* Note Title */}
                     <span className="text-gray-800 dark:text-gray-200">
                       {note.title}
                     </span>
@@ -181,18 +189,18 @@ const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
                   value={newNoteTitle}
                   onChange={(e) => setNewNoteTitle(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleNewNote()}
-                  className="p-2 flex-1 border rounded-md text-lg text-gray-900 dark:text-gray-200 bg-transparent border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  className="p-3 flex-1 border rounded-md text-lg text-gray-900 dark:text-gray-200 bg-transparent border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
                 />
                 <button
                   onClick={handleNewNote}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-md transition"
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
                 >
                   Add
                 </button>
               </li>
             </ul>
           )}
-        </div>
+        </>
       </div>
     </div>
   );
