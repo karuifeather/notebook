@@ -3,9 +3,10 @@ import { useActions } from '@/hooks/use-actions.ts';
 
 interface AddCellProps {
   currentCellId: string | null;
+  noteId: string;
 }
 
-const AddCell: React.FC<AddCellProps> = ({ currentCellId }) => {
+const AddCell: React.FC<AddCellProps> = ({ currentCellId, noteId }) => {
   const { insertCellAfter } = useActions();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -39,7 +40,7 @@ const AddCell: React.FC<AddCellProps> = ({ currentCellId }) => {
             <li>
               <button
                 onClick={() => {
-                  insertCellAfter(currentCellId, 'code');
+                  insertCellAfter(noteId, currentCellId, 'code');
                   setMenuOpen(false);
                 }}
                 className="flex items-center gap-2 w-full px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition"
@@ -53,7 +54,7 @@ const AddCell: React.FC<AddCellProps> = ({ currentCellId }) => {
             <li>
               <button
                 onClick={() => {
-                  insertCellAfter(currentCellId, 'text');
+                  insertCellAfter(noteId, currentCellId, 'markdown');
                   setMenuOpen(false);
                 }}
                 className="flex items-center gap-2 w-full px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition"
