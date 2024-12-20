@@ -78,13 +78,13 @@ export const Sidebar: React.FC = () => {
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`fixed sm:top-8 left-0 h-[50rem] rounded-lg overflow-hidden sm:relative bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 backdrop-blur-lg shadow-lg transform transition-all duration-500 z-50 
+        className={`fixed sm:top-8 left-0 sm:left-3 sm:h-[50rem] h-[100vh] rounded-lg overflow-hidden sm:relative bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 backdrop-blur-lg sm:shadow-black shadow-lg sm:shadow-xl transform transition-all duration-300 z-50 
     ${isCollapsed ? 'w-16' : 'w-72'} 
-    ${isMobileOpen ? 'translate-x-0 h-screen' : '-translate-x-full md:translate-x-0 h-screen'}
+    ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
      flex flex-col`}
       >
         <div
-          className={`h-full flex flex-col ${isCollapsed ? 'w-16' : 'w-72'} 
+          className={`h-screen sm:h-full flex flex-col ${isCollapsed ? 'w-16' : 'w-72'} 
     ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
         >
           {/* Header */}
@@ -199,11 +199,7 @@ export const Sidebar: React.FC = () => {
 
           {/* Footer */}
           <div
-            className={`mt-auto px-3 py-4 bg-gradient-to-t from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-t border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300 ${
-              isCollapsed
-                ? 'opacity-0 translate-y-4 pointer-events-none'
-                : 'opacity-100 translate-y-0 pointer-events-auto'
-            }`}
+            className={`mt-auto px-3 py-4 bg-gradient-to-t from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-t border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300`}
           >
             {!isCollapsed && (
               <div className="text-center space-y-2">
