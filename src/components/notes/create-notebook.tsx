@@ -28,7 +28,7 @@ const CreateNotebook: React.FC = () => {
 
   return (
     <div
-      className={`flex items-center justify-center min-h-[80vh] bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900 p-4 transition-all duration-700 ease-out ${
+      className={`flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900 p-4 transition-all duration-700 ease-out ${
         isMounted ? 'animate-slide-up-fade' : 'opacity-0'
       }`}
     >
