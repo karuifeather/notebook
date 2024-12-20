@@ -6,6 +6,7 @@ import { store } from '@/state/index.ts';
 import { useDarkMode } from '@/hooks/use-dark-mode.ts';
 import Loader from '@/components/loader.tsx';
 import './style.scss';
+import Playground from './pages/playground.tsx';
 
 // Dynamic imports for code splitting
 const Home = lazy(() => import('@/pages/home/home.tsx'));
@@ -30,6 +31,7 @@ export const App = () => {
           <Suspense fallback={<Loader />}>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/playground" element={<Playground />} />
               <Route path="/app/*" element={<WorkSpace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

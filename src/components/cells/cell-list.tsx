@@ -52,7 +52,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
     >
       <ActionBar cellId={cellId} noteId={noteId}>
         {/* Insert Cell Button */}
-        <AddCell currentCellId={cellId} />
+        <AddCell currentCellId={cellId} noteId={noteId} />
         {/* Drag Button */}
         <button
           {...listeners} // Attach drag listeners here
