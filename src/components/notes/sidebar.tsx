@@ -307,6 +307,20 @@ export const Sidebar: React.FC = () => {
             )}
           </div>
         </div>
+        {/* Delete Confirmation Modal */}
+        {showDeleteModal && (
+          <Modal
+            title="Confirm Delete"
+            onConfirm={handleDelete}
+            onCancel={() => setShowDeleteModal(false)}
+          >
+            <p className="text-gray-700 dark:text-gray-300">
+              Are you sure you want to delete this {deleteTarget?.type}?{' '}
+              {deleteTarget?.type === 'notebook' &&
+                'Everything inside will be deleted.'}
+            </p>
+          </Modal>
+        )}
       </aside>
     </>
   );
