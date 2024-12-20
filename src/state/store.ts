@@ -1,36 +1,47 @@
-import { compose, Middleware } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import { thunk } from 'redux-thunk';
-import { configureStore } from '@reduxjs/toolkit'; // Preferred over createStore
 import reducers from './reducers/index.ts';
 import { bundlerMiddleware } from './middlewares/bundler-middleware.ts';
 import { cumulativeMiddleware } from './middlewares/cumulative-middleware.ts';
 import { tempMiddleware } from './middlewares/temp-middleware.ts';
 
-// Type definition for Redux DevTools compose
-declare global {
-  interface Window {
-    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
-  }
-}
+// Persist configuration
+const persistConfig = {
+  key: 'root', // Root key for the persisted storage
+  storage, // Use localStorage as the default storage
+  whitelist: ['cells', 'notes', 'notebooks'], // Persist specific reducers
+};
 
-// Define middlewares array
-const middlewares: Middleware[] = [
+// Wrap the root reducer with persistReducer
+// @ts-ignore
+const persistedReducer = persistReducer(persistConfig, reducers);
+
+// Middlewares
+const middlewares = [
   thunk,
-  // @ts-ignore
   cumulativeMiddleware,
-  // @ts-ignore
   bundlerMiddleware,
-  // @ts-ignore
   tempMiddleware,
 ];
 
 // Configure the store
 export const store = configureStore({
-  reducer: reducers,
+  reducer: persistedReducer, // Use the persisted reducer directly
+  // @ts-ignore
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: true }).concat(middlewares),
-  devTools: process.env.NODE_ENV !== 'production',
+    getDefaultMiddleware({
+      thunk: true,
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // Ignore persist actions
+      },
+    }).concat(middlewares),
+  devTools: process.env.NODE_ENV !== 'production', // Enable Redux DevTools in only development
 });
+
+// Persistor for the store
+export const persistor = persistStore(store);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

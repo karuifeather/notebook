@@ -28,12 +28,12 @@ const CreateNotebook: React.FC = () => {
 
   return (
     <div
-      className={`flex items-center justify-center min-h-[80vh] bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900 p-4 transition-all duration-700 ease-out ${
+      className={`flex items-start justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900 p-4 transition-all duration-700 ease-out ${
         isMounted ? 'animate-slide-up-fade' : 'opacity-0'
       }`}
     >
       {/* Glassmorphism Container */}
-      <div className="w-full max-w-2xl p-6 sm:p-10 bg-white/60 dark:bg-gray-900/70 backdrop-blur-md shadow-2xl rounded-2xl text-center border border-gray-200 dark:border-gray-700">
+      <div className="w-full max-w-2xl mt-20 p-6 sm:p-10 bg-white/60 dark:bg-gray-900/70 backdrop-blur-md shadow-2xl rounded-2xl text-center border border-gray-200 dark:border-gray-700">
         {/* Header */}
         <h1 className="text-2xl md:text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-6">
           ✨ Create Your Notebook

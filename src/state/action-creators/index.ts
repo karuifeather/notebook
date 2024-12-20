@@ -139,3 +139,12 @@ export const updateNotebook = (
   type: ActionType.UPDATE_NOTEBOOK,
   payload: { notebookId, title, description },
 });
+
+/**
+ * Temp Action Creators
+ */
+
+export const createPlayground = (playgroundId: string) => ({
+  type: ActionType.CREATE_PLAYGROUND,
+  payload: { playgroundId },
+});

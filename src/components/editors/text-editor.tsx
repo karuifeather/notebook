@@ -18,12 +18,13 @@ import './styles/text-editor.scss';
 
 interface TextEditorProps {
   cell: Cell;
+  noteId: string;
 }
 
 const md = new MarkdownIt();
 const turndownService = new TurndownService();
 
-const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
+const TextEditor: React.FC<TextEditorProps> = ({ cell, noteId }) => {
   const { updateCell } = useActions();
   const throttlingRef = useRef(false); // To manage the throttling state
   const timerRef = useRef<number | null>(null); // To store the timeout reference
@@ -49,7 +50,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell }) => {
       if (!throttlingRef.current) {
         // Save content immediately on first call
         const markdownContent = turndownService.turndown(editor.getHTML());
-        updateCell(cell.id, markdownContent);
+        updateCell(noteId, cell.id, markdownContent);
 
         // Start throttling
         throttlingRef.current = true;
