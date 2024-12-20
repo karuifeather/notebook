@@ -102,7 +102,7 @@ const NoteView: React.FC<NoteViewProps> = ({ playgroundNoteId }) => {
           ) : null}
 
           {/* Cells */}
-          <div className="p-3 sm:p-6">
+          <div className="p-3 sm:p-6 ">
             <CellList noteId={noteId} />
           </div>
         </div>
