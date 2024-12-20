@@ -123,6 +123,11 @@ export const moveNote = (
   };
 };
 
+export const deleteNote = (notebookId: string, noteId: string) => ({
+  type: ActionType.DELETE_NOTE,
+  payload: { parentId: notebookId, noteId },
+});
+
 /**
  * Notebook Action Creators
  */
@@ -138,6 +143,11 @@ export const updateNotebook = (
 ) => ({
   type: ActionType.UPDATE_NOTEBOOK,
   payload: { notebookId, title, description },
+});
+
+export const deleteNotebook = (notebookId: string) => ({
+  type: ActionType.DELETE_NOTEBOOK,
+  payload: notebookId,
 });
 
 /**

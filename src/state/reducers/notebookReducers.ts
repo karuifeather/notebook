@@ -49,7 +49,9 @@ const reducer = (
       }
 
       case ActionType.DELETE_NOTEBOOK:
+        console.log(action.payload);
         delete draft.data[action.payload];
+        console.log(draft.data);
         return;
 
       case ActionType.UPDATE_NOTEBOOK:

@@ -31,7 +31,7 @@ export const Sidebar: React.FC = () => {
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
 
   const navigate = useNavigate();
-  const { createNote } = useActions();
+  const { createNote, deleteNote, deleteNotebook } = useActions();
 
   const selectNotebooksWithNotes = makeSelectNotebooksWithNotes();
   const notebooks = useTypedSelector(selectNotebooksWithNotes);
@@ -84,12 +84,20 @@ export const Sidebar: React.FC = () => {
     });
   };
 
+  // Delete handler
   const handleDelete = () => {
     if (deleteTarget) {
       if (deleteTarget.type === 'notebook') {
         console.log(`Notebook deleted: ${deleteTarget.id}`);
+        deleteNotebook(deleteTarget.id);
       } else {
         console.log(`Note deleted: ${deleteTarget.id}`);
+        deleteNote(
+          notebooks.find((notebook) =>
+            notebook.notes.some((note: Note) => note.id === deleteTarget.id)
+          )?.id as string,
+          deleteTarget.id
+        );
       }
     }
     setShowDeleteModal(false);
