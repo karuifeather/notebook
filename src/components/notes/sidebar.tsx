@@ -60,7 +60,7 @@ export const Sidebar: React.FC = () => {
       {/* Mobile Sidebar Overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed top-3 left-3 inset-0 bg-black bg-opacity-50 z-40 md:hidden"
           onClick={toggleMobileSidebar}
           aria-hidden="true"
         />
@@ -78,16 +78,14 @@ export const Sidebar: React.FC = () => {
       {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`fixed top-0 left-0 sm:relative bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 backdrop-blur-lg shadow-lg transform transition-all duration-500 z-50 
+        className={`fixed sm:top-8 left-0 h-[50rem] rounded-lg overflow-hidden sm:relative bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 backdrop-blur-lg shadow-lg transform transition-all duration-500 z-50 
     ${isCollapsed ? 'w-16' : 'w-72'} 
-    ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-    h-screen flex flex-col `}
-        //
+    ${isMobileOpen ? 'translate-x-0 h-screen' : '-translate-x-full md:translate-x-0 h-screen'}
+     flex flex-col`}
       >
         <div
-          className={`fixed top-0 left-0 ${isCollapsed ? 'w-16' : 'w-72'} 
-    ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-    h-screen flex flex-col`}
+          className={`h-full flex flex-col ${isCollapsed ? 'w-16' : 'w-72'} 
+    ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md">

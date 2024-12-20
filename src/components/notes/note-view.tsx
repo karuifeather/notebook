@@ -79,9 +79,9 @@ const NoteView: React.FC = () => {
   ]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex flex-col h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
       {/* Main Content */}
-      <div className="flex-1 px-2 py-24 sm:py-6 sm:px-6 lg:px-12">
+      <div className="flex-1 px-2 py-24 overflow-auto custom-scrollbar  sm:py-6 sm:px-6 lg:px-12">
         <div className="relative sm:px-2 mx-auto w-full max-w-3xl xl:max-w-4xl bg-white dark:bg-gray-800 rounded-xl shadow-md transition-transform">
           <div className="absolute top-3 right-3 flex items-center gap-2 z-50">
             {/* Add Dependencies Button */}
