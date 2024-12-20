@@ -25,6 +25,7 @@ export const Sidebar: React.FC = () => {
   const [deleteTarget, setDeleteTarget] = useState<{
     type: string;
     id: string;
+    title?: string;
   } | null>(null); // Tracks the item to delete (notebook/note)
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Tracks whether delete modal is open
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
@@ -73,7 +74,7 @@ export const Sidebar: React.FC = () => {
   // Context menu handlers
   const handleContextMenu = <T extends HTMLElement>(
     event: React.MouseEvent<T>,
-    target: { type: 'notebook' | 'note'; id: string }
+    target: { type: 'notebook' | 'note'; id: string; title?: string }
   ) => {
     event.preventDefault();
     setContextMenu({
@@ -209,7 +210,11 @@ export const Sidebar: React.FC = () => {
                 className="group relative"
                 onContextMenu={(e) => {
                   e.preventDefault(); // Prevent browser's default context menu
-                  handleContextMenu(e, { type: 'notebook', id: notebookId });
+                  handleContextMenu(e, {
+                    type: 'notebook',
+                    id: notebookId,
+                    title: notebookTitle,
+                  });
                 }}
               >
                 <Link to={`/app/notebook/${notebookId}`}>
@@ -276,6 +281,7 @@ export const Sidebar: React.FC = () => {
                           handleContextMenu(e, {
                             type: 'note',
                             id: note.id as string,
+                            title: note.title,
                           });
                         }}
                       >
@@ -315,7 +321,8 @@ export const Sidebar: React.FC = () => {
             onCancel={() => setShowDeleteModal(false)}
           >
             <p className="text-gray-700 dark:text-gray-300">
-              Are you sure you want to delete this {deleteTarget?.type}?{' '}
+              Are you sure you want to delete{' '}
+              <strong>{deleteTarget?.title}</strong>?{' '}
               {deleteTarget?.type === 'notebook' &&
                 'Everything inside will be deleted.'}
             </p>
