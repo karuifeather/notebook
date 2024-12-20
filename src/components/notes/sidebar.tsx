@@ -199,7 +199,7 @@ export const Sidebar: React.FC = () => {
 
           {/* Footer */}
           <div
-            className={`mt-auto px-3 py-4 bg-gradient-to-t from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 border-t border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300`}
+            className={`mt-auto px-3 py-4 bg-gradient-to-t from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-800 border-t border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300`}
           >
             {!isCollapsed && (
               <div className="text-center space-y-2">
