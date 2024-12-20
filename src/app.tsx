@@ -10,7 +10,7 @@ import './style.scss';
 // Dynamic imports for code splitting
 const Home = lazy(() => import('@/pages/home/home.tsx'));
 const NotFound = lazy(() => import('./components/not-found.tsx'));
-const WorkSpace = lazy(() => import('./pages/workspace/workspace.tsx'));
+const WorkSpace = lazy(() => import('./pages/workspace.tsx'));
 
 export const App = () => {
   const isDarkMode = useDarkMode();
