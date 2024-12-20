@@ -45,7 +45,6 @@
     "react-resizable-panels": "^2.1.7",
     "react-router-dom": "^7.0.2",
     "redux": "^5.0.1",
-    "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
     "reselect": "^5.1.1",
     "tiptap-markdown": "^0.8.10",

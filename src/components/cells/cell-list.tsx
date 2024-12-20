@@ -52,7 +52,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
     >
       <ActionBar cellId={cellId} noteId={noteId}>
         {/* Insert Cell Button */}
-        <AddCell currentCellId={cellId} noteId={noteId} />
+        <AddCell currentCellId={cellId} />
         {/* Drag Button */}
         <button
           {...listeners} // Attach drag listeners here
@@ -90,26 +90,20 @@ const CellList: React.FC<{ noteId: string }> = ({ noteId }) => {
   };
 
   return (
-    <>
-      {cells.length ? (
-        <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-          <SortableContext
-            items={cells.map((cell) => cell.id)} // Ensure this matches the updated order
-            strategy={verticalListSortingStrategy}
-          >
-            {cells.map((cell) => (
-              <Fragment key={cell.id}>
-                <SortableItem cellId={cell.id} noteId={noteId}>
-                  <CellListItem cell={cell} noteId={noteId} />
-                </SortableItem>
-              </Fragment>
-            ))}
-          </SortableContext>
-        </DndContext>
-      ) : (
-        <AddCell currentCellId={null} noteId={noteId} />
-      )}
-    </>
+    <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <SortableContext
+        items={cells.map((cell) => cell.id)} // Ensure this matches the updated order
+        strategy={verticalListSortingStrategy}
+      >
+        {cells.map((cell) => (
+          <Fragment key={cell.id}>
+            <SortableItem cellId={cell.id} noteId={noteId}>
+              <CellListItem cell={cell} noteId={noteId} />
+            </SortableItem>
+          </Fragment>
+        ))}
+      </SortableContext>
+    </DndContext>
   );
 };
 

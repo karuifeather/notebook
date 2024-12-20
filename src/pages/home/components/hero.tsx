@@ -23,10 +23,10 @@ export default function HeroSection() {
 
       {/* Call-to-Action Buttons */}
       <div className="mt-8 flex flex-wrap justify-center gap-4">
-        <Button to="/playground" cta>
-          Try Now
+        <Button to="/signup" cta>
+          Get Started
         </Button>
-        <Button to="/app/create-notebook">Get Started</Button>
+        <Button to="/try-now">Try Now</Button>
       </div>
 
       {/* Decorative Graphic */}

@@ -10,11 +10,6 @@ export interface GeneratedIdAction {
   payload: { id: string };
 }
 
-export interface CreatePlaygroundAction {
-  type: ActionType.CREATE_PLAYGROUND;
-  payload: { playgroundId: string };
-}
-
 /**
  * Cell actions
  */

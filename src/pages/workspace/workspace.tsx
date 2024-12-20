@@ -13,6 +13,8 @@ export default function WorkSpace() {
         <Sidebar />
       </div>
 
+      <div className="placeholder-div-for-sidebar xl:min-w-[5rem]"></div>
+
       {/* Main Content Area */}
       <div className="flex-1 overflow-auto custom-scrollbar">
         <Routes>

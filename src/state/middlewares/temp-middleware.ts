@@ -20,12 +20,10 @@ export const tempMiddleware: Middleware =
       return next(action);
     }
 
-    let id;
+    const id = randomId();
 
     switch (action.type) {
-      case ActionType.CREATE_NOTEBOOK: {
-        id = action.payload.id || randomId();
-
+      case ActionType.CREATE_NOTEBOOK:
         dispatch({
           type: action.type,
           payload: {
@@ -35,11 +33,9 @@ export const tempMiddleware: Middleware =
           meta: { processed: true }, // Add flag
         });
         break;
-      }
 
       case ActionType.CREATE_NOTE: {
         const note = action.payload.note;
-        id = action.payload.note.id || randomId();
         note.id = id;
         dispatch({
           type: action.type,

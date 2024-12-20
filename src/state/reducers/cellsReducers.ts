@@ -63,6 +63,7 @@ const reducer = (
       }
 
       case ActionType.INSERT_CELL_AFTER: {
+        console.log(action.payload);
         const { noteId, id, type, content } = action.payload;
 
         const newCell: Cell = {
