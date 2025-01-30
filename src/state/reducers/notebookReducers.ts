@@ -12,6 +12,8 @@ export interface Notebook {
   id: string;
   name: string;
   description: string;
+  /** Data URL or URL of cover image; cached locally when set via Edit Cover. */
+  coverImage?: string | null;
 }
 
 const initialState: NotebookState = {
@@ -44,7 +46,7 @@ const reducer = (
 
       case ActionType.CREATE_NOTEBOOK: {
         const { id, title, description } = action.payload;
-        draft.data[id] = { id, name: title, description };
+        draft.data[id] = { id, name: title, description, coverImage: null };
         return;
       }
 
@@ -59,6 +61,14 @@ const reducer = (
           draft.data[notebookId].description = description;
         }
         return;
+
+      case ActionType.UPDATE_NOTEBOOK_COVER: {
+        const { notebookId, coverImage } = action.payload;
+        if (draft.data[notebookId]) {
+          draft.data[notebookId].coverImage = coverImage ?? null;
+        }
+        return;
+      }
 
       default:
         return;

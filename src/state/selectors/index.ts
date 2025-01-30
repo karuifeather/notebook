@@ -48,7 +48,22 @@ export const makeSelectNoteById = () =>
         title: '',
         description: '',
         dependencies: [],
+        depsLock: {},
       }
+  );
+
+/**
+ * Selector to get a note's depsLock directly from store (for Settings modal).
+ * Returns undefined if note or depsLock missing; avoids default-object confusion.
+ */
+export const makeSelectNoteDepsLock = () =>
+  createSelector(
+    [
+      selectNotes,
+      (_: RootState, notebookId: string) => notebookId,
+      (_: RootState, __: string, noteId: string) => noteId,
+    ],
+    (notes, notebookId, noteId) => notes[notebookId]?.data?.[noteId]?.depsLock
   );
 
 /**
@@ -75,12 +90,46 @@ export const makeSelectCells = () =>
   );
 
 /**
- * Selector to get a bundle by ID
+ * Selector to get the first code cell id for a note (for "insert imports" target).
+ * Returns null if no code cell exists.
+ */
+export const makeSelectFirstCodeCellId = () =>
+  createSelector(
+    [
+      makeSelectCellOrder(),
+      selectCells,
+      (_: RootState, noteId: string) => noteId,
+    ],
+    (order, cells, noteId) => {
+      const data = cells[noteId]?.data;
+      if (!data || !order) return null;
+      for (const id of order) {
+        const cell = data[id];
+        if (cell?.type === 'code') return id;
+      }
+      return null;
+    }
+  );
+
+/** Default shape when no bundle exists yet (avoids undefined code/error/loading in UI) */
+const EMPTY_BUNDLE = {
+  loading: false,
+  code: '',
+  error: '',
+};
+
+/**
+ * Selector to get a bundle by ID. Returns a safe shape so Preview never sees undefined code/error.
  */
 export const makeSelectBundleById = () =>
   createSelector(
     [selectBundles, (_: RootState, id: string) => id],
-    (bundles, id) => ({ ...bundles[id] }) // return new reference for safety
+    (bundles, id) => {
+      const b = bundles[id];
+      return b
+        ? { loading: b.loading, code: b.code ?? '', error: b.error ?? '' }
+        : { ...EMPTY_BUNDLE };
+    }
   );
 
 /**

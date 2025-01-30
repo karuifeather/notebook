@@ -77,13 +77,20 @@ export const insertCellAfter = (
 
 /**
  * Bundles Action Creators
+ * Pass noteId and parentId when available so the bundler can use per-note depsLock.
  */
-export const bundleIt = (id: string, content: string): BundleItAction => {
+export const bundleIt = (
+  cellId: string,
+  rawCode: string,
+  context?: { noteId: string; parentId: string }
+): BundleItAction => {
   return {
     type: ActionType.BUNDLE_IT,
     payload: {
-      cellId: id,
-      rawCode: content,
+      cellId,
+      rawCode,
+      noteId: context?.noteId,
+      parentId: context?.parentId,
     },
   };
 };
@@ -131,6 +138,16 @@ export const createNotebook = (title: string, description: string) => ({
   payload: { title, description },
 });
 
+/** Create a notebook with an optional fixed id (e.g. 'playground'). */
+export const createNotebookWithId = (
+  title: string,
+  description: string,
+  id?: string
+) => ({
+  type: ActionType.CREATE_NOTEBOOK,
+  payload: { title, description, ...(id != null && id !== '' ? { id } : {}) },
+});
+
 export const updateNotebook = (
   notebookId: string,
   title: string,
@@ -140,11 +157,34 @@ export const updateNotebook = (
   payload: { notebookId, title, description },
 });
 
+export const updateNotebookCover = (
+  notebookId: string,
+  coverImage: string | null
+) => ({
+  type: ActionType.UPDATE_NOTEBOOK_COVER,
+  payload: { notebookId, coverImage },
+});
+
+export const deleteNotebook = (notebookId: string) => ({
+  type: ActionType.DELETE_NOTEBOOK,
+  payload: notebookId,
+});
+
+export const deleteNote = (notebookId: string, noteId: string) => ({
+  type: ActionType.DELETE_NOTE,
+  payload: { parentId: notebookId, noteId },
+});
+
+/** Merge new pinned versions into a note's depsLock. Persisted via redux-persist. */
+export const noteDepsLockMerge = (
+  parentId: string,
+  noteId: string,
+  partialLock: Record<string, string>
+) => ({
+  type: ActionType.NOTE_DEPS_LOCK_MERGE,
+  payload: { parentId, noteId, partialLock },
+});
+
 /**
  * Temp Action Creators
  */
-
-export const createPlayground = (playgroundId: string) => ({
-  type: ActionType.CREATE_PLAYGROUND,
-  payload: { playgroundId },
-});

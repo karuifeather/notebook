@@ -82,12 +82,23 @@ export const cumulativeMiddleware: Middleware =
     clearTimeout(timer);
     timer = setTimeout(async () => {
       const cumulativeCode = makeItCumulative(action, cells);
-
+      const { notes } = getState() as {
+        notes: Record<string, { data?: Record<string, unknown> }>;
+      };
+      let parentId: string | undefined;
+      for (const pid of Object.keys(notes)) {
+        if (notes[pid]?.data?.[noteId]) {
+          parentId = pid;
+          break;
+        }
+      }
       dispatch({
         type: ActionType.BUNDLE_IT,
         payload: {
           cellId: cell.id,
           rawCode: cumulativeCode,
+          noteId,
+          parentId,
         },
       });
     }, 1200);

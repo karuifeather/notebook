@@ -152,6 +152,28 @@ const notesReducer = (state = initialState, action: Action): NotesState =>
         break;
       }
 
+      // Merge into per-note dependency lock (pin versions for bare imports)
+      case ActionType.NOTE_DEPS_LOCK_MERGE: {
+        const { parentId, noteId, partialLock } = action.payload;
+        if (!draft[parentId]) break;
+        const note = draft[parentId].data[noteId];
+        if (note) {
+          note.depsLock = { ...(note.depsLock ?? {}), ...partialLock };
+        } else {
+          draft[parentId].data[noteId] = {
+            id: noteId,
+            title: '',
+            description: '',
+            dependencies: [],
+            depsLock: { ...partialLock },
+          };
+          if (!draft[parentId].order.includes(noteId)) {
+            draft[parentId].order.push(noteId);
+          }
+        }
+        break;
+      }
+
       default:
         break;
     }

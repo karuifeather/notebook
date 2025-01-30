@@ -10,11 +10,6 @@ export interface GeneratedIdAction {
   payload: { id: string };
 }
 
-export interface CreatePlaygroundAction {
-  type: ActionType.CREATE_PLAYGROUND;
-  payload: { playgroundId: string };
-}
-
 /**
  * Cell actions
  */
@@ -106,6 +101,10 @@ export interface BundleItAction {
   payload: {
     cellId: string;
     rawCode: string;
+    /** Note that owns the cell; used for per-note depsLock. */
+    noteId?: string;
+    /** Notebook (parent) of the note; used to read/update note in state. */
+    parentId?: string;
   };
 }
 
@@ -147,6 +146,11 @@ export interface DeleteNotebookAction {
 export interface UpdateNotebookAction {
   type: ActionType.UPDATE_NOTEBOOK;
   payload: { notebookId: string; title: string; description: string };
+}
+
+export interface UpdateNotebookCoverAction {
+  type: ActionType.UPDATE_NOTEBOOK_COVER;
+  payload: { notebookId: string; coverImage: string | null };
 }
 
 /**
@@ -246,6 +250,16 @@ export interface UpdateDependenciesAction {
   };
 }
 
+// Merge into per-note dependency lock (package name -> version)
+export interface NoteDepsLockMergeAction {
+  type: ActionType.NOTE_DEPS_LOCK_MERGE;
+  payload: {
+    parentId: string; // Notebook ID
+    noteId: string; // Note ID
+    partialLock: Record<string, string>; // New pins to merge
+  };
+}
+
 export type Action =
   | GeneratedIdAction
   // Cell Actions
@@ -268,6 +282,7 @@ export type Action =
   | CreateNotebookAction
   | DeleteNotebookAction
   | UpdateNotebookAction
+  | UpdateNotebookCoverAction
   // Note Actions
   | FetchNotesAction
   | FetchNotesSuccessAction
@@ -278,4 +293,5 @@ export type Action =
   | MoveNoteAction
   | AddDependencyAction
   | RemoveDependencyAction
-  | UpdateDependenciesAction;
+  | UpdateDependenciesAction
+  | NoteDepsLockMergeAction;
