@@ -10,9 +10,8 @@ export const fetchPlugin = (startCode: string) => {
   return {
     name: 'fetch-plugin',
     setup(build: esbuild.PluginBuild) {
-      // Handle root file aka index.js
-      // This is our main file that gets built on the fly
-      build.onLoad({ filter: /(^index\.js$)/ }, () => {
+      // Handle root file aka index.js (must match namespace from unpkg-path-plugin)
+      build.onLoad({ filter: /^index\.js$/, namespace: 'a' }, () => {
         return {
           loader: 'jsx',
           contents: startCode,
