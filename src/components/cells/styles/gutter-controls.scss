@@ -1,0 +1,99 @@
+/* Notion-style gutter: compact buttons, reveal on hover/focus */
+.gutter-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--transition-fast),
+    visibility var(--transition-fast);
+}
+
+.gutter-controls__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--icon);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+
+  &:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--surface),
+      0 0 0 4px var(--accent-ring);
+  }
+}
+
+.gutter-controls__handle {
+  cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.gutter-controls__more-wrap {
+  position: relative;
+}
+
+.gutter-controls__more-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  min-width: 140px;
+  padding: var(--space-1);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  z-index: 50;
+}
+
+.gutter-controls__more-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  text-align: left;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: var(--surface2);
+  }
+
+  &--danger {
+    color: var(--icon-muted);
+    &:hover {
+      color: var(--danger);
+      background: color-mix(in oklab, var(--danger) 12%, transparent);
+    }
+  }
+}
