@@ -1,0 +1,127 @@
+/* Image block — radius 14–16px, caption, paste/drop/upload */
+.image-block {
+  min-height: 80px;
+  border-radius: var(--radius-lg);
+  outline: none;
+  transition: box-shadow var(--transition-base);
+}
+
+.image-block:focus-within {
+  box-shadow: 0 0 0 2px var(--accent-ring);
+}
+
+.image-block__input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.image-block__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 160px;
+  padding: var(--space-6);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--muted-2);
+    background: var(--surface);
+    outline: none;
+  }
+}
+
+.image-block__placeholder--drag {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.image-block__placeholder-icon {
+  font-size: 32px;
+  opacity: 0.8;
+}
+
+.image-block__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.image-block__img-wrap {
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface2);
+  min-height: 80px;
+}
+
+.image-block__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.image-block__error {
+  padding: var(--space-4);
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+.image-block__actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.image-block__action {
+  padding: var(--space-1) var(--space-2);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--text);
+    outline: none;
+  }
+}
+
+.image-block__caption {
+  width: 100%;
+  padding: var(--space-1) 0;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-family: inherit;
+
+  &::placeholder {
+    color: var(--muted-2);
+  }
+
+  &:focus {
+    outline: none;
+    color: var(--text);
+  }
+}

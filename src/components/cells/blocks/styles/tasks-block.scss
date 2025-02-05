@@ -1,0 +1,94 @@
+/* Checklist / Tasks block */
+.tasks-block {
+  border-radius: var(--radius-md);
+  padding: var(--space-2) 0;
+  min-height: 44px;
+}
+
+.tasks-block__progress {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: var(--space-2);
+}
+
+.tasks-block__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tasks-block__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-1) 0;
+}
+
+.tasks-block__checkbox-wrap {
+  flex-shrink: 0;
+}
+
+.tasks-block__checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--accent);
+  cursor: pointer;
+  accent-color: var(--accent);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-ring);
+  }
+}
+
+.tasks-block__input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-1) 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  font-family: inherit;
+
+  &::placeholder {
+    color: var(--muted);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &--done {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+}
+
+.tasks-block__new {
+  margin-top: var(--space-2);
+}
+
+.tasks-block__new-input {
+  width: 100%;
+  padding: var(--space-1) 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  font-family: inherit;
+
+  &::placeholder {
+    color: var(--muted);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
