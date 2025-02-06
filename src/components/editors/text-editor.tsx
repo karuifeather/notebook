@@ -15,6 +15,7 @@ import { Cell } from '@/state/index.ts';
 import { useActions } from '@/hooks/use-actions.ts';
 import { BubbleMenuBar } from '@/components/editors/bubble-menu.tsx';
 import './styles/text-editor.scss';
+import './styles/markdown-prose.scss';
 
 interface TextEditorProps {
   cell: Cell;
@@ -29,12 +30,17 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell, noteId }) => {
   const throttlingRef = useRef(false); // To manage the throttling state
   const timerRef = useRef<number | null>(null); // To store the timeout reference
 
-  // Initialize TipTap Editor
+  // Initialize TipTap Editor (wrapper has .tiptap .md for prose styling)
   const editor = useEditor({
+    editorProps: {
+      attributes: {
+        class: 'tiptap md',
+      },
+    },
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: 'Start typing here...', // Customize placeholder text
+        placeholder: 'Type something…',
       }),
       TextAlign.configure({
         types: ['heading', 'paragraph'], // Enable text alignment for headings and paragraphs
@@ -45,7 +51,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell, noteId }) => {
       TextStyle,
       Color,
     ],
-    content: cell.content ? md.render(cell.content) : '<p>Click to edit</p>',
+    content: cell.content ? md.render(cell.content) : '<p></p>',
     onUpdate: ({ editor }) => {
       if (!throttlingRef.current) {
         // Save content immediately on first call

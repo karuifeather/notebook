@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 interface BlockProps {
   content: string;
@@ -6,7 +6,15 @@ interface BlockProps {
   className?: string;
   handler: (value: string) => void;
   onFocus?: () => void;
-  onBlur?: () => void;
+  /** Called on blur; receives the committed content so parent can persist without relying on state. */
+  onBlur?: (committedContent: string) => void;
+}
+
+const MIN_TEXTAREA_HEIGHT = 48;
+
+function resizeTextarea(ta: HTMLTextAreaElement) {
+  ta.style.height = 'auto';
+  ta.style.height = `${Math.max(MIN_TEXTAREA_HEIGHT, ta.scrollHeight)}px`;
 }
 
 const Block: React.FC<BlockProps> = ({
@@ -20,6 +28,7 @@ const Block: React.FC<BlockProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const [localContent, setLocalContent] = useState(content);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -30,9 +39,10 @@ const Block: React.FC<BlockProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setLocalContent(e.target.value);
+    const ta = e.target instanceof HTMLTextAreaElement ? e.target : null;
+    if (ta) resizeTextarea(ta);
 
     if (timer.current) clearTimeout(timer.current);
-    // Propagate changes to parent after a delay
     timer.current = setTimeout(() => {
       handler(e.target.value);
     }, 300);
@@ -40,19 +50,28 @@ const Block: React.FC<BlockProps> = ({
 
   const handleBlur = () => {
     setIsFocused(false);
-    if (timer.current) clearTimeout(timer.current); // Ensure no pending updates
-    handler(localContent); // Final update to parent
-    onBlur?.();
+    if (timer.current) clearTimeout(timer.current);
+    handler(localContent);
+    onBlur?.(localContent);
   };
 
   useEffect(() => {
-    setLocalContent(content); // Sync with parent when `content` changes
+    setLocalContent(content);
   }, [content]);
 
   useEffect(() => {
+    if (textareaRef.current) resizeTextarea(textareaRef.current);
+  }, [content, localContent]);
+
+  useEffect(() => {
     return () => {
-      if (timer.current) clearTimeout(timer.current); // Cleanup on unmount
+      if (timer.current) clearTimeout(timer.current);
     };
+  }, []);
+
+  const setTextareaRef = useCallback((el: HTMLTextAreaElement | null) => {
+    textareaRef.current = el;
+    if (el) resizeTextarea(el);
   }, []);
 
   const renderContent = () => {
@@ -86,6 +105,7 @@ const Block: React.FC<BlockProps> = ({
       case 'text':
         return (
           <textarea
+            ref={setTextareaRef}
             value={localContent}
             onChange={handleChange}
             onFocus={handleFocus}
@@ -93,9 +113,10 @@ const Block: React.FC<BlockProps> = ({
             placeholder={
               variant === 'description'
                 ? 'Add a description...'
-                : "What's on your mind?"
+                : 'Type something…'
             }
-            className={`w-full resize-none bg-transparent border-none focus:ring-0 focus:outline-none ${baseStyles[variant]} ${className}`}
+            className={`block-textarea w-full resize-none overflow-hidden bg-transparent border-none focus:ring-0 focus:outline-none ${baseStyles[variant]} ${className}`}
+            style={{ minHeight: MIN_TEXTAREA_HEIGHT }}
             aria-label="Text block"
           />
         );
@@ -105,16 +126,18 @@ const Block: React.FC<BlockProps> = ({
           <div className="flex items-start gap-3">
             <input
               type="checkbox"
-              className="mt-1 cursor-pointer w-5 h-5 text-blue-500 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition"
+              className="mt-1 cursor-pointer w-5 h-5 rounded border-[var(--border)] text-[var(--accent)] focus:ring-2 focus:ring-[var(--accent-ring)] focus:ring-offset-2 focus:ring-offset-[var(--surface)] transition"
               aria-label="To-do checkbox"
             />
             <textarea
+              ref={setTextareaRef}
               value={localContent}
               onChange={handleChange}
               onFocus={handleFocus}
               onBlur={handleBlur}
-              placeholder="To-do item..."
-              className={`w-full resize-none bg-transparent border-none focus:ring-0 focus:outline-none ${baseStyles.text} ${className}`}
+              placeholder="To-do item…"
+              className={`block-textarea w-full resize-none overflow-hidden bg-transparent border-none focus:ring-0 focus:outline-none ${baseStyles.text} ${className}`}
+              style={{ minHeight: MIN_TEXTAREA_HEIGHT }}
               aria-label="To-do block"
             />
           </div>
@@ -127,10 +150,10 @@ const Block: React.FC<BlockProps> = ({
 
   return (
     <div
-      className={`relative w-full p-4 bg-white dark:bg-[#1b1b1b] rounded-lg shadow-md border border-gray-200 dark:border-gray-800 hover:shadow-lg dark:hover:shadow-blue-500/10 transition-all duration-200 ${
+      className={`block-wrapper relative w-full rounded-[var(--radius-lg)] border bg-[var(--surface)] px-4 py-[14px] shadow-[var(--shadow-sm)] transition-all duration-[var(--transition-base)] ${
         isFocused
-          ? 'ring-2 ring-blue-500 dark:ring-blue-400 bg-blue-50 dark:bg-[#282828]'
-          : ''
+          ? 'border-[var(--accent)] outline outline-2 outline-[var(--accent-ring)] outline-offset-0 bg-[var(--surface2)]'
+          : 'border-[var(--border)] hover:shadow-[var(--shadow-md)]'
       }`}
     >
       {renderContent()}
