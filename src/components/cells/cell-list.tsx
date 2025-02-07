@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -11,12 +11,12 @@ import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import { useActions } from '@/hooks/use-actions.ts';
 import { makeSelectCells } from '@/state/selectors/index.ts';
 import CellListItem from '@/components/cells/cell-list-item.tsx';
+import GutterControls from '@/components/cells/GutterControls.tsx';
 import AddCell from '@/components/cells/add-cell.tsx';
-import ActionBar from '@/components/cells/action-bar.tsx';
 
 import './styles/cell-list.scss';
 
-// Sortable Item Component
+// Sortable Item Component: Notion-style row with left gutter controls
 interface SortableItemProps {
   cellId: string;
   noteId: string;
@@ -30,6 +30,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
 }) => {
   const {
     isDragging,
+    isOver,
     attributes,
     listeners,
     setNodeRef,
@@ -40,36 +41,36 @@ const SortableItem: React.FC<SortableItemProps> = ({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.8 : 1, // Adjust opacity while dragging
+    opacity: isDragging ? 0.85 : 1,
   };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      {...attributes} // Attach drag attributes to the container
-      className="sortable-item group bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition"
+      {...attributes}
+      className="sortable-item document-layout__block-row group"
+      data-dragging={isDragging || undefined}
+      data-over={isOver && !isDragging ? 'true' : undefined}
     >
-      <ActionBar cellId={cellId} noteId={noteId}>
-        {/* Insert Cell Button */}
-        <AddCell currentCellId={cellId} noteId={noteId} />
-        {/* Drag Button */}
-        <button
-          {...listeners} // Attach drag listeners here
-          className="cursor-grab active:cursor-grabbing"
-          aria-label="Drag Item"
-        >
-          <i className="fas fa-grip-vertical"></i>
-        </button>
-      </ActionBar>
-
-      {/* Cell Content */}
-      {children}
+      <div className="document-layout__block-gutter">
+        <GutterControls
+          noteId={noteId}
+          cellId={cellId}
+          dragHandleListeners={listeners}
+        />
+      </div>
+      <div className="document-layout__block-content sortable-item__content">
+        {children}
+      </div>
     </div>
   );
 };
 
-const CellList: React.FC<{ noteId: string }> = ({ noteId }) => {
+const CellList: React.FC<{
+  noteId: string;
+  notebookId?: string;
+}> = ({ noteId, notebookId }) => {
   const selectCells = makeSelectCells();
   const cells = useTypedSelector((state) => selectCells(state, noteId));
   const { moveCell } = useActions();
@@ -89,27 +90,30 @@ const CellList: React.FC<{ noteId: string }> = ({ noteId }) => {
     }
   };
 
+  if (!cells.length) {
+    return (
+      <div className="document-layout__empty-row">
+        <div className="document-layout__empty-gutter" aria-hidden="true" />
+        <div className="document-layout__empty-content">
+          <AddCell currentCellId={null} noteId={noteId} />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <>
-      {cells.length ? (
-        <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-          <SortableContext
-            items={cells.map((cell) => cell.id)} // Ensure this matches the updated order
-            strategy={verticalListSortingStrategy}
-          >
-            {cells.map((cell) => (
-              <Fragment key={cell.id}>
-                <SortableItem cellId={cell.id} noteId={noteId}>
-                  <CellListItem cell={cell} noteId={noteId} />
-                </SortableItem>
-              </Fragment>
-            ))}
-          </SortableContext>
-        </DndContext>
-      ) : (
-        <AddCell currentCellId={null} noteId={noteId} />
-      )}
-    </>
+    <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <SortableContext
+        items={cells.map((cell) => cell.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        {cells.map((cell) => (
+          <SortableItem key={cell.id} cellId={cell.id} noteId={noteId}>
+            <CellListItem cell={cell} noteId={noteId} notebookId={notebookId} />
+          </SortableItem>
+        ))}
+      </SortableContext>
+    </DndContext>
   );
 };
 
