@@ -1,0 +1,77 @@
+/* Document layout: single container and content column */
+.document-layout {
+  --doc-gutter: 44px;
+  --doc-gap: 12px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  min-height: 0;
+}
+
+.document-layout__grid {
+  display: grid;
+  grid-template-columns: var(--doc-gutter) 1fr;
+  column-gap: var(--doc-gap);
+  width: 100%;
+}
+
+/* Header row: empty gutter cell + content cell */
+.document-layout__gutter-header {
+  grid-column: 1;
+  min-width: 0;
+}
+
+.document-layout__header {
+  grid-column: 2;
+  min-width: 0;
+}
+
+/* Block row: uses subgrid so gutter and content align with document grid */
+.document-layout__block-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: start;
+  min-width: 0;
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+}
+
+/* Reveal gutter controls on row hover/focus (same as previous block-row) */
+.document-layout__block-row:hover .gutter-controls,
+.document-layout__block-row:focus-within .gutter-controls {
+  opacity: 1;
+  visibility: visible;
+}
+
+.document-layout__block-gutter {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0;
+  min-height: 40px;
+  padding-top: 20px; /* align with first line of block (block padding) */
+}
+
+.document-layout__block-content {
+  grid-column: 2;
+  min-width: 0;
+}
+
+/* Empty state row: gutter + add button in content column */
+.document-layout__empty-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.document-layout__empty-gutter {
+  grid-column: 1;
+}
+
+.document-layout__empty-content {
+  grid-column: 2;
+}

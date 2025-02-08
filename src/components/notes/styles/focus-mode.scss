@@ -1,0 +1,92 @@
+/* Focus Mode: distraction-free layout when data-focus="true" on .workspace-shell */
+
+$focus-transition: 200ms ease;
+
+/* Hide sidebar completely: take out of flow so main gets 100% width */
+.workspace-shell[data-focus='true'] .workspace-sidebar {
+  position: absolute !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  border-right-width: 0;
+  transition:
+    width $focus-transition,
+    min-width $focus-transition,
+    opacity $focus-transition;
+}
+
+/* Main must take full width when sidebar is out of flow */
+.workspace-shell[data-focus='true'] main {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Center document canvas: keep same max-width as normal (980px) so cell width doesn't change */
+.workspace-shell[data-focus='true'] .document-layout {
+  width: 100%;
+  /* Do not override max-width — leave at 980px from document-layout.scss */
+  font-size: 18px;
+  line-height: 1.7;
+  box-sizing: border-box;
+  transition:
+    font-size $focus-transition,
+    line-height $focus-transition;
+}
+
+/* Ensure note page uses full width */
+.workspace-shell[data-focus='true'] .note-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.workspace-shell[data-focus='true'] .document-layout .md,
+.workspace-shell[data-focus='true'] .document-layout .tiptap {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Blocks: no borders between cells — page-like content only */
+.workspace-shell[data-focus='true'] .document-layout__block-row,
+.workspace-shell[data-focus='true'] .document-layout__block-row:first-of-type,
+.workspace-shell[data-focus='true']
+  .document-layout__block-row
+  + .document-layout__block-row,
+.workspace-shell[data-focus='true'] .document-layout__empty-row {
+  border-top: none;
+  border-bottom: none;
+}
+
+/* Block controls: hidden by default, show on hover/focus (reinforce existing behavior) */
+.workspace-shell[data-focus='true']
+  .document-layout__block-row
+  .gutter-controls {
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity $focus-transition,
+    visibility $focus-transition;
+}
+
+.workspace-shell[data-focus='true']
+  .document-layout__block-row:hover
+  .gutter-controls,
+.workspace-shell[data-focus='true']
+  .document-layout__block-row:focus-within
+  .gutter-controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Reduce card/border feel on block editors in focus mode */
+.workspace-shell[data-focus='true'] .document-layout .tiptap {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.workspace-shell[data-focus='true'] .document-layout .tiptap:focus-within {
+  border-color: var(--border);
+  background: var(--surface2);
+}
