@@ -1,0 +1,267 @@
+/* Note page: Notion-like document canvas, full page scroll */
+
+.note-page {
+  min-height: 100%;
+  background: var(--bg);
+  padding-bottom: var(--space-10);
+}
+
+/* Minimal sticky top bar */
+.note-page__topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  height: 48px;
+  padding: 0 var(--space-6);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  transition: height var(--transition-base);
+}
+
+.note-page__status {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.note-page__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  border-left: 1px solid var(--border);
+  padding-left: var(--space-2);
+}
+
+.note-page__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--icon);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.note-page__action-btn:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.note-page__action-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.note-page__action-btn--danger:hover {
+  color: var(--danger);
+}
+
+/* Focus mode toggle — outline icon, no loud fill */
+.note-page__action-btn--focus {
+  margin-left: var(--space-1);
+}
+.note-page__action-btn--focus[aria-pressed='true'] {
+  color: var(--accent);
+}
+.note-page__exit-focus-label {
+  margin-left: var(--space-2);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+/* Minimal topbar in focus mode: slightly reduced height */
+.note-page__topbar--focus {
+  height: 44px;
+}
+@media (min-width: 640px) {
+  .note-page__topbar--focus {
+    height: 46px;
+  }
+}
+
+/* Document layout handles max-width, margin, padding (see document-layout.scss) */
+.note-page .document-layout {
+  padding-top: var(--space-8);
+}
+
+@media (min-width: 640px) {
+  .note-page .document-layout {
+    padding-top: var(--space-10);
+  }
+}
+
+/* Title hero: 32–40px, weight 700 */
+.note-page__title-wrap {
+  margin-bottom: var(--space-3);
+}
+
+.note-page__title,
+.note-page__title-input {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+  margin: 0;
+}
+
+.note-page__title {
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) 0;
+  transition: background-color var(--transition-fast);
+}
+
+.note-page__title:hover {
+  background: var(--surface2);
+}
+
+.note-page__title:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.note-page__title-input {
+  width: 100%;
+  max-width: 100%;
+  padding: var(--space-1) 0;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  border-radius: 0;
+}
+
+.note-page__title-input:focus {
+  outline: none;
+  border-bottom-color: var(--accent);
+  box-shadow: 0 1px 0 0 var(--accent);
+}
+
+.note-page__title-input::placeholder {
+  color: var(--muted);
+}
+
+/* Meta row: 10–12px below title */
+.note-page__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  min-height: 24px;
+}
+
+.note-page__breadcrumb {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+}
+
+/* Details: compact disclosure */
+.note-page__details {
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface2);
+  overflow: hidden;
+}
+
+.note-page__details-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  text-align: left;
+  transition: background-color var(--transition-fast);
+}
+
+.note-page__details-trigger:hover {
+  background: var(--surface);
+}
+
+.note-page__details-trigger:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent-ring);
+}
+
+.note-page__details-label {
+  font-weight: 500;
+}
+
+.note-page__details-chevron {
+  font-size: 0.625rem;
+  margin-left: auto;
+  transition: transform var(--transition-fast);
+}
+
+.note-page__details-content {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.note-page__details-inner {
+  padding: var(--space-4);
+}
+
+.note-page__details-field-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: var(--space-2);
+}
+
+.note-page__details-desc {
+  min-height: 2.5rem;
+}
+
+.note-page__details-desc textarea {
+  max-height: 6rem;
+  min-height: 2.5rem;
+}
+
+/* Override Block wrapper in details for calmer look */
+.note-page__details-desc > div {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.note-page__description-block {
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+/* Vertical rhythm: space above first block, between blocks */
+.document-layout__block-row:first-of-type {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+}
+
+.document-layout__block-row + .document-layout__block-row {
+  margin-top: var(--space-5);
+}
+
+.document-layout__empty-row {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+}

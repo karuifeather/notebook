@@ -1,0 +1,324 @@
+/* Notebook document canvas + inline title, description, cover, notes section */
+
+.document-canvas {
+  min-height: 0;
+}
+
+/* Inline title: large heading, click-to-edit, accent ring on focus */
+.inline-title {
+  margin-bottom: var(--space-3);
+}
+.inline-title__display {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+  margin: 0;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-3)) var(--space-3);
+  transition:
+    background-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+.inline-title__display:hover {
+  background: var(--surface2);
+}
+.inline-title__display:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.inline-title__input {
+  width: 100%;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-3);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+.inline-title__input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+.inline-title__input::placeholder {
+  color: var(--muted);
+}
+
+/* Description block: minimal, expands on focus. Matches title styling (muted, no primary accent). */
+.description-block {
+  margin-bottom: var(--space-8);
+  min-height: 28px;
+}
+.description-block__placeholder {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  padding: var(--space-2) 0;
+  cursor: text;
+  border-radius: var(--radius-md);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+  /* Override global button styles so this looks like the title, not a primary button */
+  font-weight: inherit;
+}
+.description-block__placeholder:hover {
+  color: var(--text);
+  background: transparent;
+}
+.description-block__placeholder:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.description-block__placeholder:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.description-block__input {
+  width: 100%;
+  min-height: 28px;
+  resize: none;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  padding: var(--space-2) 0;
+  outline: none;
+}
+.description-block__input::placeholder {
+  color: var(--muted);
+}
+.description-block--focused .description-block__input {
+  min-height: 4rem;
+}
+
+/* Doc cover: ghost button on hover */
+.doc-cover {
+  margin-bottom: var(--space-6);
+}
+.doc-cover__edit-btn {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 32px;
+  padding: 0 var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+.doc-cover__edit-btn:hover {
+  background: var(--surface2);
+  border-color: var(--muted);
+}
+.doc-cover__edit-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.doc-cover__edit-label {
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .doc-cover__edit-label {
+    display: none;
+  }
+}
+
+/* Notes section: Notion-like list */
+.notes-section {
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-6);
+}
+.notes-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.notes-section__title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+.notes-section__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.notes-section__btn-new {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 32px;
+  padding: 0 var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+.notes-section__btn-new:hover {
+  background: var(--accent-hover);
+}
+.notes-section__btn-new:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.notes-section__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.notes-section__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.notes-section__row-wrap {
+  margin: 0;
+}
+.notes-section__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.9375rem;
+  transition: background-color var(--transition-fast);
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.notes-section__row:hover {
+  background: var(--surface2);
+}
+.notes-section__row:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.notes-section__row-icon {
+  flex-shrink: 0;
+  width: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+}
+.notes-section__row-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+}
+.notes-section__row-meta {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.notes-section__row-chevron {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-left: var(--space-2);
+}
+.notes-section__row--add {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.notes-section__inline-add {
+  margin-bottom: var(--space-2);
+}
+.notes-section__inline-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  font-size: 0.9375rem;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+.notes-section__inline-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-ring);
+}
+.notes-section__inline-input::placeholder {
+  color: var(--muted);
+}
+
+.notes-section__empty {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface2);
+  border: 1px dashed var(--border);
+}
+.notes-section__empty-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 0 var(--space-1);
+}
+.notes-section__empty-desc {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin: 0 0 var(--space-4);
+}
+.notes-section__empty-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+.notes-section__empty-cta:hover {
+  background: var(--surface2);
+  border-color: var(--muted);
+}

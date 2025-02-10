@@ -1,0 +1,202 @@
+/* Create Notebook page: Notion-like, calm, integrated with app shell */
+
+.document-canvas--create {
+  max-width: min(100%, 860px) !important;
+  padding-top: clamp(36px, 6vw, 56px) !important;
+}
+
+.create-notebook {
+  /* Typography: title 28–32, body 14–16, muted uses --muted */
+}
+
+.create-notebook__header {
+  margin-bottom: var(--space-8);
+}
+
+.create-notebook__title {
+  font-size: clamp(1.75rem, 4vw, 2rem); /* 28–32px */
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text);
+  margin: 0 0 var(--space-2);
+}
+
+.create-notebook__subtitle {
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+.create-notebook__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.create-notebook__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.create-notebook__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.create-notebook__input,
+.create-notebook__textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.create-notebook__input::placeholder,
+.create-notebook__textarea::placeholder {
+  color: var(--muted);
+}
+
+.create-notebook__input:focus,
+.create-notebook__textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-ring);
+}
+
+.create-notebook__input[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.create-notebook__input[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+}
+
+.create-notebook__textarea {
+  min-height: 88px;
+  resize: vertical;
+  max-height: 12rem;
+}
+
+.create-notebook__error {
+  font-size: 0.8125rem;
+  color: var(--danger);
+  margin: 0;
+}
+
+.create-notebook__helper {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.create-notebook__examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.create-notebook__examples-label {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.create-notebook__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.create-notebook__chip {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.create-notebook__chip:hover {
+  background: var(--surface);
+  border-color: var(--muted);
+}
+
+.create-notebook__chip:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.create-notebook__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+.create-notebook__btn-primary {
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.create-notebook__btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.create-notebook__btn-primary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.create-notebook__btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.create-notebook__btn-secondary {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.create-notebook__btn-secondary:hover {
+  color: var(--text);
+  background: var(--surface2);
+}
+
+.create-notebook__btn-secondary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
