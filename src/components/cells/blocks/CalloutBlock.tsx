@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import MarkdownIt from 'markdown-it';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Cell } from '@/state/index.ts';
 import { useActions } from '@/hooks/use-actions.ts';
 import {
@@ -10,9 +9,8 @@ import type {
   CalloutContent,
   CalloutVariant,
 } from '@/state/types/block-content.ts';
+import { markdownRenderer } from '@/utils/markdown.ts';
 import './styles/callout-block.scss';
-
-const md = new MarkdownIt();
 
 const VARIANTS: { id: CalloutVariant; label: string; emoji: string }[] = [
   { id: 'info', label: 'Info', emoji: 'ℹ️' },
@@ -85,6 +83,11 @@ const CalloutBlock: React.FC<CalloutBlockProps> = ({ cell, noteId }) => {
   const displayText = localText || data.text;
   const emoji =
     data.emoji || VARIANTS.find((v) => v.id === data.variant)?.emoji || 'ℹ️';
+
+  const renderedHtml = useMemo(
+    () => (displayText ? markdownRenderer.render(displayText) : ''),
+    [displayText]
+  );
 
   return (
     <div
@@ -160,9 +163,7 @@ const CalloutBlock: React.FC<CalloutBlockProps> = ({ cell, noteId }) => {
               {displayText ? (
                 <div
                   className="callout-block__text"
-                  dangerouslySetInnerHTML={{
-                    __html: md.render(displayText),
-                  }}
+                  dangerouslySetInnerHTML={{ __html: renderedHtml }}
                 />
               ) : (
                 <p className="callout-block__placeholder">Write something…</p>

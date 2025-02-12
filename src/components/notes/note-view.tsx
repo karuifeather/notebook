@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import CellList from '../cells/cell-list.tsx';
@@ -29,7 +29,7 @@ const NoteView: React.FC<NoteViewProps> = ({ playgroundNoteId }) => {
   const navigate = useNavigate();
   const { isFocusMode, toggleFocusMode, setFocusMode } = useFocusMode();
 
-  const selectNoteById = makeSelectNoteById();
+  const selectNoteById = useMemo(() => makeSelectNoteById(), []);
   const [isModalOpen, setModalOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 

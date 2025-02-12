@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -71,7 +71,7 @@ const CellList: React.FC<{
   noteId: string;
   notebookId?: string;
 }> = ({ noteId, notebookId }) => {
-  const selectCells = makeSelectCells();
+  const selectCells = useMemo(() => makeSelectCells(), []);
   const cells = useTypedSelector((state) => selectCells(state, noteId));
   const { moveCell } = useActions();
 

@@ -8,12 +8,12 @@ import Typography from '@tiptap/extension-typography';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
 import TextStyle from '@tiptap/extension-text-style';
-import MarkdownIt from 'markdown-it';
 import TurndownService from 'turndown';
 
 import { Cell } from '@/state/index.ts';
 import { useActions } from '@/hooks/use-actions.ts';
 import { BubbleMenuBar } from '@/components/editors/bubble-menu.tsx';
+import { markdownRenderer } from '@/utils/markdown.ts';
 import './styles/text-editor.scss';
 import './styles/markdown-prose.scss';
 
@@ -22,7 +22,6 @@ interface TextEditorProps {
   noteId: string;
 }
 
-const md = new MarkdownIt();
 const turndownService = new TurndownService();
 
 const TextEditor: React.FC<TextEditorProps> = ({ cell, noteId }) => {
@@ -51,7 +50,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ cell, noteId }) => {
       TextStyle,
       Color,
     ],
-    content: cell.content ? md.render(cell.content) : '<p></p>',
+    content: cell.content ? markdownRenderer.render(cell.content) : '<p></p>',
     onUpdate: ({ editor }) => {
       if (!throttlingRef.current) {
         // Save content immediately on first call
