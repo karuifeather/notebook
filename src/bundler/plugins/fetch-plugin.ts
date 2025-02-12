@@ -18,14 +18,25 @@ export const fetchPlugin = (startCode: string) => {
         };
       });
 
+      const isHttps = (path: string) =>
+        typeof path === 'string' && path.startsWith('https://');
+
       build.onLoad({ filter: /.*/ }, async (args: any) => {
-        // Check to see if we have already fecthed this file
-        // and if it is in the cache
+        if (!isHttps(args.path)) {
+          return {
+            contents: '',
+            loader: 'js',
+            errors: [
+              {
+                text: 'Only HTTPS URLs are allowed for external modules.',
+                location: null,
+              },
+            ],
+          };
+        }
         const cachedResult = await filecache.getItem<esbuild.OnLoadResult>(
           args.path
         );
-
-        // If it is, return it immediately
         if (cachedResult) {
           return cachedResult;
         }
@@ -33,7 +44,18 @@ export const fetchPlugin = (startCode: string) => {
 
       // Handle css files
       build.onLoad({ filter: /.css$/ }, async (args: any) => {
-        // Get the contents of external file and return it
+        if (!isHttps(args.path)) {
+          return {
+            contents: '',
+            loader: 'js',
+            errors: [
+              {
+                text: 'Only HTTPS URLs are allowed for CSS.',
+                location: null,
+              },
+            ],
+          };
+        }
         const { data, request } = await axios.get(args.path);
         const resolveDir = new URL('./', request.responseURL).pathname;
 
@@ -58,9 +80,20 @@ export const fetchPlugin = (startCode: string) => {
         return result;
       });
 
-      // Handle everything else?
+      // Handle everything else (JS/TS etc.)
       build.onLoad({ filter: /.*/ }, async (args: any) => {
-        // Get the contents of external file and return it
+        if (!isHttps(args.path)) {
+          return {
+            contents: '',
+            loader: 'js',
+            errors: [
+              {
+                text: 'Only HTTPS URLs are allowed for external modules.',
+                location: null,
+              },
+            ],
+          };
+        }
         const { data, request } = await axios.get(args.path);
         const resolveDir = new URL('./', request.responseURL).pathname;
 

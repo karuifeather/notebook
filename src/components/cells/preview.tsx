@@ -90,7 +90,7 @@ color: #8e8e8e;
           \`;
           document.getElementById('root').innerHTML = errorMessage;
 
-          // Send error to parent
+          // Send error to parent (srcdoc iframe has opaque origin so use '*' to avoid Invalid target origin)
           window.parent.postMessage({ type: 'error', args: [error.message, error.stack] }, '*');
           console.error(error);
         };
@@ -99,7 +99,7 @@ color: #8e8e8e;
           const original = console[method];
           console[method] = (...args) => {
             original(...args); // Log to the actual console
-            window.parent.postMessage({ type: method, args }, '*'); // Send to parent
+            window.parent.postMessage({ type: method, args }, '*');
           };
         });
 
@@ -153,6 +153,10 @@ const Preview: React.FC<PreviewProps> = ({
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
+      // Accept from same origin or from our srcdoc iframe (opaque origin reported as 'null')
+      const allowed =
+        event.origin === window.location.origin || event.origin === 'null';
+      if (!allowed) return;
       if (event.data && event.data.type) {
         const { type, args } = event.data;
 
@@ -184,6 +188,7 @@ const Preview: React.FC<PreviewProps> = ({
   }, [code]);
 
   // Set iframe srcdoc once on mount; onload posts latest code and marks ready
+  // Use '*' when sending code to iframe: srcdoc iframes often have opaque origin so strict targetOrigin would block delivery
   useEffect(() => {
     if (!iframeRef.current) return;
     const iframe = iframeRef.current;
