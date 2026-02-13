@@ -36,6 +36,21 @@
   --font-size-p: clamp(1rem, 2vw, 1.2rem);
 }
 
+@media (max-width: 640px) {
+  :root {
+    --font-size-base: 14px;
+    --font-size-h1: clamp(1.5rem, 5vw, 2rem);
+    --font-size-h2: clamp(1.35rem, 4vw, 1.6rem);
+    --font-size-h3: clamp(1.2rem, 3vw, 1.4rem);
+    --font-size-p: 0.875rem;
+  }
+
+  .tiptap {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
 /* Editor container only — prose/typography live in .md (markdown-prose.scss)
    Notion-like: content-height, no big empty rectangle */
 .tiptap {

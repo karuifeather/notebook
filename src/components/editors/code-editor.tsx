@@ -16,6 +16,10 @@ interface MonacoEditorProps {
   onChange: (value: string) => void;
   /** When true, editor grows with content (page scrolls); when false, max-height + internal scroll */
   expanded?: boolean;
+  /** When false, line numbers are hidden. Default true. Used on mobile for a toggle. */
+  lineNumbers?: boolean;
+  /** When true, editor is in fullscreen; wheel listener is removed so Monaco can scroll. */
+  isFullscreen?: boolean;
 }
 
 const MonacoEditor: React.FC<MonacoEditorProps> = ({
@@ -23,14 +27,20 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
   value,
   onChange,
   expanded = false,
+  lineNumbers = true,
+  isFullscreen = false,
 }) => {
   const effectiveValue = value !== undefined ? value : defaultValue;
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const expandedRef = useRef(expanded);
+  const isFullscreenRef = useRef(isFullscreen);
+  const wheelHandlerRef = useRef<((e: WheelEvent) => void) | null>(null);
+  const editorElementRef = useRef<HTMLElement | null>(null);
   const [theme, setTheme] = useState('vs-dark');
 
   expandedRef.current = expanded;
+  isFullscreenRef.current = isFullscreen;
 
   const updateExpandedHeight = useCallback(() => {
     const editor = editorRef.current;
@@ -45,7 +55,11 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
     editorRef.current = editor;
 
     editor.onDidContentSizeChange(() => {
-      if (expandedRef.current && wrapperRef.current) {
+      if (
+        expandedRef.current &&
+        !isFullscreenRef.current &&
+        wrapperRef.current
+      ) {
         const h = editor.getContentHeight();
         wrapperRef.current.style.height = `${h}px`;
         editor.layout({ width: wrapperRef.current.clientWidth, height: h });
@@ -82,18 +96,21 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
       editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
     });
 
-    // Allow parent page to scroll when editor is not focused
-    const editorElement = editor.getDomNode();
+    // Wheel listener: added in onMount when !fullscreen; effect adds/removes when fullscreen toggles
+    const editorElement = editor.getDomNode() ?? null;
+    editorElementRef.current = editorElement;
     if (editorElement) {
-      editorElement.addEventListener('wheel', (e) => {
+      const handler = (e: WheelEvent) => {
         if (!editor.hasTextFocus()) {
           e.preventDefault();
           e.stopPropagation();
-          // Propagate the scroll event to the parent
-          const deltaY = e.deltaY;
-          window.scrollBy({ top: deltaY, behavior: 'smooth' });
+          window.scrollBy({ top: e.deltaY, behavior: 'smooth' });
         }
-      });
+      };
+      wheelHandlerRef.current = handler;
+      if (!isFullscreenRef.current) {
+        editorElement.addEventListener('wheel', handler);
+      }
     }
   };
 
@@ -122,6 +139,8 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
     }
   };
 
+  const [editorFontSize, setEditorFontSize] = useState(16);
+
   useEffect(() => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     setTheme(prefersDark.matches ? 'vs-dark' : 'vs-light');
@@ -137,14 +156,60 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
     };
   }, []);
 
-  // When expanded, size wrapper to content; when collapsed, clear inline height
   useEffect(() => {
-    if (expanded && editorRef.current && wrapperRef.current) {
+    const getFontSize = () => {
+      if (window.matchMedia('(max-width: 380px)').matches) return 11;
+      if (window.matchMedia('(max-width: 640px)').matches) return 12;
+      return 16;
+    };
+    setEditorFontSize(getFontSize());
+    const mq640 = window.matchMedia('(max-width: 640px)');
+    const mq380 = window.matchMedia('(max-width: 380px)');
+    const handle = () => setEditorFontSize(getFontSize());
+    mq640.addEventListener('change', handle);
+    mq380.addEventListener('change', handle);
+    return () => {
+      mq640.removeEventListener('change', handle);
+      mq380.removeEventListener('change', handle);
+    };
+  }, []);
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (editor) editor.updateOptions({ fontSize: editorFontSize });
+  }, [editorFontSize]);
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (editor)
+      editor.updateOptions({
+        lineNumbers: lineNumbers ? 'relative' : 'off',
+      });
+  }, [lineNumbers]);
+
+  // Remove wheel listener in fullscreen so Monaco can scroll; re-add when exiting
+  useEffect(() => {
+    const el = editorElementRef.current;
+    const handler = wheelHandlerRef.current;
+    if (!el || !handler) return;
+    if (isFullscreen) {
+      el.removeEventListener('wheel', handler);
+      return () => {};
+    }
+    el.addEventListener('wheel', handler);
+    return () => el.removeEventListener('wheel', handler);
+  }, [isFullscreen]);
+
+  // When expanded (and not fullscreen), size wrapper to content; when collapsed, clear inline height
+  useEffect(() => {
+    if (isFullscreen && wrapperRef.current) {
+      wrapperRef.current.style.height = '';
+    } else if (expanded && editorRef.current && wrapperRef.current) {
       updateExpandedHeight();
     } else if (wrapperRef.current) {
       wrapperRef.current.style.height = '';
     }
-  }, [expanded, updateExpandedHeight]);
+  }, [expanded, isFullscreen, updateExpandedHeight]);
 
   return (
     <div
@@ -170,11 +235,11 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
         value={effectiveValue}
         theme={theme}
         options={{
-          lineNumbers: 'relative',
+          lineNumbers: lineNumbers ? 'relative' : 'off',
           cursorBlinking: 'smooth',
           scrollBeyondLastLine: false,
           wordWrap: 'on',
-          fontSize: 16, // Scalable font size
+          fontSize: editorFontSize,
           minimap: { enabled: false },
           tabSize: 2,
           automaticLayout: true,

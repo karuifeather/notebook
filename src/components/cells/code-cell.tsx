@@ -75,6 +75,36 @@ const IconConsole = () => (
     <line x1="12" y1="19" x2="20" y2="19" />
   </svg>
 );
+const IconFullscreen = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden
+  >
+    <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3" />
+  </svg>
+);
+const IconFullscreenExit = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden
+  >
+    <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2v-3M21 8h-3a2 2 0 0 0-2 2v3M3 16v-3a2 2 0 0 0 2-2h3" />
+  </svg>
+);
 
 const CodeCell: React.FC<CodeCellProps> = ({ cell, noteId, notebookId }) => {
   const { updateCell, bundleIt } = useActions();
@@ -91,6 +121,21 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell, noteId, notebookId }) => {
   );
   const [expanded, setExpanded] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const isMobileQuery = () =>
+    typeof window !== 'undefined' &&
+    window.matchMedia('(max-width: 640px)').matches;
+  const [isMobile, setIsMobile] = useState(isMobileQuery);
+  const [lineNumbersOn, setLineNumbersOn] = useState(() => !isMobileQuery());
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)');
+    const handle = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+      if (!e.matches) setLineNumbersOn(true);
+    };
+    mq.addEventListener('change', handle);
+    return () => mq.removeEventListener('change', handle);
+  }, []);
   const bundleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
@@ -139,13 +184,11 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell, noteId, notebookId }) => {
     const el = contentRef.current;
     if (!el) return;
     if (!document.fullscreenElement) {
-      // eslint-disable-next-line prettier/prettier -- avoid build mismatch (Vercel vs local Prettier)
       el
         .requestFullscreen?.()
         .then(() => setIsFullscreen(true))
         .catch(() => {});
     } else {
-      // eslint-disable-next-line prettier/prettier -- avoid build mismatch (Vercel vs local Prettier)
       document
         .exitFullscreen?.()
         .then(() => setIsFullscreen(false))
@@ -176,6 +219,21 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell, noteId, notebookId }) => {
         />
         {activeTab === 'write' && (
           <>
+            {isMobile && (
+              <button
+                type="button"
+                className={`code-cell__expand-btn ${lineNumbersOn ? 'code-cell__line-nums-btn--on' : ''}`}
+                onClick={() => setLineNumbersOn((on) => !on)}
+                aria-label={
+                  lineNumbersOn ? 'Hide line numbers' : 'Show line numbers'
+                }
+                title={
+                  lineNumbersOn ? 'Hide line numbers' : 'Show line numbers'
+                }
+              >
+                Line #
+              </button>
+            )}
             <button
               type="button"
               className="code-cell__run-btn"
@@ -200,12 +258,12 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell, noteId, notebookId }) => {
         )}
         <button
           type="button"
-          className="code-cell__expand-btn"
+          className="code-cell__expand-btn code-cell__fullscreen-btn"
           onClick={toggleFullscreen}
           aria-label={isFullscreen ? 'Exit full screen' : 'View full screen'}
           title={isFullscreen ? 'Exit full screen (Esc)' : 'View full screen'}
         >
-          {isFullscreen ? 'Exit full screen' : 'Full screen'}
+          {isFullscreen ? <IconFullscreenExit /> : <IconFullscreen />}
         </button>
       </div>
 
@@ -218,6 +276,8 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell, noteId, notebookId }) => {
             expanded={expanded}
             value={cell.content || CODE_CELL_STARTER}
             onChange={handleEditorChange}
+            lineNumbers={lineNumbersOn}
+            isFullscreen={isFullscreen}
           />
         ) : (
           <div className="code-cell__preview-wrap">

@@ -20,6 +20,33 @@ html.dark {
   color: var(--text);
 }
 
+@media (max-width: 640px) {
+  .md {
+    font-size: 14px;
+  }
+
+  .md h1 {
+    font-size: clamp(22px, 5vw, 28px);
+  }
+
+  .md h2 {
+    font-size: clamp(18px, 4vw, 22px);
+  }
+
+  .md h3 {
+    font-size: clamp(16px, 3vw, 18px);
+  }
+
+  .md h4 {
+    font-size: 16px;
+  }
+
+  .md h5,
+  .md h6 {
+    font-size: 14px;
+  }
+}
+
 .md > :first-child {
   margin-top: 0;
 }
