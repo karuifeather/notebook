@@ -24,6 +24,7 @@ export enum ActionType {
   REMOVE_DEPENDENCY = 'remove_dependency',
   UPDATE_DEPENDENCIES = 'update_dependencies',
   UPDATE_NOTE_DETAILS = 'update_note_details',
+  NOTE_DEPS_LOCK_MERGE = 'note_deps_lock_merge',
   // Notebook actions
   FETCH_NOTEBOOKS = 'fetch_notebooks',
   FETCH_NOTEBOOKS_SUCCESS = 'fetch_notebooks_success',
@@ -31,7 +32,7 @@ export enum ActionType {
   CREATE_NOTEBOOK = 'create_notebook',
   DELETE_NOTEBOOK = 'delete_notebook',
   UPDATE_NOTEBOOK = 'update_notebook',
+  UPDATE_NOTEBOOK_COVER = 'update_notebook_cover',
   // Temp actions
   GENERATED_ID = 'generated_id',
-  CREATE_PLAYGROUND = 'create_playground',
 }

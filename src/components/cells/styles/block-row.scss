@@ -1,0 +1,42 @@
+/* Notion-style block row: left gutter + content */
+.block-row {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  position: relative;
+  border-radius: var(--radius-lg);
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+
+  &:hover,
+  &:focus-within {
+    .block-row__gutter .gutter-controls {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &[data-dragging='true'] {
+    opacity: 0.85;
+    box-shadow: var(--shadow-lg);
+    z-index: 1;
+  }
+}
+
+.block-row__gutter {
+  flex-shrink: 0;
+  width: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: var(--space-2);
+  position: relative;
+}
+
+.block-row__content {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+}

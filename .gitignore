@@ -2,3 +2,9 @@ node_modules/
 react-app-env.d.ts
 *.log
 build/
+scripts/
+docs/
+.yarn/
+
+# Yarn: optional checked-in binary (Corepack + packageManager is used instead)
+.yarn/releases/

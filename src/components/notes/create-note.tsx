@@ -40,7 +40,7 @@ const CreateNote: React.FC = () => {
       />
       <button
         onClick={handleSave}
-        className="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
+        className="py-2 px-4 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white rounded-lg transition-colors"
       >
         Save Note
       </button>

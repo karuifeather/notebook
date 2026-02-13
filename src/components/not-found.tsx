@@ -9,7 +9,7 @@ export default function NotFound() {
       <div className="text-center px-8 py-12 max-w-xl bg-white dark:bg-gray-800 rounded-xl shadow-xl">
         {/* Illustration */}
         <div className="mb-8 flex items-center justify-center">
-          <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg">
+          <div className="w-20 h-20 flex items-center justify-center rounded-full bg-[var(--accent)] text-white shadow-lg">
             <FontAwesomeIcon icon={faTools} className="w-10 h-10" />
           </div>
         </div>

@@ -1,0 +1,406 @@
+/* Table block — Notion-like: compact cells, subtle gridlines, hover/focus states */
+
+$table-divider: color-mix(in oklab, var(--border) 70%, transparent);
+$cell-hover-bg: color-mix(in oklab, var(--surface-2) 85%, var(--surface));
+
+.table-block {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.table-block__scroll {
+  overflow-x: auto;
+}
+
+.table-block__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  border-spacing: 0;
+}
+
+/* ---- Subtle gridlines (no heavy borders) ---- */
+.table-block__th,
+.table-block__td {
+  border-right: 1px solid $table-divider;
+  border-bottom: 1px solid $table-divider;
+  text-align: left;
+  vertical-align: top;
+}
+
+.table-block__th:last-child,
+.table-block__td:last-child {
+  border-right: none;
+}
+
+.table-block__tbody .table-block__tr:last-child .table-block__td {
+  border-bottom: none;
+}
+
+/* ---- Cell sizing + typography ---- */
+.table-block__th,
+.table-block__td {
+  min-height: 40px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.table-block__th {
+  background: var(--surface-2);
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.table-block__th__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.table-block__th__label {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Header: editable label with underline-on-hover (Notion style) */
+.table-block__header-btn {
+  width: 100%;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  &:hover,
+  &:focus-visible {
+    background: transparent;
+    outline: none;
+    box-shadow: 0 1px 0 0 var(--border);
+  }
+}
+
+.table-block__input--header {
+  width: 100%;
+  min-width: 60px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 1px 0 0 var(--accent-ring);
+  }
+}
+
+/* ---- Row hover (subtle background) ---- */
+.table-block__tr {
+  transition: background var(--transition-fast);
+}
+
+.table-block__tr:hover .table-block__td {
+  background: var(--surface-2);
+}
+
+/* Cell hover (slightly brighter than row) */
+.table-block__td:hover {
+  background: $cell-hover-bg !important;
+}
+
+/* Active/focused cell: 2px accent ring only ---- */
+.table-block__td--focused,
+.table-block__td--editing {
+  position: relative;
+  z-index: 1;
+}
+
+.table-block__td--focused .table-block__cell-wrap {
+  box-shadow: 0 0 0 2px var(--accent-ring);
+  border-radius: var(--radius-sm);
+}
+
+.table-block__td--editing .table-block__input {
+  box-shadow: 0 0 0 2px var(--accent-ring);
+}
+
+/* ---- Body cells ---- */
+.table-block__td {
+  color: var(--text);
+  min-width: 80px;
+  transition: background var(--transition-fast);
+}
+
+.table-block__cell-wrap {
+  min-height: 22px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  border-radius: var(--radius-sm);
+  transition: box-shadow var(--transition-fast);
+}
+
+.table-block__cell-btn {
+  width: 100%;
+  min-height: 22px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  &:hover,
+  &:focus-visible {
+    background: transparent;
+    outline: none;
+  }
+}
+
+/* Empty cell placeholder */
+.table-block__cell-placeholder {
+  color: var(--muted-2);
+}
+
+.table-block__input {
+  width: 100%;
+  min-width: 60px;
+  min-height: 22px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+
+  &::placeholder {
+    color: var(--muted-2);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+/* Optional: multi-line cell with max height and scroll */
+.table-block__input--multiline {
+  resize: none;
+  max-height: 120px;
+  overflow-y: auto;
+  line-height: 1.45;
+}
+
+/* ---- Actions column: hidden until row hover ---- */
+.table-block__th--actions,
+.table-block__td--actions {
+  width: 36px;
+  min-width: 36px;
+  padding: 6px 8px;
+  vertical-align: middle;
+  background: inherit;
+}
+
+.table-block__row-actions,
+.table-block__col-actions {
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.table-block__tr:hover .table-block__row-actions,
+.table-block__thead .table-block__tr:hover .table-block__col-actions {
+  opacity: 1;
+}
+
+/* Small icon buttons (28–30px), neutral surface + border, icon var(--icon) */
+.table-block__icon-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--icon);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+
+  &:hover {
+    color: var(--danger);
+    border-color: color-mix(in oklab, var(--danger) 40%, var(--border));
+  }
+}
+
+.table-block__icon-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+}
+
+.table-block__icon-btn--ghost:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+/* Column menu (⋯) — same size, show on header hover */
+.table-block__col-menu-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.table-block__col-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 2px;
+  min-width: 140px;
+  padding: var(--space-1);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+}
+
+.table-block__col-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+
+  &:hover {
+    background: var(--surface-2);
+  }
+}
+
+.table-block__col-menu-item--danger:hover {
+  color: var(--danger);
+}
+
+/* ---- Add row / Add column (Notion-like inline) ---- */
+.table-block__add-row {
+  border-bottom: none;
+}
+
+.table-block__add-row .table-block__td {
+  padding: 6px 12px;
+  border-bottom: none;
+  background: transparent !important;
+}
+
+.table-block__add-row-btn {
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--text);
+    background: var(--surface-2);
+    outline: none;
+  }
+}
+
+.table-block__add-col-cell {
+  width: 44px;
+  min-width: 44px;
+  padding: 8px;
+  vertical-align: middle;
+  background: var(--surface-2);
+}
+
+.table-block__add-col-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--icon);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+  }
+}
+
+/* Subtle footer toolbar (optional, compact) */
+.table-block__toolbar {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid $table-divider;
+  background: var(--surface);
+}
+
+.table-block__toolbar-btn {
+  padding: var(--space-1) var(--space-2);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--text);
+    outline: none;
+  }
+}

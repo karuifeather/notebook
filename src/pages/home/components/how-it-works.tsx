@@ -2,102 +2,89 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faClipboard,
   faEdit,
-  faShareSquare,
-  faCheckCircle,
+  faPlay,
+  faDatabase,
 } from '@fortawesome/free-solid-svg-icons';
 
 export default function HowItWorks() {
   const steps = [
     {
-      title: 'Create a Notebook',
+      title: 'Create a notebook',
       description:
-        'Start by creating a new notebook for your project, notes, or ideas. Organize everything in one place.',
+        'Create a notebook and give it a name. You can set a cover image and add a description.',
       icon: faClipboard,
     },
     {
-      title: 'Add Notes & Code',
+      title: 'Add notes and blocks',
       description:
-        'Use rich text blocks and code blocks with syntax highlighting to bring your ideas to life.',
+        'Add notes inside the notebook. Each note is a list of blocks: markdown, code, rich text, callouts, images, tables, checklists, or embeds. Use the + control to add blocks; drag to reorder.',
       icon: faEdit,
     },
     {
-      title: 'Collaborate & Share',
+      title: 'Run code',
       description:
-        'Invite your team or share with others. Work together in real-time with seamless collaboration tools.',
-      icon: faShareSquare,
+        'Code cells bundle on edit. Use bare imports (e.g. lodash); versions are resolved and pinned per note. Preview runs in an iframe; you can view console output too.',
+      icon: faPlay,
     },
     {
-      title: 'Execute & Succeed',
+      title: 'Everything stays local',
       description:
-        'Turn your ideas into actions. Track your progress and stay organized to achieve your goals.',
-      icon: faCheckCircle,
+        'Notebooks, notes, and cells are saved to your browser with Redux and localStorage. No server and no account required.',
+      icon: faDatabase,
     },
   ];
 
   return (
-    <section className="relative py-16 px-6 bg-gradient-to-b from-white to-gray-100 dark:from-gray-950 ">
-      {/* Background Elements */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-10 left-8 w-48 h-48 rounded-full bg-pink-300 dark:bg-pink-700 opacity-50 dark:opacity-70 blur-2xl"></div>
-        <div className="absolute top-1/3 right-20 transform -translate-y-1/2 w-64 h-64 rounded-full bg-yellow-300 dark:bg-yellow-600 opacity-40 dark:opacity-60 blur-3xl"></div>
-        <div className="absolute bottom-44 left-32 w-48 h-48 rounded-full bg-cyan-300 dark:bg-cyan-700 opacity-40 dark:opacity-60 blur-2xl"></div>
+    <section
+      className="relative py-10 sm:py-12"
+      style={{
+        background: 'linear-gradient(to bottom, var(--surface-2), var(--bg))',
+      }}
+    >
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-8 left-8 w-32 h-32 rounded-full bg-pink-300 dark:bg-pink-700 opacity-50 dark:opacity-70 blur-2xl"></div>
+        <div className="absolute top-1/3 right-12 w-40 h-40 rounded-full bg-yellow-300 dark:bg-yellow-600 opacity-40 dark:opacity-60 blur-3xl"></div>
+        <div className="absolute bottom-32 left-24 w-32 h-32 rounded-full bg-[var(--accent)] opacity-30 dark:opacity-20 blur-2xl"></div>
       </div>
 
-      <div className="container mx-auto text-center">
-        {/* Section Heading */}
-        <h2 className="text-4xl font-extrabold text-gray-800 dark:text-gray-100 sm:text-5xl">
-          How{' '}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-            Notes
-          </span>{' '}
-          Works
+      <div className="landing-container text-center">
+        <h2 className="text-2xl font-extrabold text-gray-800 dark:text-gray-100 sm:text-3xl">
+          How <span className="text-[var(--accent)]">FeatherPad</span> works
         </h2>
-        <p className="mt-6 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-          Follow these simple steps to turn your ideas into reality.
+        <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-landing-narrow mx-auto">
+          Create notebooks, add notes and blocks, run code in the browser. All
+          data is stored locally.
         </p>
 
-        {/* Timeline */}
-        <div className="relative mt-16">
-          {/* Vertical Line */}
-          <div className="absolute inset-y-0 left-1/2 w-1 bg-gray-300 dark:bg-gray-700 transform -translate-x-1/2"></div>
+        <div className="relative mt-8">
+          <div
+            className="absolute inset-y-0 left-1/2 w-px transform -translate-x-1/2 hidden lg:block"
+            style={{ backgroundColor: 'var(--border)' }}
+          ></div>
 
-          {/* Steps */}
-          <div className="grid grid-cols-1 ">
+          <div className="grid grid-cols-1 gap-6 lg:gap-8">
             {steps.map((step, index) => (
               <div
                 key={index}
-                className={`flex flex-col items-center lg:items-${
-                  index % 2 === 0 ? 'end' : 'start'
-                } relative`}
+                className={`flex flex-col items-center lg:flex-row lg:items-stretch lg:justify-center lg:${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'} relative gap-4`}
                 data-aos="fade-up"
                 data-aos-delay={index * 200}
               >
-                {/* Connector Line */}
-                {index < steps.length - 1 && (
-                  <div className="absolute top-full h-10 w-1 bg-gray-300 dark:bg-gray-700 left-1/2 transform -translate-x-1/2"></div>
-                )}
-
-                {/* Step Icon */}
-                <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg lg:absolute lg:top-1/2 lg:transform lg:-translate-y-1/2 lg:left-1/2 lg:-translate-x-1/2">
-                  <FontAwesomeIcon icon={step.icon} className="w-10 h-10" />
+                <div className="w-12 h-12 shrink-0 flex items-center justify-center rounded-full bg-[var(--accent)] text-white shadow-md lg:relative lg:top-0 lg:translate-y-0">
+                  <FontAwesomeIcon icon={step.icon} className="w-6 h-6" />
                 </div>
 
                 <div
-                  className={`relative bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 p-12 rounded-2xl shadow-xl max-w-lg text-left ${
-                    index % 2 === 0 ? 'lg:mr-auto' : 'lg:ml-auto'
-                  } mt-8`}
+                  className="relative border p-5 sm:p-6 rounded-xl shadow-md w-full max-w-lg text-left"
+                  style={{
+                    backgroundColor: 'var(--surface)',
+                    borderColor: 'var(--border)',
+                  }}
                 >
-                  {/* Reduced Neon Glow Effect */}
-                  <div
-                    className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-light to-primary-dark opacity-20 blur-md"
-                    aria-hidden="true"
-                  ></div>
-
-                  {/* Content */}
-                  <h3 className="relative text-2xl font-extrabold text-gray-800 dark:text-gray-100 z-10">
+                  <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
                     {step.title}
                   </h3>
-                  <p className="relative mt-6 text-lg text-gray-600 dark:text-gray-200 z-10">
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-200">
                     {step.description}
                   </p>
                 </div>

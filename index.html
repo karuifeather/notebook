@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" style="background: #f5f5f5">
   <head>
     <!-- Character Encoding -->
     <meta charset="utf-8" />
@@ -10,49 +10,61 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
 
+    <!-- Content-Security-Policy: restrict app shell and iframe/preview resources. script-src includes jsdelivr for Monaco; worker-src allows esbuild-wasm blob workers. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://unpkg.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; connect-src 'self' https://unpkg.com https://registry.npmjs.org https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; frame-src 'self'; base-uri 'self';"
+    />
+
     <!-- Primary Theme Color -->
     <meta name="theme-color" content="007aff" />
 
     <meta
       name="description"
-      content="Unfeathered Notes: A modern web app to take notes, organize ideas, and collaborate seamlessly."
+      content="FeatherPad: A modern web app to take notes, organize ideas, and collaborate seamlessly."
     />
 
     <meta
       name="keywords"
-      content="notes, note-taking, Unfeathered Notes, organize, collaboration, web app, markdown, code editor"
+      content="notes, note-taking, FeatherPad, organize, collaboration, web app, markdown, code editor"
     />
 
     <!-- Author -->
-    <meta name="author" content="Unfeathered" />
+    <meta name="author" content="FeatherPad" />
 
     <!-- Social Media Metadata -->
     <!-- Open Graph Protocol for Facebook, LinkedIn, etc. -->
-    <meta property="og:title" content="Unfeathered Notes" />
+    <meta property="og:title" content="FeatherPad" />
     <meta
       property="og:description"
-      content="Unfeathered Notes: A modern platform to write, edit, and collaborate with rich text and code blocks."
+      content="FeatherPad: A modern platform to write, edit, and collaborate with rich text and code blocks."
     />
     <meta property="og:image" content="/og-image.png" />
-    <meta property="og:url" content="https://unfeatherednotes.com" />
+    <meta property="og:url" content="https://featherpad.com" />
     <meta property="og:type" content="website" />
 
     <!-- Twitter Card for Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Unfeathered Notes" />
+    <meta name="twitter:title" content="FeatherPad" />
     <meta
       name="twitter:description"
-      content="Unfeathered Notes: Simplify note-taking with markdown and code support, all in one place."
+      content="FeatherPad: Simplify note-taking with markdown and code support, all in one place."
     />
     <meta name="twitter:image" content="/twitter-card.png" />
-    <meta name="twitter:site" content="@UnfeatheredNotes" />
+    <meta name="twitter:site" content="@FeatherPad" />
 
     <!-- Icons -->
-    <link rel="icon" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="/images/icons/feather-icon.png" />
+    <link rel="apple-touch-icon" href="/images/icons/feather-icon.png" />
 
     <!-- Manifest for Progressive Web App -->
     <link rel="manifest" href="/manifest.json" />
+
+    <!-- Fonts -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    />
 
     <!-- Font Awesome -->
     <link
@@ -63,9 +75,21 @@
     />
 
     <!-- Title -->
-    <title>Unfeathered Notes: Simplify Your Notes</title>
+    <title>FeatherPad: Simplify Your Notes</title>
+    <!-- Gray first paint so no white flash; one loader (React) on gray -->
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #f5f5f5 !important;
+      }
+      #root {
+        min-height: 100vh;
+        background: #f5f5f5;
+      }
+    </style>
   </head>
-  <body>
+  <body style="margin: 0; background: #f5f5f5">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/index.tsx"></script>

@@ -9,6 +9,7 @@ export default defineConfig({
     eslintPlugin({
       cache: false,
       exclude: [/virtual:/, /node_modules/, /sb-preview/],
+      failOnError: false, // don't fail build on lint; run `yarn lint` in CI instead
     }),
   ],
   resolve: {

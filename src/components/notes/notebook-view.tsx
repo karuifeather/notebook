@@ -1,209 +1,251 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useActions } from '@/hooks/use-actions.ts';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import {
   selectNotebookById,
+  selectNotebookExists,
   makeSelectNotesByNotebookId,
 } from '@/state/selectors/index.ts';
-import Block from '../editors/block.tsx';
+import { DocumentCanvas } from '../ui/DocumentCanvas';
+import { InlineTitle } from '../ui/InlineTitle';
+import { MetaRow } from '../ui/MetaRow';
+import { DescriptionBlock } from '../ui/DescriptionBlock';
+import { DocCover } from './DocCover';
+import Modal from '../modal.tsx';
+import { EditCoverModal } from './EditCoverModal';
+import { NotesSection } from './NotesSection';
 
-interface NotebookCoverProps {
-  coverImage?: string;
+/** Notebook from selector may have name (real) or title (fallback) */
+function getNotebookName(nb: ReturnType<typeof selectNotebookById>): string {
+  const n = nb as { name?: string; title?: string };
+  return n?.name ?? n?.title ?? '';
+}
+function getNotebookDescription(
+  nb: ReturnType<typeof selectNotebookById>
+): string {
+  return (nb as { description?: string })?.description ?? '';
+}
+function getNotebookCover(
+  nb: ReturnType<typeof selectNotebookById>
+): string | null {
+  const v = (nb as { coverImage?: string | null })?.coverImage;
+  return v ?? null;
 }
 
-const NotebookCover: React.FC<NotebookCoverProps> = ({ coverImage }) => {
+interface NotebookViewProps {
+  /** Fallback cover URL when notebook has no stored cover (e.g. legacy). */
+  coverImage?: string | null;
+}
+
+export default function NotebookView({ coverImage = null }: NotebookViewProps) {
   const { notebookId } = useParams();
   const navigate = useNavigate();
   const selectNotesByNotebookId = makeSelectNotesByNotebookId();
 
-  // Local state for notebook title and description
+  const notebook = useTypedSelector((state) =>
+    selectNotebookById(state, notebookId ?? '')
+  );
+  const notebookExists = useTypedSelector((state) =>
+    notebookId ? selectNotebookExists(state, notebookId) : false
+  );
+  const notes = useTypedSelector((state) =>
+    notebookId ? selectNotesByNotebookId(state, notebookId) : []
+  );
+
   const [notebookTitle, setNotebookTitle] = useState('');
   const [notebookDesc, setNotebookDesc] = useState('');
+  const [coverModalOpen, setCoverModalOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
-  if (!notebookId) {
-    navigate('/404');
-    return null;
-  }
+  const { createNote, updateNotebook, updateNotebookCover, deleteNotebook } =
+    useActions();
 
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [newNoteTitle, setNewNoteTitle] = useState('');
+  const storedCover = getNotebookCover(notebook);
+  const displayCover = storedCover ?? coverImage ?? null;
 
-  // Fetch notebook and notes using selectors
-  const { description: globalDesc, name: globalTitle } = useTypedSelector(
-    (state) => selectNotebookById(state, notebookId)
+  useEffect(() => {
+    setNotebookTitle(getNotebookName(notebook));
+    setNotebookDesc(getNotebookDescription(notebook));
+  }, [notebook]);
+
+  useEffect(() => {
+    if (!notebookId) {
+      navigate('/app', { replace: true });
+      return;
+    }
+    if (!notebookExists) {
+      navigate('/404', { replace: true });
+    }
+  }, [notebookId, notebookExists, navigate]);
+
+  const handleTitleBlur = useCallback(
+    (committedTitle?: string) => {
+      if (!notebookId) return;
+      const name =
+        (committedTitle ?? notebookTitle).trim() || 'Untitled Notebook';
+      if (
+        name !== getNotebookName(notebook) ||
+        notebookDesc !== getNotebookDescription(notebook)
+      ) {
+        updateNotebook(notebookId, name, notebookDesc);
+      }
+    },
+    [notebookId, notebookTitle, notebookDesc, notebook, updateNotebook]
   );
 
-  const notes = useTypedSelector((state) =>
-    selectNotesByNotebookId(state, notebookId)
+  const handleDescriptionBlur = useCallback(
+    (committedDesc?: string) => {
+      if (!notebookId) return;
+      const desc = committedDesc ?? notebookDesc;
+      const name =
+        getNotebookName(notebook) || notebookTitle || 'Untitled Notebook';
+      if (desc !== getNotebookDescription(notebook)) {
+        updateNotebook(notebookId, name, desc);
+      }
+    },
+    [notebookId, notebookDesc, notebook, notebookTitle, updateNotebook]
   );
 
-  const { createNote, updateNotebook } = useActions();
-
-  const handleNewNote = () => {
-    if (newNoteTitle.trim()) {
+  const handleNewNote = useCallback(
+    (title: string) => {
+      if (!notebookId || !title.trim()) return;
       createNote(notebookId, {
-        title: newNoteTitle,
+        title: title.trim(),
         description: '',
         dependencies: [],
       });
-      setNewNoteTitle('');
-    }
-  };
+    },
+    [notebookId, createNote]
+  );
 
-  const onEditCover = () => {
-    alert('Feature not implemented yet.'); // todo
-  };
+  const onEditCover = useCallback(() => {
+    setCoverModalOpen(true);
+  }, []);
 
-  useEffect(() => {
-    // Initialize local state with global state
-    setNotebookTitle(globalTitle || '');
-    setNotebookDesc(globalDesc || '');
-  }, [globalTitle, globalDesc]); // Run only when the global state changes
+  const handleCoverSave = useCallback(
+    (coverImage: string | null) => {
+      if (notebookId) {
+        updateNotebookCover(notebookId, coverImage);
+      }
+      setCoverModalOpen(false);
+    },
+    [notebookId, updateNotebookCover]
+  );
 
-  const handleBlur = useCallback(() => {
-    // Only call updateNotebook if there are changes
-    if (notebookTitle !== globalTitle || notebookDesc !== globalDesc) {
-      updateNotebook(
-        notebookId,
-        notebookTitle ? notebookTitle : 'Untitled Notebook',
-        notebookDesc
-      );
-    }
-  }, [
-    notebookId,
-    notebookTitle,
-    notebookDesc,
-    globalTitle,
-    globalDesc,
-    updateNotebook,
-  ]);
+  const handleDeleteNotebook = useCallback(() => {
+    if (!notebookId) return;
+    deleteNotebook(notebookId);
+    setDeleteConfirmOpen(false);
+    setSettingsOpen(false);
+    navigate('/app');
+  }, [notebookId, deleteNotebook, navigate]);
+
+  if (!notebookId) return null;
+  if (!notebookExists) return null;
+
+  const displayTitle =
+    notebookTitle || getNotebookName(notebook) || 'Untitled Notebook';
+  const noteRows = notes.map((n) => ({
+    id: n.id!,
+    title: n.title || 'Untitled',
+  }));
 
   return (
-    <div className="relative flex flex-col items-center justify-start min-h-screen bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
-      {/* Cover Section */}
-      <div className="relative w-full h-60 sm:h-72 lg:h-80 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
-        {coverImage ? (
-          <>
-            {!imageLoaded && (
-              <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
-            )}
-            <img
-              src={coverImage}
-              alt="Notebook Cover"
-              className={`w-full h-full object-cover transition-opacity duration-700 ${
-                imageLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-              onLoad={() => setImageLoaded(true)}
-            />
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400 text-4xl">
-            <i className="fas fa-image"></i>
-          </div>
-        )}
-        {/* Overlay Edit Button */}
-        <button
-          onClick={onEditCover}
-          className="absolute top-4 right-4 bg-white/80 dark:bg-gray-700/80 hover:bg-white/90 dark:hover:bg-gray-600/90 text-gray-700 dark:text-gray-200 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium shadow backdrop-blur-md transition"
+    <div className="min-h-screen bg-[var(--bg)]">
+      {coverModalOpen && (
+        <EditCoverModal
+          notebookId={notebookId}
+          currentCover={storedCover}
+          onSave={handleCoverSave}
+          onClose={() => setCoverModalOpen(false)}
+        />
+      )}
+      {deleteConfirmOpen && (
+        <Modal
+          title="Delete notebook"
+          onConfirm={handleDeleteNotebook}
+          onCancel={() => setDeleteConfirmOpen(false)}
         >
-          Edit Cover
-        </button>
-      </div>
-
-      {/* Main Container */}
-      <div className="xl:absolute xl:top-1/4 min-h-[80vh]  w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden mt-6 sm:mt-8 p-4 sm:p-6 lg:p-8">
-        {/* Content Section */}
-        <div className="mb-6">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
-            <Block
-              content={notebookTitle}
-              handler={setNotebookTitle}
-              onBlur={handleBlur}
-              variant="heading"
-            />
-          </h1>
-          <div
-            className={`text-gray-600 dark:text-gray-400 text-base sm:text-lg ${
-              !notebookDesc ? 'italic' : ''
-            }`}
-          >
-            <Block
-              content={notebookDesc}
-              handler={setNotebookDesc}
-              onBlur={handleBlur}
-              variant="description"
-            />
+          <p className="text-[var(--text)]">
+            Are you sure you want to delete <strong>{displayTitle}</strong>?
+            Everything inside will be deleted.
+          </p>
+        </Modal>
+      )}
+      {settingsOpen && (
+        <Modal
+          title="Notebook settings"
+          onConfirm={() => setSettingsOpen(false)}
+          onCancel={() => setSettingsOpen(false)}
+        >
+          <div className="space-y-3 text-[var(--text)]">
+            <p className="text-sm text-[var(--muted)]">
+              Name and description are edited on the page.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setSettingsOpen(false);
+                setDeleteConfirmOpen(true);
+              }}
+              className="rounded-[var(--radius-md)] border border-[var(--danger)] bg-transparent px-3 py-2 text-sm font-medium text-[var(--danger)] hover:bg-[var(--danger)]/10 focus-ring"
+            >
+              Delete this notebook
+            </button>
           </div>
-        </div>
+        </Modal>
+      )}
+      <DocumentCanvas>
+        <DocCover coverImage={displayCover} onEditCover={onEditCover} />
 
-        {/* Notes Section */}
-        <>
-          {notes.length === 0 ? (
-            <div className="flex flex-col items-center text-center text-gray-500 dark:text-gray-400">
-              {/* Empty State Message */}
-              <p className="text-lg font-medium">No notes here yet.</p>
-              <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-                Start by creating your first note.
-              </p>
-              <div className="mt-6 flex flex-col sm:flex-row gap-3 items-center justify-center">
-                {/* Input for New Note */}
-                <input
-                  type="text"
-                  placeholder="Enter a note title..."
-                  value={newNoteTitle}
-                  onChange={(e) => setNewNoteTitle(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleNewNote()}
-                  className="p-3 w-full sm:w-64 border rounded-md text-lg text-gray-900 dark:text-gray-200 bg-transparent border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
-                />
-                {/* Create Note Button */}
-                <button
-                  onClick={handleNewNote}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
-                >
-                  Start Creating
-                </button>
-              </div>
-            </div>
-          ) : (
-            <ul className="space-y-4">
-              {/* Notes List */}
-              {notes.map((note) => (
-                <Link
-                  to={`/app/notebook/${notebookId}/note/${note.id}`}
-                  key={note.id}
-                >
-                  <li className="group flex items-center justify-between p-4 border dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition shadow-sm hover:shadow-md">
-                    {/* Note Title */}
-                    <span className="text-gray-800 dark:text-gray-200">
-                      {note.title}
-                    </span>
-                  </li>
-                </Link>
-              ))}
-              {/* New Note Input */}
-              <li className="flex flex-col sm:flex-row gap-3 items-center">
-                <input
-                  type="text"
-                  placeholder="Add a new note..."
-                  value={newNoteTitle}
-                  onChange={(e) => setNewNoteTitle(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleNewNote()}
-                  className="p-3 flex-1 border rounded-md text-lg text-gray-900 dark:text-gray-200 bg-transparent border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
-                />
-                <button
-                  onClick={handleNewNote}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
-                >
-                  Add
-                </button>
-              </li>
-            </ul>
-          )}
-        </>
-      </div>
+        <InlineTitle
+          value={notebookTitle}
+          onChange={setNotebookTitle}
+          onBlur={handleTitleBlur}
+          placeholder="Untitled Notebook"
+        />
+
+        <MetaRow
+          breadcrumb={[
+            { label: 'Notebooks', href: '/app' },
+            { label: displayTitle },
+          ]}
+          status="Saved"
+          className="mb-6"
+        >
+          <button
+            type="button"
+            onClick={() => setSettingsOpen(true)}
+            className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] transition-colors hover:bg-[var(--surface2)] hover:text-[var(--text)] focus-ring"
+            aria-label="Notebook settings"
+          >
+            <i className="fas fa-cog" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setDeleteConfirmOpen(true)}
+            className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] transition-colors hover:bg-[var(--surface2)] hover:text-[var(--danger)] focus-ring"
+            aria-label="Delete notebook"
+          >
+            <i className="fas fa-trash-alt" />
+          </button>
+        </MetaRow>
+
+        <DescriptionBlock
+          value={notebookDesc}
+          onChange={setNotebookDesc}
+          onBlur={handleDescriptionBlur}
+          placeholder="Add a description…"
+        />
+
+        <NotesSection
+          notebookId={notebookId}
+          notes={noteRows}
+          onAddNote={handleNewNote}
+        />
+      </DocumentCanvas>
     </div>
   );
-};
-
-export default NotebookCover;
+}

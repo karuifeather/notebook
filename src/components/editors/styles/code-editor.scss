@@ -1,10 +1,24 @@
+/* Notion-like code block: min-height for “code area” feel; capped height then internal scroll */
 .editor-wrapper {
   position: relative;
-  height: 30rem;
-  max-height: 100vh;
+  min-height: 200px;
+  height: min(70vh, 640px);
+  max-height: min(70vh, 640px);
   width: 100%;
   box-sizing: border-box;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
+  overflow: auto;
+}
+
+.editor-wrapper--expanded {
+  height: auto;
+  min-height: 200px;
+  max-height: none;
+  overflow: visible;
+}
+
+.editor-wrapper .monaco-editor {
+  overflow: auto;
 }
 
 /* Format button styling */

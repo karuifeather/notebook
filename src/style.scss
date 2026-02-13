@@ -1,8 +1,72 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@use './components/notes/styles/notebook-doc.scss';
+@use './components/notes/styles/focus-mode.scss';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Design tokens — calm accent, small indicators only. No big accent fills in sidebar/nav.
+   Accent: #8AB4F8 — 3px indicators, focus ring, icon highlight only. */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  /* Light theme — color system */
+  --bg: #f5f5f5;
+  --surface: #ffffff;
+  --surface-2: #fafafa;
+  --surface2: #fafafa;
+  --border: #e5e5e5;
+  --text: #171717;
+  --muted: #525252; /* ~70–75% of text brightness, readable */
+  --muted-2: #737373;
+  --icon: color-mix(in oklab, var(--text) 72%, var(--surface));
+  --icon-muted: color-mix(in oklab, var(--text) 52%, var(--surface));
+  --icon-active: var(--text);
+  --accent: #8ab4f8;
+  --accent-hover: color-mix(in oklab, var(--accent) 85%, white);
+  --accent-soft: rgba(138, 180, 248, 0.14);
+  --accent-ring: rgba(138, 180, 248, 0.35);
+  --danger: #dc2626;
+  --success: #16a34a;
+  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent-ring);
+}
+
+.dark,
+html.dark {
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface-2: #242424;
+  --surface2: #242424;
+  --border: #2e2e2e;
+  --text: #fafafa;
+  --muted: #b8b8b8; /* ~70–75% of text brightness, readable */
+  --muted-2: #909090;
+  --icon: color-mix(in oklab, var(--text) 72%, var(--surface));
+  --icon-muted: color-mix(in oklab, var(--text) 52%, var(--surface));
+  --icon-active: var(--text);
+  --accent: #8ab4f8;
+  --accent-hover: color-mix(in oklab, var(--accent) 85%, white);
+  --accent-soft: rgba(138, 180, 248, 0.14);
+  --accent-ring: rgba(138, 180, 248, 0.35);
+  --danger: #ef4444;
+  --success: #22c55e;
+  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent-ring);
+}
 
 /* Custom Reset & Overrides */
 html {
@@ -10,15 +74,34 @@ html {
 }
 
 body {
-  @apply bg-gray-100 text-gray-800 font-sans antialiased dark:bg-gray-900 dark:text-gray-200;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a.link {
-  @apply text-blue-600 hover:underline transition-colors dark:text-blue-400 dark:hover:text-blue-500;
+  color: var(--accent);
+  transition: color var(--transition-fast);
+}
+a.link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
 }
 
 button {
-  @apply px-4 py-2 rounded bg-blue-500 text-white font-medium transition-all dark:bg-blue-700 dark:hover:bg-blue-800;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 500;
+  transition:
+    background-color var(--transition-base),
+    opacity var(--transition-fast);
+}
+button:hover {
+  background: var(--accent-hover);
 }
 
 code {
@@ -29,43 +112,84 @@ pre {
   @apply bg-gray-100 p-4 rounded shadow overflow-auto text-sm font-mono dark:bg-gray-800 dark:text-gray-100;
 }
 
-/* General Scrollbar Styles */
-.custom-scrollbar {
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: rgba(100, 100, 255, 0.6) rgba(0, 0, 0, 0.05); /* Thumb and track color */
+/* Focus rings for accessibility — accent-ring only, no bright blue */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
-/* For WebKit Browsers (Chrome, Edge, Safari) */
+/* General Scrollbar Styles */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px; /* Scrollbar width */
-  height: 8px; /* Horizontal scrollbar height */
+  width: 8px;
+  height: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05); /* Subtle track background */
-  border-radius: 12px; /* Rounded track edges */
+  background: transparent;
+  border-radius: var(--radius-sm);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    45deg,
-    #7f7fd5,
-    #86a8e7,
-    #91eae4
-  ); /* Gradient thumb */
-  border-radius: 12px; /* Rounded thumb edges */
-  border: 2px solid rgba(0, 0, 0, 0.05); /* Creates padding effect */
+  background: var(--border);
+  border-radius: var(--radius-sm);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    45deg,
-    #6a82fb,
-    #fc5c7d
-  ); /* Brighter hover gradient */
+  background: var(--muted);
 }
 
-/* Horizontal Scrollbar (Optional) */
-.custom-scrollbar::-webkit-scrollbar-horizontal {
-  height: 6px; /* Smaller height for horizontal scrollbar */
+/* Note page: details description compact height */
+.note-details-panel__description textarea {
+  max-height: 4.5rem;
+  min-height: 2.5rem;
+}
+
+/* Sidebar: hover actions and tree animation */
+.sidebar-folder-content {
+  transition: max-height 180ms ease-out;
+}
+/* Sidebar: active item = simple 3px vertical bar (no curve) */
+.sidebar-collapsed-active-accent {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  border-radius: 0;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+/* Legacy aliases for gradual migration */
+:root,
+.dark,
+html.dark {
+  --focus: var(--accent-ring);
+}
+
+/* Landing page: centered tight grid */
+.landing-container {
+  width: 100%;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  @media (min-width: 640px) {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+.landing-container--narrow {
+  max-width: 48rem;
 }

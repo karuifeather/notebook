@@ -8,26 +8,32 @@ export default function FAQSection() {
   const faqs = [
     {
       question: 'Is it free?',
-      answer: 'Yes, Notes is free to use with all core features.',
+      answer:
+        'Yes. FeatherPad runs in your browser and does not require an account or payment.',
     },
     {
       question: 'Can I use it offline?',
       answer:
-        'Yes, you can use Notes offline. Changes made offline will sync automatically when you reconnect to the internet.',
+        'Yes. All data is stored in your browser (localStorage). The app works offline; there is no server sync.',
+    },
+    {
+      question: 'Where is my data stored?',
+      answer:
+        'Only in your browser. Notebooks, notes, and cells are persisted with redux-persist to localStorage. Nothing is sent to a server.',
     },
     {
       question: 'What platforms are supported?',
-      answer: 'Notes works seamlessly on web browsers on bigger screens.',
+      answer: 'Any modern desktop browser. Best experience on larger screens.',
     },
     {
-      question: 'Can I collaborate with others?',
+      question: 'Can I collaborate with others or share a notebook?',
       answer:
-        'Absolutely! Notes allows real-time collaboration with team members, making it perfect for projects and teamwork.',
+        'Not yet. There is no real-time collaboration or sharing. Each user’s data stays in their own browser.',
     },
     {
-      question: 'Is my data secure?',
+      question: 'Is my data encrypted?',
       answer:
-        'Your data is encrypted and securely stored. We prioritize your privacy and security at all times.',
+        'Data is stored in your browser’s localStorage; it is not encrypted by the app. Use your device’s security (e.g. locked profile) if you need protection.',
     },
   ];
 
@@ -36,47 +42,41 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="relative bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 py-16 px-4 sm:px-6 lg:px-8">
-      <div className="container mx-auto text-center">
-        {/* Section Heading */}
-        <h2 className="text-4xl font-extrabold text-gray-800 dark:text-gray-100 sm:text-5xl">
-          Frequently Asked{' '}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-            Questions
-          </span>
+    <section className="relative bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 py-10 sm:py-12">
+      <div className="landing-container landing-container--narrow text-center">
+        <h2 className="text-2xl font-extrabold text-gray-800 dark:text-gray-100 sm:text-3xl">
+          Frequently asked{' '}
+          <span className="text-[var(--accent)]">questions</span>
         </h2>
-        <p className="mt-4 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          Got questions? We’ve got answers.
+        <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">
+          Straight answers about what FeatherPad does today.
         </p>
 
-        {/* FAQ List */}
-        <div className="mt-12 max-w-3xl mx-auto divide-y divide-gray-200 dark:divide-gray-700">
+        <div className="mt-6 divide-y divide-gray-200 dark:divide-gray-700">
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="py-6"
+              className="py-4"
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
-              {/* Question */}
               <button
-                className="flex justify-between items-center w-full cursor-pointer text-left group px-6 py-4 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all shadow-md"
+                className="flex justify-between items-center w-full cursor-pointer text-left group px-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all text-sm"
                 onClick={() => toggleFAQ(index)}
               >
-                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-[var(--accent)] transition-colors">
                   {faq.question}
                 </h3>
                 <FontAwesomeIcon
                   icon={openIndex === index ? faChevronUp : faChevronDown}
-                  className={`text-gray-500 dark:text-gray-400 w-5 h-5 transition-transform duration-300 ${
+                  className={`text-gray-500 dark:text-gray-400 w-4 h-4 transition-transform duration-300 shrink-0 ml-2 ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                 />
               </button>
 
-              {/* Answer */}
               <div
-                className={`mt-4 text-gray-600 dark:text-gray-400 text-base overflow-hidden transition-all duration-500 ${
+                className={`mt-2 text-gray-600 dark:text-gray-400 text-sm overflow-hidden transition-all duration-500 ${
                   openIndex === index
                     ? 'max-h-96 opacity-100'
                     : 'max-h-0 opacity-0'

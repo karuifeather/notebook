@@ -1,184 +1,487 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { useActions } from '@/hooks/use-actions.ts';
+import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
+import { makeSelectFirstCodeCellId } from '@/state/selectors/index.ts';
+import {
+  resolvePinnedVersions,
+  resolveVersion,
+  fetchVersionList,
+} from '@/bundler/resolve-versions.ts';
+import { extractBareImports } from '@/bundler/imports.ts';
+import { CODE_CELL_STARTER } from '@/constants/code-cell.ts';
+import type { DepsLock } from '@/state/types/note.ts';
+import './styles/load-npm.scss';
 
-const LoadNpmModuleModal = ({
-  isOpen,
-  onClose,
-}: {
+/** Default import snippet for known packages; otherwise import * as pkg from 'pkg'. */
+function defaultImportLine(pkg: string): string {
+  if (pkg === 'react') return "import React from 'react';";
+  if (pkg === 'react-dom') return "import ReactDOM from 'react-dom/client';";
+  const safe =
+    pkg
+      .replace(/@/g, '')
+      .replace(/[/-]/g, '_')
+      .replace(/[^a-zA-Z0-9_]/g, '') || 'pkg';
+  const varName = /^\d/.test(safe) ? '_' + safe : safe;
+  return `import * as ${varName} from '${pkg}';`;
+}
+
+/** Return true if code already imports this package (bare specifier). */
+async function codeAlreadyImports(code: string, pkg: string): Promise<boolean> {
+  const bare = await extractBareImports(code);
+  return bare.has(pkg);
+}
+
+/** Dedupe and prepend import lines at top of code; avoid duplicates. */
+async function prependImports(code: string, pkgs: string[]): Promise<string> {
+  const toAdd: string[] = [];
+  for (const pkg of pkgs) {
+    const already = await codeAlreadyImports(code, pkg);
+    if (!already) toAdd.push(defaultImportLine(pkg));
+  }
+  if (toAdd.length === 0) return code;
+  const importBlock = toAdd.join('\n');
+  const trimmed = code.trimStart();
+  if (!trimmed) return importBlock + '\n\n';
+  return importBlock + '\n\n' + code;
+}
+
+export interface LoadNpmModuleModalProps {
   isOpen: boolean;
   onClose: () => void;
+  noteId: string;
+  notebookId: string;
+  /** Current depsLock so we can show "already pinned" and avoid re-pinning same. */
+  depsLock?: DepsLock;
+  /** Called after successful install with number of packages pinned (so parent can show toast). */
+  onInstalled?: (pinnedCount: number) => void;
+}
+
+type VersionChoice = 'latest' | string;
+
+const LoadNpmModuleModal: React.FC<LoadNpmModuleModalProps> = ({
+  isOpen,
+  onClose,
+  noteId,
+  notebookId,
+  depsLock = {},
+  onInstalled,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedModules, setSelectedModules] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [versionChoice, setVersionChoice] = useState<
+    Record<string, VersionChoice>
+  >({});
+  const [versionListOpen, setVersionListOpen] = useState<string | null>(null);
+  const [versionLists, setVersionLists] = useState<Record<string, string[]>>(
+    {}
+  );
+  const [versionListLoading, setVersionListLoading] = useState<string | null>(
+    null
+  );
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [isInstalling, setIsInstalling] = useState(false);
+  const [installError, setInstallError] = useState<string | null>(null);
+  const [willPin, setWillPin] = useState<Record<string, string>>({});
+  const [insertImports, setInsertImports] = useState(true);
 
-  const fetchNpmModules = async (query: string) => {
-    if (!query) {
+  const { noteDepsLockMerge, updateCell, insertCellAfter, bundleIt } =
+    useActions();
+  const selectFirstCodeCellId = makeSelectFirstCodeCellId();
+  const firstCodeCellId = useTypedSelector((state) =>
+    selectFirstCodeCellId(state, noteId)
+  );
+  const cells = useTypedSelector((state) => state.cells?.[noteId]);
+  const getCellContent = useCallback(
+    (cellId: string) => cells?.data?.[cellId]?.content ?? '',
+    [cells]
+  );
+
+  const fetchNpmModules = useCallback(async (query: string) => {
+    if (!query.trim()) {
       setSearchResults([]);
       return;
     }
-    setIsLoading(true);
+    setIsSearchLoading(true);
     try {
       const response = await axios.get(
-        `https://registry.npmjs.org/-/v1/search`,
-        {
-          params: { text: query, size: 10 },
-        }
+        'https://registry.npmjs.org/-/v1/search',
+        { params: { text: query.trim(), size: 10 } }
       );
-      const modules = response.data.objects.map((obj: any) => obj.package.name);
+      const modules = response.data.objects.map(
+        (obj: { package: { name: string } }) => obj.package.name
+      );
       setSearchResults(modules);
-    } catch (error) {
-      console.error('Error fetching npm modules:', error);
+    } catch {
       setSearchResults([]);
     } finally {
-      setIsLoading(false);
+      setIsSearchLoading(false);
     }
-  };
-
-  const handleAddModule = (module: string) => {
-    if (!selectedModules.includes(module)) {
-      setSelectedModules([...selectedModules, module]);
-    }
-  };
-
-  const handleRemoveModule = (module: string) => {
-    setSelectedModules(selectedModules.filter((mod) => mod !== module));
-  };
-
-  const handleInstall = () => {
-    console.log('Installing modules:', selectedModules);
-    onClose();
-  };
+  }, []);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => fetchNpmModules(searchQuery), 300);
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    const t = setTimeout(() => fetchNpmModules(searchQuery), 300);
+    return () => clearTimeout(t);
+  }, [searchQuery, fetchNpmModules]);
+
+  const handleAddModule = (moduleName: string) => {
+    if (!selectedModules.includes(moduleName)) {
+      setSelectedModules((prev) => [...prev, moduleName]);
+      setVersionChoice((prev) => ({ ...prev, [moduleName]: 'latest' }));
+    }
+  };
+
+  const handleRemoveModule = (moduleName: string) => {
+    setSelectedModules((prev) => prev.filter((m) => m !== moduleName));
+    setVersionChoice((prev) => {
+      const next = { ...prev };
+      delete next[moduleName];
+      return next;
+    });
+    setVersionListOpen((prev) => (prev === moduleName ? null : prev));
+  };
+
+  const openVersionDropdown = useCallback(
+    async (pkg: string) => {
+      setVersionListOpen((prev) => (prev === pkg ? null : pkg));
+      if (versionLists[pkg]) return;
+      setVersionListLoading(pkg);
+      const { versions, error } = await fetchVersionList(pkg);
+      setVersionListLoading(null);
+      if (error) {
+        setVersionLists((prev) => ({ ...prev, [pkg]: [] }));
+        return;
+      }
+      setVersionLists((prev) => ({ ...prev, [pkg]: versions }));
+    },
+    [versionLists]
+  );
+
+  // Preview "Will pin" when selection or version choices change
+  useEffect(() => {
+    if (selectedModules.length === 0) {
+      setWillPin({});
+      return;
+    }
+    let cancelled = false;
+    const run = async () => {
+      const chosen: Record<string, string> = {};
+      for (const pkg of selectedModules) {
+        const choice = versionChoice[pkg] ?? 'latest';
+        const result = await resolveVersion(
+          pkg,
+          choice === 'latest' ? undefined : choice
+        );
+        if (cancelled) return;
+        if ('version' in result) chosen[pkg] = result.version;
+      }
+      if (!cancelled) setWillPin(chosen);
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedModules, versionChoice]);
+
+  const handleInstall = useCallback(async () => {
+    if (selectedModules.length === 0) {
+      onClose();
+      return;
+    }
+    setIsInstalling(true);
+    setInstallError(null);
+    try {
+      const chosenVersions: Record<string, string> = {};
+      for (const pkg of selectedModules) {
+        const c = versionChoice[pkg] ?? 'latest';
+        if (c !== 'latest') chosenVersions[pkg] = c;
+      }
+      const { resolved, errors } = await resolvePinnedVersions(
+        selectedModules,
+        Object.keys(chosenVersions).length > 0 ? chosenVersions : undefined
+      );
+      if (Object.keys(resolved).length === 0 && errors.length > 0) {
+        setInstallError(errors.map((e) => `${e.pkg}: ${e.message}`).join('. '));
+        setIsInstalling(false);
+        return;
+      }
+      if (Object.keys(resolved).length > 0) {
+        noteDepsLockMerge(notebookId, noteId, resolved);
+      }
+      if (errors.length > 0) {
+        setInstallError(errors.map((e) => `${e.pkg}: ${e.message}`).join('. '));
+      }
+
+      if (insertImports && Object.keys(resolved).length > 0) {
+        const pkgs = Object.keys(resolved);
+        if (firstCodeCellId) {
+          const currentContent = getCellContent(firstCodeCellId);
+          const newContent = await prependImports(currentContent, pkgs);
+          if (newContent !== currentContent) {
+            updateCell(noteId, firstCodeCellId, newContent);
+            bundleIt(firstCodeCellId, newContent, {
+              noteId,
+              parentId: notebookId,
+            });
+          }
+        } else {
+          const lines = pkgs.map((p) => defaultImportLine(p));
+          insertCellAfter(
+            noteId,
+            null,
+            'code',
+            lines.join('\n') + '\n\n' + CODE_CELL_STARTER
+          );
+        }
+      }
+
+      const pinnedCount = Object.keys(resolved).length;
+      if (pinnedCount > 0) onInstalled?.(pinnedCount);
+      onClose();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Install failed';
+      setInstallError(msg);
+    } finally {
+      setIsInstalling(false);
+    }
+  }, [
+    selectedModules,
+    versionChoice,
+    noteId,
+    notebookId,
+    insertImports,
+    firstCodeCellId,
+    getCellContent,
+    noteDepsLockMerge,
+    updateCell,
+    insertCellAfter,
+    bundleIt,
+    onClose,
+    onInstalled,
+  ]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (versionListOpen) setVersionListOpen(null);
+        else onClose();
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose, versionListOpen]);
 
   if (!isOpen) return null;
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
-    >
-      <div className="bg-gradient-to-br from-gray-100 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 rounded-2xl shadow-2xl w-full max-w-4xl p-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h2
-            id="modal-title"
-            className="text-3xl font-bold text-gray-900 dark:text-gray-100"
-          >
-            Add NPM Module
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-red-500 transition duration-200"
-            aria-label="Close modal"
-          >
-            <i className="fas fa-times text-2xl"></i>
-          </button>
-        </div>
+    <>
+      <div
+        className="load-npm-modal load-npm-modal--dark"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="load-npm-title"
+      >
+        <div
+          className="load-npm-modal__backdrop"
+          onClick={handleBackdropClick}
+          aria-hidden
+        />
+        <div className="load-npm-modal__panel">
+          <header className="load-npm-modal__header">
+            <h2 id="load-npm-title" className="load-npm-modal__title">
+              Add NPM Module
+            </h2>
+            <button
+              type="button"
+              className="load-npm-modal__close"
+              onClick={onClose}
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </header>
 
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Search Section */}
-          <div>
-            <div className="relative mb-4">
-              <input
-                type="text"
-                placeholder="Search for npm modules..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full text-lg rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 p-4 pr-12 focus:ring-2 focus:ring-blue-500 transition"
-              />
-              <i className="fas fa-search absolute top-4 right-4 text-gray-400 dark:text-gray-500"></i>
-            </div>
+          <div className="load-npm-modal__body">
+            <div className="load-npm-modal__grid">
+              <div className="load-npm-modal__section">
+                <label className="load-npm-modal__label">Search</label>
+                <input
+                  type="text"
+                  placeholder="Search npm packages..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="load-npm-modal__input"
+                  autoFocus
+                />
+                <div className="load-npm-modal__results">
+                  {isSearchLoading ? (
+                    <p className="load-npm-modal__muted">Loading…</p>
+                  ) : searchResults.length > 0 ? (
+                    <ul className="load-npm-modal__list">
+                      {searchResults.map((name) => (
+                        <li key={name} className="load-npm-modal__list-item">
+                          <span className="load-npm-modal__pkg-name">
+                            {name}
+                          </span>
+                          <button
+                            type="button"
+                            className="load-npm-modal__btn add"
+                            onClick={() => handleAddModule(name)}
+                          >
+                            Add
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="load-npm-modal__muted">
+                      {searchQuery.trim() ? 'No results.' : 'Type to search.'}
+                    </p>
+                  )}
+                </div>
+              </div>
 
-            <div className="max-h-64 overflow-y-auto custom-scrollbar">
-              {isLoading ? (
-                <p className="text-center text-gray-500 dark:text-gray-400">
-                  Loading...
-                </p>
-              ) : searchResults.length > 0 ? (
-                <ul className="space-y-3">
-                  {searchResults.map((module) => (
-                    <li
-                      key={module}
-                      className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow p-3 hover:bg-blue-100 dark:hover:bg-blue-700 transition"
-                    >
-                      <span className="text-lg text-gray-800 dark:text-gray-200">
-                        {module}
-                      </span>
-                      <button
-                        onClick={() => handleAddModule(module)}
-                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+              <div className="load-npm-modal__section">
+                <h3 className="load-npm-modal__label">Selected</h3>
+                {selectedModules.length === 0 ? (
+                  <p className="load-npm-modal__muted">None selected.</p>
+                ) : (
+                  <ul className="load-npm-modal__list">
+                    {selectedModules.map((pkg) => (
+                      <li
+                        key={pkg}
+                        className="load-npm-modal__list-item selected"
                       >
-                        <i className="fas fa-plus"></i> Add
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-center text-gray-500 dark:text-gray-400">
-                  No results found.
-                </p>
-              )}
-            </div>
-          </div>
+                        <div className="load-npm-modal__selected-row">
+                          <span className="load-npm-modal__pkg-name">
+                            {pkg}
+                          </span>
+                          <div className="load-npm-modal__version-row">
+                            <button
+                              type="button"
+                              className="load-npm-modal__btn version"
+                              onClick={() => openVersionDropdown(pkg)}
+                              disabled={versionListLoading === pkg}
+                            >
+                              {versionChoice[pkg] === 'latest' ||
+                              !versionChoice[pkg]
+                                ? 'Pin latest'
+                                : versionChoice[pkg]}
+                              {versionListLoading === pkg ? ' …' : ''}
+                            </button>
+                            {versionListOpen === pkg && (
+                              <div className="load-npm-modal__version-dropdown">
+                                <button
+                                  type="button"
+                                  className="load-npm-modal__version-opt"
+                                  onClick={() => {
+                                    setVersionChoice((prev) => ({
+                                      ...prev,
+                                      [pkg]: 'latest',
+                                    }));
+                                    setVersionListOpen(null);
+                                  }}
+                                >
+                                  Pin latest
+                                </button>
+                                {(versionLists[pkg] || []).map((v) => (
+                                  <button
+                                    key={v}
+                                    type="button"
+                                    className="load-npm-modal__version-opt"
+                                    onClick={() => {
+                                      setVersionChoice((prev) => ({
+                                        ...prev,
+                                        [pkg]: v,
+                                      }));
+                                      setVersionListOpen(null);
+                                    }}
+                                  >
+                                    {v}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              className="load-npm-modal__btn remove"
+                              onClick={() => handleRemoveModule(pkg)}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
-          {/* Selected Modules */}
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-              Selected Modules
-            </h3>
-            {selectedModules.length === 0 ? (
-              <p className="text-gray-500 dark:text-gray-400">
-                No modules selected yet.
+                {Object.keys(willPin).length > 0 && (
+                  <div className="load-npm-modal__will-pin">
+                    <h4 className="load-npm-modal__will-pin-title">Will pin</h4>
+                    <ul className="load-npm-modal__will-pin-list">
+                      {Object.entries(willPin).map(([pkg, ver]) => (
+                        <li key={pkg}>
+                          <code>{pkg}</code> → {ver}
+                          {depsLock[pkg] === ver && (
+                            <span className="load-npm-modal__already">
+                              (already pinned)
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <label className="load-npm-modal__checkbox">
+                  <input
+                    type="checkbox"
+                    checked={insertImports}
+                    onChange={(e) => setInsertImports(e.target.checked)}
+                  />
+                  <span>Insert import statements into current code cell</span>
+                </label>
+              </div>
+            </div>
+
+            {installError && (
+              <p className="load-npm-modal__error" role="alert">
+                {installError}
               </p>
-            ) : (
-              <ul className="space-y-3">
-                {selectedModules.map((mod) => (
-                  <li
-                    key={mod}
-                    className="flex justify-between items-center bg-gray-200 dark:bg-gray-700 rounded-lg p-3 shadow hover:bg-blue-200 dark:hover:bg-blue-600 transition"
-                  >
-                    <span className="text-lg text-gray-900 dark:text-gray-200">
-                      {mod}
-                    </span>
-                    <button
-                      onClick={() => handleRemoveModule(mod)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
-                    >
-                      <i className="fas fa-trash"></i> Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
             )}
           </div>
-        </div>
 
-        {/* Footer Buttons */}
-        <div className="flex justify-end mt-8 border-t border-gray-300 dark:border-gray-700 pt-4">
-          <button
-            onClick={onClose}
-            className="bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-5 py-3 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleInstall}
-            className="ml-4 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-5 py-3 rounded-lg transition"
-          >
-            Install Modules
-          </button>
+          <footer className="load-npm-modal__footer">
+            <button
+              type="button"
+              className="load-npm-modal__btn secondary"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="load-npm-modal__btn primary"
+              onClick={handleInstall}
+              disabled={selectedModules.length === 0 || isInstalling}
+            >
+              {isInstalling ? 'Adding…' : 'Add / Install'}
+            </button>
+          </footer>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

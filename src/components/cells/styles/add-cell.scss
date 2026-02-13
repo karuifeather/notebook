@@ -1,0 +1,36 @@
+/* Empty state: in content column, no extra offset */
+.add-cell-empty {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: var(--space-4) 0;
+}
+
+.add-cell-empty__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--icon);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+
+  &:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--surface),
+      0 0 0 4px var(--accent-ring);
+  }
+}

@@ -25,8 +25,8 @@ const Modal: React.FC<ModalProps> = ({
       {/* Modal Container */}
       <div className="relative w-full max-w-lg bg-white dark:bg-gray-900 shadow-xl rounded-2xl overflow-hidden transform transition-transform duration-300 ease-out">
         {/* Modal Header */}
-        <div className="flex justify-between items-center px-6 py-4 bg-gradient-to-r from-blue-500 via-purple-600 to-indigo-500 dark:from-blue-900 dark:via-purple-800 dark:to-indigo-900">
-          <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <div className="flex justify-between items-center px-6 py-4 border-b border-[var(--border)] bg-[var(--surface)]">
+          <h3 className="text-lg font-semibold text-[var(--text)]">{title}</h3>
           <button
             onClick={onCancel}
             className="text-gray-300 hover:text-red-400 transition"
@@ -51,7 +51,7 @@ const Modal: React.FC<ModalProps> = ({
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md transition"
+            className="px-4 py-2 text-sm font-medium text-white bg-[var(--accent)] hover:bg-[var(--accent-hover)] rounded-lg shadow-md transition"
           >
             Confirm
           </button>

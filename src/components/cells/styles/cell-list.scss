@@ -1,30 +1,30 @@
+/* Sortable block row: lift on drag, insertion indicator when over */
 .sortable-item {
   position: relative;
-
-  &:hover,
-  &:focus-within {
-    .action-bar {
-      visibility: visible;
-    }
-  }
-}
-
-.sortable-item {
   transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
-}
-
-.sortable-item:active {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.sortable-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
 }
 
 .sortable-item[data-dragging='true'] {
-  opacity: 0.8;
-  transform: scale(1.02);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg);
+  z-index: 1;
+}
+
+/* Insertion indicator: line above this block when another is dragged over */
+.sortable-item[data-over='true']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -2px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sortable-item__content {
+  min-width: 0;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import * as monaco from 'monaco-editor';
 import { Editor, OnMount } from '@monaco-editor/react';
 import * as prettier from 'prettier/standalone.mjs';
@@ -9,24 +9,48 @@ import * as prettierPluginEstree from 'prettier/plugins/estree.mjs';
 import './styles/code-editor.scss';
 
 interface MonacoEditorProps {
-  defaultValue: string;
-  onChange(value: string): void;
-}
-
-interface MonacoEditorProps {
-  defaultValue: string;
+  /** Initial value when uncontrolled; use value for controlled (e.g. so external updates like Add NPM modal show in editor). */
+  defaultValue?: string;
+  /** When set, editor is controlled and will reflect external updates (e.g. insert imports from modal). */
+  value?: string;
   onChange: (value: string) => void;
+  /** When true, editor grows with content (page scrolls); when false, max-height + internal scroll */
+  expanded?: boolean;
 }
 
 const MonacoEditor: React.FC<MonacoEditorProps> = ({
-  defaultValue,
+  defaultValue = '',
+  value,
   onChange,
+  expanded = false,
 }) => {
+  const effectiveValue = value !== undefined ? value : defaultValue;
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const expandedRef = useRef(expanded);
   const [theme, setTheme] = useState('vs-dark');
+
+  expandedRef.current = expanded;
+
+  const updateExpandedHeight = useCallback(() => {
+    const editor = editorRef.current;
+    const wrapper = wrapperRef.current;
+    if (!editor || !wrapper || !expandedRef.current) return;
+    const h = editor.getContentHeight();
+    wrapper.style.height = `${h}px`;
+    editor.layout({ width: wrapper.clientWidth, height: h });
+  }, []);
 
   const handleOnMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
+
+    editor.onDidContentSizeChange(() => {
+      if (expandedRef.current && wrapperRef.current) {
+        const h = editor.getContentHeight();
+        wrapperRef.current.style.height = `${h}px`;
+        editor.layout({ width: wrapperRef.current.clientWidth, height: h });
+      }
+    });
 
     // Enable JavaScript diagnostics (error detection)
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
@@ -99,7 +123,6 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
   };
 
   useEffect(() => {
-    // Detect user's preferred color scheme
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     setTheme(prefersDark.matches ? 'vs-dark' : 'vs-light');
 
@@ -114,11 +137,24 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
     };
   }, []);
 
+  // When expanded, size wrapper to content; when collapsed, clear inline height
+  useEffect(() => {
+    if (expanded && editorRef.current && wrapperRef.current) {
+      updateExpandedHeight();
+    } else if (wrapperRef.current) {
+      wrapperRef.current.style.height = '';
+    }
+  }, [expanded, updateExpandedHeight]);
+
   return (
-    <div className="editor-wrapper ">
+    <div
+      ref={wrapperRef}
+      className={`editor-wrapper ${expanded ? 'editor-wrapper--expanded' : ''}`}
+    >
       {/* Format Button */}
       <button
-        className="button-format py-2 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-purple-700 focus:ring-4 focus:ring-blue-300 focus:outline-none active:scale-95 transition-all duration-200"
+        type="button"
+        className="button-format rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface2)] px-3 py-1.5 text-sm font-medium text-[var(--text)] transition-colors hover:bg-[var(--surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-ring)] focus-visible:ring-inset"
         onClick={onFormatClick}
       >
         Format
@@ -127,11 +163,11 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
       {/* Monaco Editor */}
       <Editor
         onMount={handleOnMount}
-        onChange={(value) => onChange(value || '')}
+        onChange={(v) => onChange(v || '')}
         height="100%"
         width="100%"
         defaultLanguage="javascript"
-        defaultValue={defaultValue}
+        value={effectiveValue}
         theme={theme}
         options={{
           lineNumbers: 'relative',
