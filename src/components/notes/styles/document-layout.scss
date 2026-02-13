@@ -8,6 +8,22 @@
   min-height: 0;
 }
 
+@media (max-width: 640px) {
+  .document-layout {
+    padding-inline: 16px;
+    --doc-gutter: 36px;
+    --doc-gap: 8px;
+  }
+}
+
+@media (max-width: 380px) {
+  .document-layout {
+    padding-inline: 12px;
+    --doc-gutter: 32px;
+    --doc-gap: 6px;
+  }
+}
+
 .document-layout__grid {
   display: grid;
   grid-template-columns: var(--doc-gutter) 1fr;
@@ -45,6 +61,43 @@
   visibility: visible;
 }
 
+/* On mobile: single column so header and blocks are full width */
+@media (max-width: 640px) {
+  .document-layout__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .document-layout__gutter-header {
+    display: none;
+  }
+
+  .document-layout__header {
+    grid-column: 1;
+  }
+
+  .document-layout__block-row {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .document-layout__block-row .gutter-controls {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .document-layout__empty-row {
+    grid-template-columns: 1fr;
+  }
+
+  .document-layout__empty-gutter {
+    display: none;
+  }
+
+  .document-layout__empty-content {
+    grid-column: 1;
+  }
+}
+
 .document-layout__block-gutter {
   grid-column: 1;
   display: flex;
@@ -74,4 +127,23 @@
 
 .document-layout__empty-content {
   grid-column: 2;
+}
+
+/* Mobile: overrides must come after base block-gutter/block-content so they win */
+@media (max-width: 640px) {
+  .document-layout__block-gutter {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 0;
+    padding-top: 0;
+    padding-bottom: var(--space-2);
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .document-layout__block-content {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+  }
 }

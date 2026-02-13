@@ -3,7 +3,7 @@
 .note-page {
   min-height: 100%;
   background: var(--bg);
-  padding-bottom: var(--space-10);
+  padding-bottom: max(var(--space-10), env(safe-area-inset-bottom, 0px));
 }
 
 /* Minimal sticky top bar */
@@ -78,6 +78,22 @@
   font-size: 0.8125rem;
   font-weight: 500;
 }
+
+@media (max-width: 640px) {
+  .note-page__topbar {
+    padding: 0 var(--space-4);
+    height: 44px;
+  }
+
+  .note-page__exit-focus-label {
+    display: none;
+  }
+
+  .note-page__actions {
+    padding-left: var(--space-2);
+    gap: 0;
+  }
+}
 /* Minimal topbar in focus mode: slightly reduced height */
 .note-page__topbar--focus {
   height: 44px;
@@ -90,7 +106,7 @@
 
 /* Document layout handles max-width, margin, padding (see document-layout.scss) */
 .note-page .document-layout {
-  padding-top: var(--space-8);
+  padding-top: var(--space-6);
 }
 
 @media (min-width: 640px) {
@@ -111,6 +127,8 @@
   line-height: 1.2;
   color: var(--text);
   margin: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .note-page__title {
@@ -132,11 +150,13 @@
 .note-page__title-input {
   width: 100%;
   max-width: 100%;
+  min-width: 0;
   padding: var(--space-1) 0;
   border: none;
   border-bottom: 1px solid var(--border);
   background: transparent;
   border-radius: 0;
+  box-sizing: border-box;
 }
 
 .note-page__title-input:focus {
@@ -156,6 +176,13 @@
   gap: var(--space-4);
   margin-bottom: var(--space-6);
   min-height: 24px;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .note-page__meta {
+    margin-bottom: var(--space-4);
+  }
 }
 
 .note-page__breadcrumb {
@@ -165,6 +192,10 @@
   border-radius: var(--radius-sm);
   background: var(--surface2);
   border: 1px solid var(--border);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Details: compact disclosure */
@@ -174,6 +205,25 @@
   border-radius: var(--radius-md);
   background: var(--surface2);
   overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .note-page__details {
+    margin-bottom: var(--space-4);
+    border-radius: var(--radius-sm);
+  }
+
+  .note-page__details-trigger {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .note-page__details-inner {
+    padding: var(--space-3);
+  }
+
+  .note-page__title-wrap {
+    margin-bottom: var(--space-2);
+  }
 }
 
 .note-page__details-trigger {
@@ -264,4 +314,16 @@
   margin-top: var(--space-6);
   padding-top: var(--space-6);
   border-top: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .document-layout__block-row:first-of-type,
+  .document-layout__empty-row {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+  }
+
+  .document-layout__block-row + .document-layout__block-row {
+    margin-top: var(--space-4);
+  }
 }

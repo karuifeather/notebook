@@ -36,25 +36,25 @@ export function isReturningUser(): boolean {
 }
 
 /**
- * Redirects to the user's recently used notebook if it exists,
+ * Redirects to the user's recently used notebook if it exists in state,
  * otherwise to the create-notebook page.
+ * Uses only current Redux state (not persisted localStorage) so that after
+ * deleting the last notebook we redirect to create-notebook instead of
+ * a no-longer-existing notebook.
  */
 export function RedirectToRecentOrCreate() {
   const store = useStore<RootState>();
   const notebooks = selectNotebooks(store.getState());
   const recentId = getRecentNotebookId();
-  const persisted = getPersistedNotebooks();
-  const rawIds =
-    Object.keys(notebooks ?? {}).length > 0
-      ? Object.keys(notebooks!)
-      : Object.keys(persisted);
-  const notebookIds = rawIds.filter((id) => id !== PLAYGROUND_NOTEBOOK_ID);
+  const notebookIds = Object.keys(notebooks ?? {}).filter(
+    (id) => id !== PLAYGROUND_NOTEBOOK_ID
+  );
 
   let to: string;
   if (
     recentId &&
     recentId !== PLAYGROUND_NOTEBOOK_ID &&
-    (notebooks?.[recentId] || persisted[recentId])
+    notebooks?.[recentId]
   ) {
     to = `/app/notebook/${recentId}`;
   } else if (notebookIds.length > 0) {

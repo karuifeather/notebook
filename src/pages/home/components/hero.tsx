@@ -35,7 +35,7 @@ export default function HeroSection() {
         {/* Decorative Graphic */}
         <div className="mt-8">
           <img
-            src="/images/editor.png"
+            src="/images/editor.gif"
             alt="Preview of FeatherPad"
             className="w-full max-w-3xl mx-auto drop-shadow-lg rounded-lg"
           />
