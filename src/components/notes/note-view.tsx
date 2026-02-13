@@ -8,6 +8,8 @@ import DocumentLayout from './DocumentLayout.tsx';
 import {
   makeSelectNoteById,
   selectNotebookById,
+  selectNotebookExists,
+  selectNoteExists,
 } from '@/state/selectors/index.ts';
 import { useActions } from '@/hooks/use-actions.ts';
 import { useFocusMode } from '@/context/FocusModeContext.tsx';
@@ -45,6 +47,12 @@ const NoteView: React.FC<NoteViewProps> = ({ playgroundNoteId }) => {
   const notebook = useTypedSelector((state) =>
     selectNotebookById(state, notebookId || '')
   ) as { name?: string; title?: string } | undefined;
+  const notebookExists = useTypedSelector((state) =>
+    notebookId ? selectNotebookExists(state, notebookId) : false
+  );
+  const noteExists = useTypedSelector((state) =>
+    notebookId && noteId ? selectNoteExists(state, notebookId, noteId) : false
+  );
   const notebookName = notebook?.name ?? notebook?.title ?? '';
 
   const { updateNote, deleteNote } = useActions();
@@ -59,9 +67,21 @@ const NoteView: React.FC<NoteViewProps> = ({ playgroundNoteId }) => {
 
   useEffect(() => {
     if (!notebookId || !noteId) {
-      navigate('/404');
+      navigate('/404', { replace: true });
+      return;
     }
-  }, [notebookId, noteId, navigate]);
+    // For non-playground routes, redirect to 404 if notebook or note does not exist
+    if (!playgroundNoteId && (!notebookExists || !noteExists)) {
+      navigate('/404', { replace: true });
+    }
+  }, [
+    notebookId,
+    noteId,
+    notebookExists,
+    noteExists,
+    playgroundNoteId,
+    navigate,
+  ]);
 
   useEffect(() => {
     setNoteTitle(globalNoteTitle || '');
@@ -179,6 +199,9 @@ const NoteView: React.FC<NoteViewProps> = ({ playgroundNoteId }) => {
   );
 
   if (!notebookId || !noteId) {
+    return null;
+  }
+  if (!playgroundNoteId && (!notebookExists || !noteExists)) {
     return null;
   }
 

@@ -4,6 +4,7 @@ import { useActions } from '@/hooks/use-actions.ts';
 import { useTypedSelector } from '@/hooks/use-typed-selector.ts';
 import {
   selectNotebookById,
+  selectNotebookExists,
   makeSelectNotesByNotebookId,
 } from '@/state/selectors/index.ts';
 import { DocumentCanvas } from '../ui/DocumentCanvas';
@@ -45,6 +46,9 @@ export default function NotebookView({ coverImage = null }: NotebookViewProps) {
   const notebook = useTypedSelector((state) =>
     selectNotebookById(state, notebookId ?? '')
   );
+  const notebookExists = useTypedSelector((state) =>
+    notebookId ? selectNotebookExists(state, notebookId) : false
+  );
   const notes = useTypedSelector((state) =>
     notebookId ? selectNotesByNotebookId(state, notebookId) : []
   );
@@ -67,8 +71,14 @@ export default function NotebookView({ coverImage = null }: NotebookViewProps) {
   }, [notebook]);
 
   useEffect(() => {
-    if (!notebookId) navigate('/app', { replace: true });
-  }, [notebookId, navigate]);
+    if (!notebookId) {
+      navigate('/app', { replace: true });
+      return;
+    }
+    if (!notebookExists) {
+      navigate('/404', { replace: true });
+    }
+  }, [notebookId, notebookExists, navigate]);
 
   const handleTitleBlur = useCallback(
     (committedTitle?: string) => {
@@ -133,6 +143,7 @@ export default function NotebookView({ coverImage = null }: NotebookViewProps) {
   }, [notebookId, deleteNotebook, navigate]);
 
   if (!notebookId) return null;
+  if (!notebookExists) return null;
 
   const displayTitle =
     notebookTitle || getNotebookName(notebook) || 'Untitled Notebook';

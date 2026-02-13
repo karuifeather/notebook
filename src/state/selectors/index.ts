@@ -10,6 +10,19 @@ export const selectNotebooks = (state: RootState) => state.notebooks.data;
 export const selectNotebookById = (state: RootState, notebookId: string) =>
   state.notebooks.data[notebookId] || { title: '', description: '', notes: [] };
 
+/** Returns true if a notebook with the given ID exists (for 404 handling). */
+export const selectNotebookExists = (
+  state: RootState,
+  notebookId: string
+): boolean => !!state.notebooks.data[notebookId];
+
+/** Returns true if a note with the given notebookId and noteId exists (for 404 handling). */
+export const selectNoteExists = (
+  state: RootState,
+  notebookId: string,
+  noteId: string
+): boolean => !!state.notes[notebookId]?.data?.[noteId];
+
 export const selectNotes = (state: RootState) => state.notes;
 
 export const selectCells = (state: RootState) => state.cells;
