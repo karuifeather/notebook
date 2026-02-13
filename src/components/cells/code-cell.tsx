@@ -139,11 +139,13 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell, noteId, notebookId }) => {
     const el = contentRef.current;
     if (!el) return;
     if (!document.fullscreenElement) {
+      // eslint-disable-next-line prettier/prettier -- avoid build mismatch (Vercel vs local Prettier)
       el
         .requestFullscreen?.()
         .then(() => setIsFullscreen(true))
         .catch(() => {});
     } else {
+      // eslint-disable-next-line prettier/prettier -- avoid build mismatch (Vercel vs local Prettier)
       document
         .exitFullscreen?.()
         .then(() => setIsFullscreen(false))
